@@ -21,6 +21,30 @@
         </div>
     </div>
 
+    <div class="page-quick">
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-book'></i></div>
+            <div>
+                <h5>TESDA Courses</h5>
+                <p>Libreng training na may certificates.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-calendar'></i></div>
+            <div>
+                <h5>Scheduled Batches</h5>
+                <p>May iskedyul para makapaghanda.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-award'></i></div>
+            <div>
+                <h5>Skill Upgrade</h5>
+                <p>Dagdag kaalaman para sa mas mataas na kita.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="section section-white" style="padding-top: 40px; display: flex; flex-direction: column; align-items: center;">
         <div class="section-header" style="width: 100%; max-width: 800px; text-align: left;">
             <h3>Upcoming <span>Seminars & Courses</span></h3>
@@ -39,7 +63,7 @@
                             <span class="badge badge-teal"><i class='bx bx-map'></i> Biñan Livelihood Center</span>
                             <span class="badge badge-blue"><i class='bx bx-time-five'></i> 20 Araw</span>
                         </div>
-                        <button class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</button>
+                        <a href="/Pages/Contact.aspx" class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</a>
                     </div>
                 </div>
             </li>
@@ -54,7 +78,7 @@
                             <span class="badge badge-teal"><i class='bx bx-map'></i> City Hall IT Room</span>
                             <span class="badge badge-blue"><i class='bx bx-time-five'></i> 3 Araw</span>
                         </div>
-                        <button class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</button>
+                        <a href="/Pages/Contact.aspx" class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</a>
                     </div>
                 </div>
             </li>
@@ -69,7 +93,7 @@
                             <span class="badge badge-teal"><i class='bx bx-map'></i> TESDA Provincial Office</span>
                             <span class="badge badge-blue"><i class='bx bx-time-five'></i> 25 Araw</span>
                         </div>
-                        <button class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</button>
+                        <a href="/Pages/Contact.aspx" class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</a>
                     </div>
                 </div>
             </li>
@@ -84,7 +108,7 @@
                             <span class="badge badge-teal"><i class='bx bx-map'></i> Brgy. San Antonio Hall</span>
                             <span class="badge badge-blue"><i class='bx bx-time-five'></i> 1 Araw (8AM - 4PM)</span>
                         </div>
-                        <button class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</button>
+                        <a href="/Pages/Contact.aspx" class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Mag-apply</a>
                     </div>
                 </div>
             </li>

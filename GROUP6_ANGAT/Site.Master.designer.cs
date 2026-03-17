@@ -13,6 +13,41 @@ namespace GROUP6_ANGAT
 
     public partial class SiteMaster
     {
+        
+        /// <summary>
+        /// phLoggedOut control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.PlaceHolder phLoggedOut;
+        
+        /// <summary>
+        /// phLoggedIn control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.PlaceHolder phLoggedIn;
+        
+        /// <summary>
+        /// lblNavUser control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblNavUser;
+        
+        /// <summary>
+        /// btnLogout control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.LinkButton btnLogout;
+        
+        /// <summary>
+        /// phSideLoggedOut control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.PlaceHolder phSideLoggedOut;
+        
+        /// <summary>
+        /// phSideLoggedIn control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.PlaceHolder phSideLoggedIn;
+        
+        /// <summary>
+        /// btnLogoutSide control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.LinkButton btnLogoutSide;
 
         /// <summary>
         /// MainContent control.

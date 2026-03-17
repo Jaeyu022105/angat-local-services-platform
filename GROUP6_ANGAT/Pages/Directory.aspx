@@ -21,24 +21,48 @@
         </div>
     </div>
 
-    <div id="search-bar" style="margin-top: -40px;">
+    <div class="page-quick">
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-store'></i></div>
+            <div>
+                <h5>60+ Negosyo</h5>
+                <p>Mga lokal na tindahan at serbisyo sa Biñan.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-badge-check'></i></div>
+            <div>
+                <h5>LGU Supported</h5>
+                <p>Verified ng PESO at DTI program partners.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-time-five'></i></div>
+            <div>
+                <h5>Open Hours</h5>
+                <p>May oras ng operasyon para planado ang pagbisita.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="search-bar" style="margin-top: 24px;">
         <div class="search-box">
             <div class="search-field">
                 <span class="s-icon"><i class='bx bx-search'></i></span>
-                <input type="text" placeholder="Pangalan ng negosyo..." />
+                <input id="dirSearch" type="text" placeholder="Pangalan ng negosyo..." />
             </div>
             <div class="search-field">
                 <span class="s-icon"><i class='bx bx-category'></i></span>
-                <select>
-                    <option>Lahat ng Kategorya</option>
-                    <option>Sari-Sari Store</option>
-                    <option>Carinderia / Food</option>
-                    <option>Ukay-Ukay / Damit</option>
-                    <option>Palengke / Agrivet</option>
-                    <option>Iba pa</option>
+                <select id="dirCategory">
+                    <option value="All">Lahat ng Kategorya</option>
+                    <option value="Sari-Sari Store">Sari-Sari Store</option>
+                    <option value="Carinderia">Carinderia / Food</option>
+                    <option value="Ukay-Ukay">Ukay-Ukay / Damit</option>
+                    <option value="Agrivet">Palengke / Agrivet</option>
+                    <option value="Iba">Iba pa</option>
                 </select>
             </div>
-            <button class="search-btn">Hanapin</button>
+            <button id="dirFilterBtn" class="search-btn" type="button">Hanapin</button>
         </div>
     </div>
 
@@ -49,12 +73,12 @@
                 <p class="section-sub">Mayroong 60+ na lokal na negosyo ang nakarehistro ngayon.</p>
             </div>
             <div style="display:flex; gap: 10px;">
-                <button class="btn-outline" style="padding: 8px 16px;"><i class='bx bx-plus'></i> I-rehistro ang Negosyo</button>
+                <a href="/Pages/Contact.aspx" class="btn-outline" style="padding: 8px 16px;"><i class='bx bx-plus'></i> I-rehistro ang Negosyo</a>
             </div>
         </div>
         
-        <div class="listings-grid">
-            <a href="#" class="listing-card">
+        <div id="dirListings" class="listings-grid">
+            <a href="#" class="listing-card" data-category="Sari-Sari Store" data-search="Aling Nena Sari-Sari Store Dela Paz Nena Cruz">
                 <div class="listing-top">
                     <div class="listing-icon" style="color: #0d9e6e; background: #e6f7f1;"><i class='bx bx-store'></i></div>
                     <span class="badge badge-teal">Sari-Sari Store</span>
@@ -71,7 +95,7 @@
                 </div>
             </a>
 
-            <a href="#" class="listing-card">
+            <a href="#" class="listing-card" data-category="Carinderia" data-search="Mang Berto Lomi House Carinderia San Antonio Berto Reyes">
                 <div class="listing-top">
                     <div class="listing-icon" style="color: #b45309; background: #fef3c7;"><i class='bx bx-restaurant'></i></div>
                     <span class="badge badge-amber">Carinderia</span>
@@ -88,7 +112,7 @@
                 </div>
             </a>
 
-            <a href="#" class="listing-card">
+            <a href="#" class="listing-card" data-category="Ukay-Ukay" data-search="Ukay-Ukay ni Jane Platero Jane Gomez">
                 <div class="listing-top">
                     <div class="listing-icon" style="color: #be123c; background: #ffe4e6;"><i class='bx bx-closet'></i></div>
                     <span class="badge badge-rose">Ukay-Ukay</span>
@@ -105,7 +129,7 @@
                 </div>
             </a>
 
-            <a href="#" class="listing-card">
+            <a href="#" class="listing-card" data-category="Iba" data-search="Jun Vulcanizing Repair Shop Canlalay Jun Santos">
                 <div class="listing-top">
                     <div class="listing-icon" style="color: #1d4ed8; background: #dbeafe;"><i class='bx bx-wrench'></i></div>
                     <span class="badge badge-blue">Repair Shop</span>
@@ -122,7 +146,7 @@
                 </div>
             </a>
 
-            <a href="#" class="listing-card">
+            <a href="#" class="listing-card" data-category="Agrivet" data-search="Tessie Bigasan Agrivet Palengke Tubigan Tessie Dantes">
                 <div class="listing-top">
                     <div class="listing-icon" style="color: #14b8a6; background: #ccfbf1;"><i class='bx bx-leaf'></i></div>
                     <span class="badge badge-teal">Agrivet</span>
@@ -139,7 +163,7 @@
                 </div>
             </a>
 
-            <a href="#" class="listing-card">
+            <a href="#" class="listing-card" data-category="Iba" data-search="Kape at Pandesal Corner Kapehan San Vicente Lolo Tonio">
                 <div class="listing-top">
                     <div class="listing-icon" style="color: #6d28d9; background: #ede9fe;"><i class='bx bx-coffee-togo'></i></div>
                     <span class="badge badge-purple" style="background:#ede9fe; color:#6d28d9;">Kapehan</span>
@@ -158,7 +182,33 @@
         </div>
         
         <div style="text-align:center; margin-top: 40px;">
-            <button class="btn-outline">Mag-load ng iba pang negosyo <i class='bx bx-chevron-down'></i></button>
+            <button class="btn-outline js-coming-soon" data-msg="Wala pang dagdag na negosyo ngayon.">Mag-load ng iba pang negosyo <i class='bx bx-chevron-down'></i></button>
         </div>
     </div>
+
+    <script>
+        (function () {
+            const searchInput = document.getElementById('dirSearch');
+            const categorySelect = document.getElementById('dirCategory');
+            const filterBtn = document.getElementById('dirFilterBtn');
+            const cards = Array.from(document.querySelectorAll('#dirListings .listing-card'));
+
+            function applyFilter() {
+                const q = (searchInput.value || '').toLowerCase();
+                const cat = categorySelect.value;
+
+                cards.forEach(card => {
+                    const text = (card.dataset.search || '').toLowerCase();
+                    const category = card.dataset.category || '';
+                    const matchQ = !q || text.includes(q);
+                    const matchCat = cat === 'All' || category === cat;
+                    card.style.display = (matchQ && matchCat) ? '' : 'none';
+                });
+            }
+
+            filterBtn.addEventListener('click', applyFilter);
+            searchInput.addEventListener('keyup', applyFilter);
+            categorySelect.addEventListener('change', applyFilter);
+        })();
+    </script>
 </asp:Content>

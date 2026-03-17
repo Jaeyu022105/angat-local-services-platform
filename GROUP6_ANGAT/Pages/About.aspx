@@ -21,6 +21,30 @@
         </div>
     </div>
 
+    <div class="page-quick">
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-heart'></i></div>
+            <div>
+                <h5>Community First</h5>
+                <p>Serbisyong walang bayad para sa lahat.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-mobile-alt'></i></div>
+            <div>
+                <h5>Mobile Ready</h5>
+                <p>Madaling gamitin kahit sa cellphone.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-trending-up'></i></div>
+            <div>
+                <h5>Growth Support</h5>
+                <p>Training at micro-loan info mula sa LGU.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="section section-white">
         <div class="section-header">
             <h3>Ano ang <span>Layunin Namin?</span></h3>

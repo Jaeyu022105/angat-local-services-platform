@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace GROUP6_ANGAT
 {
@@ -11,7 +7,22 @@ namespace GROUP6_ANGAT
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool isLoggedIn = Session["UserId"] != null;
+            phLoggedIn.Visible = isLoggedIn;
+            phLoggedOut.Visible = !isLoggedIn;
+            phSideLoggedIn.Visible = isLoggedIn;
+            phSideLoggedOut.Visible = !isLoggedIn;
 
+            if (isLoggedIn)
+            {
+                lblNavUser.Text = Session["UserName"] != null ? Session["UserName"].ToString() : "User";
+            }
+        }
+
+        protected void BtnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/");
         }
     }
 }

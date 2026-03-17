@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="~/site.css" runat="server" />
 </head>
 <body>
-    <form runat="server">
+    <form runat="server" enctype="multipart/form-data">
         <asp:ScriptManager runat="server">
             <Scripts>
                 <asp:ScriptReference Name="MsAjaxBundle" />
@@ -39,6 +39,16 @@
                     <li class="desktop-only"><a runat="server" href="~/">Home</a></li>
                     <li class="desktop-only"><a runat="server" href="~/Pages/HanapTrabaho.aspx">Hanap Trabaho</a></li>
                     <li class="desktop-only"><a runat="server" href="~/Pages/HanapGawa.aspx">Hanap Gawa</a></li>
+                    <asp:PlaceHolder ID="phLoggedOut" runat="server">
+                        <li class="desktop-only"><a runat="server" href="~/Pages/Login.aspx" class="nav-login">Login</a></li>
+                    </asp:PlaceHolder>
+                    <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
+                        <li class="desktop-only"><span class="nav-user">Hi, <asp:Label ID="lblNavUser" runat="server" /></span></li>
+                        <li class="desktop-only"><a runat="server" href="~/Pages/Profile.aspx" class="nav-login">Profile</a></li>
+                        <li class="desktop-only">
+                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-login" OnClick="BtnLogout_Click">Logout</asp:LinkButton>
+                        </li>
+                    </asp:PlaceHolder>
                     <li><a runat="server" href="~/Pages/Contact.aspx" class="nav-cta">Contact Us</a></li>
                 </ul>
             </div>
@@ -57,6 +67,17 @@
                 <li><a runat="server" href="~/Pages/Directory.aspx"><i class='bx bx-store-alt'></i> Livelihood Directory</a></li>
                 <li><a runat="server" href="~/Pages/Puhunan.aspx"><i class='bx bx-money'></i> Puhunan Tips</a></li>
                 <li><a runat="server" href="~/Pages/Training.aspx"><i class='bx bx-book-reader'></i> Training Calendar</a></li>
+                <asp:PlaceHolder ID="phSideLoggedOut" runat="server">
+                    <li><a runat="server" href="~/Pages/Login.aspx"><i class='bx bx-log-in'></i> Login</a></li>
+                </asp:PlaceHolder>
+                <asp:PlaceHolder ID="phSideLoggedIn" runat="server" Visible="false">
+                    <li><a runat="server" href="~/Pages/Profile.aspx"><i class='bx bx-user'></i> Profile</a></li>
+                    <li>
+                        <asp:LinkButton ID="btnLogoutSide" runat="server" CssClass="side-link-button" OnClick="BtnLogout_Click">
+                            <i class='bx bx-log-out'></i> Logout
+                        </asp:LinkButton>
+                    </li>
+                </asp:PlaceHolder>
             </ul>
         </div>
         
@@ -125,6 +146,14 @@
         menuBtn.addEventListener('click', openMenu);
         closeBtn.addEventListener('click', closeMenu);
         overlay.addEventListener('click', closeMenu);
+
+        document.querySelectorAll('.js-coming-soon').forEach(function (btn) {
+            btn.addEventListener('click', function (event) {
+                event.preventDefault();
+                const msg = btn.getAttribute('data-msg') || 'Feature ay ilalagay pa.';
+                alert(msg);
+            });
+        });
     </script>
 </body>
 </html>

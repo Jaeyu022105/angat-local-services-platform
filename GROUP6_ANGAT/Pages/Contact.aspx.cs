@@ -23,7 +23,9 @@ namespace GROUP6_ANGAT
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(message))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Paki-kumpleto ang lahat ng field.');", true);
+                pnlContactMessage.Visible = true;
+                pnlContactMessage.CssClass = "form-alert error";
+                lblContactMessage.Text = "Paki-kumpleto ang lahat ng field.";
                 return;
             }
 
@@ -48,7 +50,9 @@ namespace GROUP6_ANGAT
             txtEmail.Text = "";
             txtMessage.Text = "";
 
-            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Salamat! Ang iyong mensahe ay naipadala na sa aming grupo.');", true);
+            pnlContactMessage.Visible = true;
+            pnlContactMessage.CssClass = "form-alert success";
+            lblContactMessage.Text = "Salamat! Ang iyong mensahe ay naipadala na sa aming grupo.";
         }
     }
 }

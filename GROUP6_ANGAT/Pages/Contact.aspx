@@ -21,11 +21,39 @@
         </div>
     </div>
 
+    <div class="page-quick">
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-envelope'></i></div>
+            <div>
+                <h5>Direct Message</h5>
+                <p>Makipag-ugnayan sa aming team agad.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-phone'></i></div>
+            <div>
+                <h5>Hotline Support</h5>
+                <p>Available para sa mga tanong sa serbisyo.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-map'></i></div>
+            <div>
+                <h5>PESO Office</h5>
+                <p>Biñan City Hall, Laguna.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="section section-white">
         <div class="section-header">
             <h3>Ipadala ang Iyong <span>Mensahe</span></h3>
             <p class="section-sub">Maaari kayong magpadala ng direktang mensahe sa aming team gamit ang form sa ibaba.</p>
         </div>
+
+        <asp:Panel ID="pnlContactMessage" runat="server" CssClass="form-alert" Visible="false">
+            <asp:Label ID="lblContactMessage" runat="server" />
+        </asp:Panel>
         
         <div style="display: flex; flex-wrap: wrap; gap: 40px; max-width: 1000px; margin: 0 auto;">
             

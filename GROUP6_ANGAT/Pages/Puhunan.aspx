@@ -21,6 +21,30 @@
         </div>
     </div>
 
+    <div class="page-quick">
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-wallet'></i></div>
+            <div>
+                <h5>Low Interest</h5>
+                <p>Mga programang may mababang interes.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-badge-check'></i></div>
+            <div>
+                <h5>Legit Sources</h5>
+                <p>Lehitimong ahensya at microfinance.</p>
+            </div>
+        </div>
+        <div class="quick-card">
+            <div class="quick-icon"><i class='bx bx-line-chart'></i></div>
+            <div>
+                <h5>Grow Your Biz</h5>
+                <p>Gabay sa pag-angat ng maliit na negosyo.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="section section-white" style="padding-top: 40px;">
         <div class="section-header">
             <h3>Mga Programa para sa <span>Micro-Entrepreneurs</span></h3>
@@ -41,7 +65,7 @@
                     Isang programa ng Department of Trade and Industry na nagbibigay ng pautang na walang collateral. Mayroon lamang itong 2.5% na interes kada buwan, mas mababa kaysa sa mga loan sharks.
                 </p>
                 <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="#" style="color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <a href="/Pages/Contact.aspx" style="color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
                         Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
                     </a>
                 </div>
@@ -59,7 +83,7 @@
                     Nagbibigay ng maliliit na pautang na nagsisimula sa ₱3,000 para sa mga kababaihan na gustong magnegosyo. Mayroon din itong kasamang micro-insurance at savings program.
                 </p>
                 <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="#" style="color: #1d4ed8; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <a href="/Pages/Contact.aspx" style="color: #1d4ed8; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
                         Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
                     </a>
                 </div>
@@ -77,7 +101,7 @@
                     Ang DOLE Integrated Livelihood Program (DILP) ay nagbibigay ng grant (hindi inuutang, kundi tulong) para sa mga materyales at equipment na kailangan para makapagsimula ng negosyo.
                 </p>
                 <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="#" style="color: #b45309; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <a href="/Pages/Contact.aspx" style="color: #b45309; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
                         Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
                     </a>
                 </div>
@@ -95,7 +119,7 @@
                     Kung ikaw ay may hulog sa SSS kahit self-employed, maaari kang umutang ng katumbas ng isang buwang sahod para pandagdag sa imbentaryo ng iyong tindahan.
                 </p>
                 <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="#" style="color: #be123c; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <a href="/Pages/Contact.aspx" style="color: #be123c; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
                         Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
                     </a>
                 </div>

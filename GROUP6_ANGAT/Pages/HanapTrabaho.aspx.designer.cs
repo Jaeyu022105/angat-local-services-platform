@@ -13,5 +13,65 @@ namespace GROUP6_ANGAT.Pages
 
     public partial class HanapTrabaho
     {
+        
+        /// <summary>
+        /// phApplyLoggedIn control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedIn;
+        
+        /// <summary>
+        /// phApplyLoggedOut control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedOut;
+
+        /// <summary>
+        /// pnlApplyMessage control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Panel pnlApplyMessage;
+
+        /// <summary>
+        /// lblApplyMessage control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblApplyMessage;
+
+        /// <summary>
+        /// btnApplyJob control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnApplyJob;
+
+        /// <summary>
+        /// rptJobs control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Repeater rptJobs;
+
+        /// <summary>
+        /// hfJobId control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfJobId;
+
+        /// <summary>
+        /// hfJobTitle control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfJobTitle;
+
+        /// <summary>
+        /// hfJobLocation control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfJobLocation;
+
+        /// <summary>
+        /// hfJobPay control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfJobPay;
+
+        /// <summary>
+        /// hfJobTags control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfJobTags;
+
+        /// <summary>
+        /// hfJobDesc control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfJobDesc;
     }
 }

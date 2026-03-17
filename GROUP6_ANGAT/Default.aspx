@@ -50,7 +50,7 @@
                     <option>Carinderia / Lutuan</option>
                 </select>
             </div>
-            <button class="search-btn">Maghanap</button>
+            <button class="search-btn js-coming-soon" data-msg="Search ay ilalagay pa.">Maghanap</button>
         </div>
     </div>
 

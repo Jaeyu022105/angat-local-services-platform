@@ -123,6 +123,22 @@ a {
             transform: translateY(-1px) !important;
         }
 
+    #nav .nav-login {
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 7px 18px;
+        border-radius: 24px;
+        font-weight: 700;
+        font-size: 0.86rem;
+        margin-left: 8px;
+        transition: all 0.2s ease;
+    }
+
+        #nav .nav-login:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
 /* ==========================================
    SIDE MENU
    ========================================== */
@@ -215,14 +231,41 @@ a {
             transition: color 0.18s;
         }
 
-        .side-nav-links li a:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
+    .side-nav-links li a:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
 
             .side-nav-links li a:hover i {
                 color: var(--primary);
             }
+
+.side-link-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 24px;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.18s, color 0.18s;
+    text-decoration: none;
+}
+
+    .side-link-button i {
+        font-size: 1.3rem;
+        color: var(--muted);
+        transition: color 0.18s;
+    }
+
+    .side-link-button:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+
+        .side-link-button:hover i {
+            color: var(--primary);
+        }
 
 .menu-overlay {
     position: fixed;
@@ -434,11 +477,59 @@ a {
         z-index: 1;
     }
 
-        #page-hero .wave svg {
-            display: block;
-            width: 100%;
-            height: 60px;
-        }
+    #page-hero .wave svg {
+        display: block;
+        width: 100%;
+        height: 60px;
+    }
+
+/* ==========================================
+   PAGE QUICK STRIP
+   ========================================== */
+.page-quick {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 1100px;
+    margin: 16px auto 24px;
+    padding: 0 60px;
+}
+
+.quick-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.quick-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    flex-shrink: 0;
+}
+
+.quick-card h5 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.quick-card p {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+}
 
 /* ==========================================
    SEARCH BAR
@@ -809,6 +900,13 @@ a {
     display: block;
 }
 
+button.listing-card {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+}
+
     .listing-card:hover {
         box-shadow: 0 8px 28px rgba(13,158,110,0.12);
         border-color: var(--primary);
@@ -878,6 +976,92 @@ a {
         color: var(--muted);
         font-weight: 500;
     }
+
+/* ==========================================
+   JOB MODAL
+   ========================================== */
+.job-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 1200;
+}
+
+.job-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.job-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.job-modal-card {
+    position: relative;
+    z-index: 1;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px;
+    width: min(560px, calc(100% - 32px));
+    box-shadow: var(--shadow-lg);
+}
+
+.job-modal-close {
+    cursor: pointer;
+}
+
+.job-modal-close-icon {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    color: var(--text-soft);
+}
+
+.job-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.job-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.job-location {
+    color: var(--text-soft);
+    margin: 6px 0 12px;
+}
+
+.job-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.job-desc {
+    color: var(--text-soft);
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+.job-modal-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
 
 /* ==========================================
    ANNOUNCEMENTS
@@ -1061,10 +1245,445 @@ a {
             box-shadow: 0 0 0 3px rgba(13,158,110,0.12);
         }
 
-    .form-group textarea {
-        resize: vertical;
-        min-height: 120px;
-    }
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.pay-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pay-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    background: var(--white);
+    min-width: 140px;
+}
+
+.pay-field input {
+    border: none;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.92rem;
+    width: 100px;
+}
+
+.pay-currency {
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.pay-sep {
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.pay-unit {
+    min-width: 120px;
+}
+
+.form-alert {
+    max-width: 1000px;
+    margin: 0 auto 24px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.form-alert.success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1.5px solid #6ee7b7;
+}
+
+.form-alert.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1.5px solid #fca5a5;
+}
+
+/* ==========================================
+   LOGIN
+   ========================================== */
+.login-wrap {
+    background: linear-gradient(180deg, #e6f7f1 0%, #ffffff 60%);
+    padding: 60px 60px 90px;
+}
+
+.login-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    align-items: center;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.login-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 34px;
+    box-shadow: var(--shadow-md);
+}
+
+.login-card h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    margin-bottom: 24px;
+}
+
+.login-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.login-helper {
+    font-size: 0.84rem;
+    color: var(--muted);
+}
+
+.login-helper a {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.nav-user {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--text-soft);
+    padding: 8px 10px;
+}
+
+/* ==========================================
+   PROFILE
+   ========================================== */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.profile-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-avatar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-mid);
+    background: var(--white);
+}
+
+.profile-meta {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.profile-meta h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.profile-email {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+}
+
+.profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.profile-applications {
+    max-width: 1100px;
+    margin: 36px auto 0;
+}
+
+.app-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+.app-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.app-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.app-location {
+    color: var(--text-soft);
+    font-size: 0.86rem;
+}
+
+.app-status {
+    background: var(--primary);
+    color: var(--white);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.app-status.pending {
+    background: var(--primary);
+}
+
+.app-status.retracted {
+    background: #64748b;
+}
+
+.app-status.approved {
+    background: #16a34a;
+}
+
+.app-status.rejected {
+    background: #dc2626;
+}
+
+.app-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 0.86rem;
+    color: var(--text-soft);
+}
+
+.app-pay {
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.app-tags {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.app-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.app-retract {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+}
+
+.applicants-block {
+    margin-top: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+}
+
+.applicants-block h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.applicant-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.applicant-row:last-child {
+    border-bottom: none;
+}
+
+.applicant-meta {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+}
+
+.applicant-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Tag colors by category (Hanap Trabaho) */
+.tag-mint {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+.tag-blue {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.tag-rose {
+    background: #9f1239;
+    color: #ffffff;
+}
+
+.tag-amber {
+    background: #92400e;
+    color: #ffffff;
+}
+
+.tag-violet {
+    background: #6d28d9;
+    color: #ffffff;
+}
+
+.tag-teal {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+.tag-fulltime {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+.tag-parttime {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.tag-urgent {
+    background: #9f1239;
+    color: #ffffff;
+}
+
+.tag-housing {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+.tag-license {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.tag-daily {
+    background: #9f1239;
+    color: #ffffff;
+}
+
+.tag-physical {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.tag-experience {
+    background: #92400e;
+    color: #ffffff;
+}
+
+.login-spotlight {
+    background: var(--primary);
+    border-radius: 22px;
+    padding: 32px;
+    color: var(--white);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-spotlight h4 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.login-spotlight p {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.login-spotlight ul {
+    margin-top: 16px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.login-spotlight li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.login-spotlight .spotlight-badge {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+}
 
 /* ==========================================
    TEAM CARDS
@@ -1261,12 +1880,47 @@ a {
             grid-template-columns: 1fr 1fr;
             gap: 28px;
         }
+
+    .login-wrap {
+        padding: 48px 24px 70px;
+    }
+
+    .login-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-quick {
+        grid-template-columns: 1fr;
+        margin: 12px auto 18px;
+        padding: 0 24px;
+    }
 }
 
 @media (max-width: 480px) {
     #footer .footer-inner {
         grid-template-columns: 1fr;
     }
+
+    #footer {
+        padding: 36px 18px 22px;
+    }
+
+        #footer .footer-bottom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        #footer .footer-brand p {
+            max-width: none;
+        }
+
+        #footer .footer-col h5 {
+            margin-bottom: 12px;
+        }
 
     .listings-grid {
         grid-template-columns: 1fr;
