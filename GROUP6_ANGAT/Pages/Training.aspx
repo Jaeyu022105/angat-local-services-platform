@@ -21,6 +21,12 @@
         </div>
     </div>
 
+<ul class="announcement-list" style="margin-top: 30px;">
+    <asp:Repeater ID="rptTrainings" runat="server">
+        <ItemTemplate>
+            </ItemTemplate>
+    </asp:Repeater>
+</ul>
     <div class="page-quick">
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-book'></i></div>
@@ -44,7 +50,27 @@
             </div>
         </div>
     </div>
+        <!-- Search Bar title and time frame pinaka malapit and malayo na time (updated lean)-->
+    <div id="search-bar" style="margin-top: 24px; display: flex; justify-content: center; width: 100%;">
+    <div class="search-box" style="display: flex; width: 100%; max-width: 1100px;">
+        
+        <div class="search-field" style="flex: 2;"> <span class="s-icon"><i class='bx bx-search'></i></span>
+            <input type="text" placeholder="Anong training ang hanap mo?" 
+                   style="background: transparent; border: none; outline: none; width: 100%;" />
+        </div>
 
+        <div class="search-field" style="flex: 1;">
+            <span class="s-icon"><i class='bx bx-calendar'></i></span>
+            <select style="background: transparent; border: none; outline: none; width: 100%; cursor: pointer;">
+                <option value="ASC">Nearest Date (Pinakamalapit)</option>
+                <option value="DESC">Farthest Date (Pinakamalayo)</option>
+            </select>
+        </div>
+
+        <button type="button" class="search-btn">Maghanap</button>
+    </div>
+</div>
+    <!-- SearchBar done-->
     <div class="section section-white" style="padding-top: 40px; display: flex; flex-direction: column; align-items: center;">
         <div class="section-header" style="width: 100%; max-width: 800px; text-align: left;">
             <h3>Upcoming <span>Seminars & Courses</span></h3>

@@ -44,7 +44,29 @@
             </div>
         </div>
     </div>
+    <!-- Searchbar start placeholder wala pang DB (Lean) -->
+        <div id="search-bar" style="margin-top: 24px; display: flex; justify-content: center; width: 100%;">
+    <div class="search-box" style="display: flex; width: 100%; max-width: 1100px;">
+        
+        <div class="search-field" style="flex: 2;"> <span class="s-icon"><i class='bx bx-search'></i></span>
+            <input type="text" placeholder="Anong Loan ang hanap mo" 
+                   style="background: transparent; border: none; outline: none; width: 100%;" />
+        </div>
 
+        <div class="search-field" style="flex: 1;">
+            <span class="s-icon"><i class='bx bx-calendar'></i></span>
+            <select style="background: transparent; border: none; outline: none; width: 100%; cursor: pointer;">
+                <option>Micro Loans (0 - 10,000)</option>
+                <option>Small Loans (10,001 - 50,000)</option>
+                <option>Big Loans (50,001 - 100,000)</option>
+                <option>Business Loans (100,001 - 5,000,000)</option>
+            </select>
+        </div>
+
+        <button type="button" class="search-btn">Maghanap</button>
+    </div>
+</div>
+    <!-- SearchBar done -->
     <div class="section section-white" style="padding-top: 40px;">
         <div class="section-header">
             <h3>Mga Programa para sa <span>Micro-Entrepreneurs</span></h3>
