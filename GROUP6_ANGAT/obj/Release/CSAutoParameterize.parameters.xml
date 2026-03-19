@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="AngatDB-Web.config Connection String" description="AngatDB Connection String used in web.config by the application to access the database." defaultValue="Server=tcp:angat-server.database.windows.net,1433;Initial Catalog=AngatDatabase;Persist Security Info=False;User ID=angat-g6-admin;Password=ANG_AT_2026!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\Lenovo\\Source\\Repos\\IT114L-GROUP-6\\GROUP6_ANGAT\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='AngatDB']/@connectionString" />
+  </parameter>
+</parameters>

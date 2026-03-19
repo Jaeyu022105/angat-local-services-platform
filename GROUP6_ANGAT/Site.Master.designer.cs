@@ -7,46 +7,72 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT
-{
+namespace GROUP6_ANGAT {
 
 
-    public partial class SiteMaster
-    {
-        
+    public partial class SiteMaster {
+
         /// <summary>
         /// phLoggedOut control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder phLoggedOut;
-        
+
         /// <summary>
         /// phLoggedIn control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder phLoggedIn;
-        
+
         /// <summary>
         /// lblNavUser control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNavUser;
-        
+
         /// <summary>
         /// btnLogout control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
-        
+
         /// <summary>
         /// phSideLoggedOut control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder phSideLoggedOut;
-        
+
         /// <summary>
         /// phSideLoggedIn control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder phSideLoggedIn;
-        
+
         /// <summary>
         /// btnLogoutSide control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnLogoutSide;
 
         /// <summary>
