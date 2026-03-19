@@ -7,7 +7,6 @@
             <div class="c2"></div>
         </div>
         <div class="page-hero-inner">
-            <span class="hero-badge"><i class='bx bx-log-in'></i> Secure Access</span>
             <h2>Mag-login sa <strong>ANGAT</strong></h2>
             <p class="hero-desc">
                 Mabilis at ligtas na pag-access para sa mga naghahanap ng trabaho,
@@ -28,8 +27,8 @@
                 <p>Ilagay ang inyong email at password para makapasok.</p>
 
                 <div class="form-group">
-                    <label for="login-email">Email Address</label>
-                    <asp:TextBox ID="txtLoginEmail" runat="server" TextMode="Email" placeholder="halimbawa@email.com"></asp:TextBox>
+                    <label>Mobile Number o Email</label>
+                    <asp:TextBox ID="txtLoginIdentifier" runat="server" placeholder="09XXXXXXXXX o email@email.com"></asp:TextBox>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>
@@ -37,7 +36,6 @@
                 </div>
                 <div class="login-actions">
                     <asp:Button ID="btnLogin" runat="server" Text="Mag-login" CssClass="btn-green" OnClick="BtnLogin_Click" />
-                    <a href="~/Pages/Contact.aspx" runat="server" class="btn-outline">Kailangan ng Tulong</a>
                 </div>
                 <asp:Label ID="lblLoginMessage" runat="server" CssClass="login-helper" />
                 <p class="login-helper">

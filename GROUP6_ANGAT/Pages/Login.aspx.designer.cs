@@ -7,21 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT
-{
+namespace GROUP6_ANGAT {
 
 
-    public partial class Login
-    {
+    public partial class Login {
 
         /// <summary>
-        /// txtLoginEmail control.
+        /// txtLoginIdentifier control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLoginEmail;
+        protected global::System.Web.UI.WebControls.TextBox txtLoginIdentifier;
 
         /// <summary>
         /// txtLoginPassword control.

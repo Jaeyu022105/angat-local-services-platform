@@ -27,28 +27,83 @@
                 <p>Ilagay ang inyong detalye para makapagparehistro.</p>
 
                 <div class="form-group">
-                    <label for="signup-name">Buong Pangalan</label>
+                    <label>Buong Pangalan <span class="required">*</span></label>
                     <asp:TextBox ID="txtFullName" runat="server" placeholder="Juan Dela Cruz"></asp:TextBox>
                 </div>
+
                 <div class="form-group">
-                    <label for="signup-email">Email Address</label>
+                    <label>Mobile Number <span class="required">*</span></label>
+                    <asp:TextBox ID="txtPhone" runat="server" placeholder="09XXXXXXXXX"></asp:TextBox>
+                    <small class="field-hint">Format: 09XXXXXXXXX o +639XXXXXXXXX</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address <span class="optional">(optional)</span></label>
                     <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" placeholder="juan@email.com"></asp:TextBox>
                 </div>
+
                 <div class="form-group">
-                    <label for="signup-password">Password</label>
+                    <label>Barangay <span class="required">*</span></label>
+                    <asp:DropDownList ID="ddlBarangay" runat="server">
+                        <asp:ListItem Value="">-- Piliin ang Barangay --</asp:ListItem>
+                        <asp:ListItem Value="Biñan">Biñan (Poblacion)</asp:ListItem>
+                        <asp:ListItem Value="Bungahan">Bungahan</asp:ListItem>
+                        <asp:ListItem Value="Canlalay">Canlalay</asp:ListItem>
+                        <asp:ListItem Value="Casile">Casile</asp:ListItem>
+                        <asp:ListItem Value="De La Paz">De La Paz</asp:ListItem>
+                        <asp:ListItem Value="Ganado">Ganado</asp:ListItem>
+                        <asp:ListItem Value="Irregular Sinaplit">Irregular Sinaplit</asp:ListItem>
+                        <asp:ListItem Value="Langkiwa">Langkiwa</asp:ListItem>
+                        <asp:ListItem Value="Loma">Loma</asp:ListItem>
+                        <asp:ListItem Value="Malaban">Malaban</asp:ListItem>
+                        <asp:ListItem Value="Malamig">Malamig</asp:ListItem>
+                        <asp:ListItem Value="Mampalasan">Mampalasan</asp:ListItem>
+                        <asp:ListItem Value="Mapagong">Mapagong</asp:ListItem>
+                        <asp:ListItem Value="Masile">Masile</asp:ListItem>
+                        <asp:ListItem Value="Maysilo">Maysilo</asp:ListItem>
+                        <asp:ListItem Value="Munting Ilog">Munting Ilog</asp:ListItem>
+                        <asp:ListItem Value="New Biñan">New Biñan</asp:ListItem>
+                        <asp:ListItem Value="New Market">New Market</asp:ListItem>
+                        <asp:ListItem Value="Platero">Platero</asp:ListItem>
+                        <asp:ListItem Value="Poblacion">Poblacion</asp:ListItem>
+                        <asp:ListItem Value="San Antonio">San Antonio</asp:ListItem>
+                        <asp:ListItem Value="San Francisco">San Francisco</asp:ListItem>
+                        <asp:ListItem Value="San Jose">San Jose</asp:ListItem>
+                        <asp:ListItem Value="San Vicente">San Vicente</asp:ListItem>
+                        <asp:ListItem Value="Santa Rosa">Santa Rosa</asp:ListItem>
+                        <asp:ListItem Value="Santo Domingo">Santo Domingo</asp:ListItem>
+                        <asp:ListItem Value="Santo Tomas">Santo Tomas</asp:ListItem>
+                        <asp:ListItem Value="Soro-soro Ibaba">Soro-soro Ibaba</asp:ListItem>
+                        <asp:ListItem Value="Soro-soro Ilaya">Soro-soro Ilaya</asp:ListItem>
+                        <asp:ListItem Value="Soro-soro Kaylat">Soro-soro Kaylat</asp:ListItem>
+                        <asp:ListItem Value="Timbao">Timbao</asp:ListItem>
+                        <asp:ListItem Value="Tubigan">Tubigan</asp:ListItem>
+                        <asp:ListItem Value="Zapote">Zapote</asp:ListItem>
+                    </asp:DropDownList>
+                </div>
+
+                <div class="form-group">
+                    <label>Address <span class="required">*</span></label>
+                    <asp:TextBox ID="txtAddress" runat="server" placeholder="House No., Street, Subdivision"></asp:TextBox>
+                    <small class="field-hint">Hindi ito ipapakita sa publiko. Para lamang sa pagpapadala ng impormasyon sa employer.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Password <span class="required">*</span></label>
                     <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" placeholder="Password"></asp:TextBox>
                 </div>
+
                 <div class="form-group">
-                    <label for="signup-confirm">Confirm Password</label>
+                    <label>Confirm Password <span class="required">*</span></label>
                     <asp:TextBox ID="txtConfirmPassword" runat="server" TextMode="Password" placeholder="Password"></asp:TextBox>
                 </div>
+
                 <div class="login-actions">
                     <asp:Button ID="btnSignup" runat="server" Text="Mag-sign up" CssClass="btn-green" OnClick="btnSignup_Click" />
                     <a href="~/Pages/Login.aspx" runat="server" class="btn-outline">May account na</a>
                 </div>
                 <asp:Label ID="lblSignupMessage" runat="server" CssClass="login-helper" />
             </div>
-
             <div class="login-spotlight">
                 <span class="spotlight-badge"><i class='bx bx-badge-check'></i> Free Registration</span>
                 <h4>Mas marami, mas mabilis</h4>
