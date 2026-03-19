@@ -402,7 +402,7 @@ a {
    ========================================== */
 #page-hero {
     background: var(--primary);
-    padding: 60px 60px 110px;
+    padding: 60px 60px 40px;
     position: relative;
     overflow: hidden;
 }
@@ -430,6 +430,7 @@ a {
     #page-hero .page-hero-inner {
         position: relative;
         z-index: 2;
+        text-align: center;
     }
 
     #page-hero .hero-badge {
@@ -448,27 +449,30 @@ a {
     }
 
     #page-hero h2 {
-        font-size: 2.5rem;
+        font-size: 3.2rem;
         font-weight: 800;
         color: var(--white);
-        line-height: 1.15;
-        margin-bottom: 12px;
-        letter-spacing: -0.8px;
+        line-height: 1.1;
+        margin-bottom: 18px;
+        letter-spacing: -1px;
     }
 
         #page-hero h2 strong {
             color: var(--white);
             border-bottom: 3px solid rgba(255,255,255,0.55);
             padding-bottom: 2px;
+            display: inline-block;
         }
 
     #page-hero .hero-desc {
         color: rgba(255,255,255,0.88);
         font-size: 1rem;
         line-height: 1.75;
-        max-width: 540px;
+        max-width: 90%;
         font-weight: 400;
         margin-bottom: 24px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     #page-hero .wave {
