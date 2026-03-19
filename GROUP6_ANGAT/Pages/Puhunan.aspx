@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <!-- Searchbar start placeholder wala pang DB (Lean) -->
+    <!-- Searchbar start (Lean) -->
     <asp:UpdatePanel ID="updPuhunan" runat="server">
         <ContentTemplate>
 
@@ -113,8 +113,13 @@
                 <h2 id="modalTitle" style="margin-bottom: 15px; color: #1e293b;">Program Name</h2>
                 <p style="color: #64748b; margin-bottom: 20px;">Siguraduhing handa ang iyong mga dokumento bago mag-apply sa website ng ahensya.</p>
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" onclick="closeModal()" style="padding: 10px 20px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer;">Cancel</button>
-                    <a id="modalLink" href="#" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: #15803d; color: white; text-decoration: none; font-weight: bold;">Bisitahin ang Website</a>
+                    <button type="button" onclick="closeModal()" style="padding: 10px 20px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 1rem;">
+                      Cancel
+                    </button>
+
+                    <a id="modalLink" href="#" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: #15803d; color: white; text-decoration: none; font-weight: bold; font-family: inherit; font-size: 1rem; display: inline-block;">
+                      Bisitahin ang Website
+                    </a>
                 </div>
             </div>
         </div>
