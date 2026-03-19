@@ -45,108 +45,96 @@
         </div>
     </div>
     <!-- Searchbar start placeholder wala pang DB (Lean) -->
-        <div id="search-bar" style="margin-top: 24px; display: flex; justify-content: center; width: 100%;">
-    <div class="search-box" style="display: flex; width: 100%; max-width: 1100px;">
-        
-        <div class="search-field" style="flex: 2;"> <span class="s-icon"><i class='bx bx-search'></i></span>
-            <input type="text" placeholder="Anong Loan ang hanap mo" 
-                   style="background: transparent; border: none; outline: none; width: 100%;" />
-        </div>
+    <asp:UpdatePanel ID="updPuhunan" runat="server">
+        <ContentTemplate>
 
-        <div class="search-field" style="flex: 1;">
-            <span class="s-icon"><i class='bx bx-calendar'></i></span>
-            <select style="background: transparent; border: none; outline: none; width: 100%; cursor: pointer;">
-                <option>Micro Loans (0 - 10,000)</option>
-                <option>Small Loans (10,001 - 50,000)</option>
-                <option>Big Loans (50,001 - 100,000)</option>
-                <option>Business Loans (100,001 - 5,000,000)</option>
-            </select>
-        </div>
+            <div id="search-bar" style="margin-top: 24px; display: flex; justify-content: center; width: 100%;">
+                <div class="search-box" style="display: flex; width: 100%; max-width: 1100px;">
+                
+                    <div class="search-field" style="flex: 2; display: flex; align-items: center;"> 
+                        <span class="s-icon"><i class='bx bx-search'></i></span>
+                        <asp:TextBox ID="txtSearch" runat="server" placeholder="Anong Loan ang hanap mo" 
+                                     style="background: transparent; border: none; outline: none; width: 100%; margin-left: 10px;"></asp:TextBox>
+                    </div>
 
-        <button type="button" class="search-btn">Maghanap</button>
-    </div>
-</div>
-    <!-- SearchBar done -->
-    <div class="section section-white" style="padding-top: 40px;">
+                    <div class="search-field" style="flex: 1; display: flex; align-items: center; border-left: 1px solid #e2e8f0;">
+                        <span class="s-icon" style="margin-left: 10px;"><i class='bx bx-calendar'></i></span>
+                        <asp:DropDownList ID="ddlLoanType" runat="server" style="background: transparent; border: none; outline: none; width: 100%; cursor: pointer;">
+                            <asp:ListItem Value="All">Lahat ng Loans</asp:ListItem>
+                            <asp:ListItem Value="Micro">Micro Loans (0 - 10,000)</asp:ListItem>
+                            <asp:ListItem Value="Small">Small Loans (10,001 - 50,000)</asp:ListItem>
+                            <asp:ListItem Value="Big">Big Loans (50,001 - 100,000)</asp:ListItem>
+                            <asp:ListItem Value="Business">Business Loans (100,001 - 5,000,000)</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+
+                    <asp:Button ID="btnSearch" runat="server" Text="Maghanap" CssClass="search-btn" OnClick="btnSearch_Click" />
+                </div>
+            </div>
+        <!-- SearchBar done -->
+        <div class="section section-white" style="padding-top: 40px;">
         <div class="section-header">
             <h3>Mga Programa para sa <span>Micro-Entrepreneurs</span></h3>
             <p class="section-sub">Huwag nang kumagat sa "5-6". Narito ang mga ligtas na ahensya na handang tumulong sa pag-asenso ng iyong kabuhayan.</p>
         </div>
-        
-        <div class="listings-grid" style="margin-top: 40px;">
-            
-            <div class="listing-card" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="listing-icon" style="color: #0d9e6e; background: #e6f7f1; width: 60px; height: 60px; font-size: 1.8rem;">
-                    <i class='bx bxs-bank'></i>
-                </div>
-                <h4 style="font-size: 1.2rem;">DTI - P3 Program</h4>
-                <div class="listing-tags">
-                    <span class="badge badge-green">Pondo sa Pagbabago at Pag-asenso</span>
-                </div>
-                <p style="color: #475569; font-size: 0.9rem; line-height: 1.6; flex-grow: 1;">
-                    Isang programa ng Department of Trade and Industry na nagbibigay ng pautang na walang collateral. Mayroon lamang itong 2.5% na interes kada buwan, mas mababa kaysa sa mga loan sharks.
-                </p>
-                <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="/Pages/Contact.aspx" style="color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-                        Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
-                    </a>
+        <!-- Listings (repeated sha so add ka sa database) LEAN -->
+        <div class="listings-grid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <asp:Repeater ID="rptPuhunan" runat="server">
+                            <ItemTemplate>
+                                <div class="listing-card" style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                    <div class="listing-icon" style='<%# GetIconStyle(Eval("CategorySlug").ToString()) %>'>
+                                        <i class='bx <%# GetIconClass(Eval("CategorySlug").ToString()) %>'></i>
+                                    </div>
+                                    <h4 style="font-size: 1.2rem;"><%# Eval("ProgramName") %></h4>
+                                    <div class="listing-tags">
+                                        <span class='badge <%# GetBadgeClass(Eval("CategorySlug").ToString()) %>'>
+                                            <%# Eval("TagText") %>
+                                        </span>
+                                    </div>
+                                    <p style="color: #475569; font-size: 0.9rem; line-height: 1.6; flex-grow: 1;"><%# Eval("Description") %></p>
+                                    <div style="border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: auto;">
+                                        <button type="button" 
+                                                style='background:none; border:none; cursor:pointer; color: <%# GetPrimaryColor(Eval("CategorySlug").ToString()) %>; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; padding: 0;'
+                                                onclick="showRequirements('<%# Eval("ProgramName") %>', '<%# Eval("TargetURL") %>')">
+                                            Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
+                    </div>
+
+            </ContentTemplate>
+        </asp:UpdatePanel>
+
+        <div id="requirementsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+            <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%;">
+                <h2 id="modalTitle" style="margin-bottom: 15px; color: #1e293b;">Program Name</h2>
+                <p style="color: #64748b; margin-bottom: 20px;">Siguraduhing handa ang iyong mga dokumento bago mag-apply sa website ng ahensya.</p>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" onclick="closeModal()" style="padding: 10px 20px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer;">Cancel</button>
+                    <a id="modalLink" href="#" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: #15803d; color: white; text-decoration: none; font-weight: bold;">Bisitahin ang Website</a>
                 </div>
             </div>
-
-            <div class="listing-card" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="listing-icon" style="color: #1d4ed8; background: #dbeafe; width: 60px; height: 60px; font-size: 1.8rem;">
-                    <i class='bx bx-group'></i>
-                </div>
-                <h4 style="font-size: 1.2rem;">CARD MRI Microfinance</h4>
-                <div class="listing-tags">
-                    <span class="badge badge-blue">Para sa mga Nanay</span>
-                </div>
-                <p style="color: #475569; font-size: 0.9rem; line-height: 1.6; flex-grow: 1;">
-                    Nagbibigay ng maliliit na pautang na nagsisimula sa ₱3,000 para sa mga kababaihan na gustong magnegosyo. Mayroon din itong kasamang micro-insurance at savings program.
-                </p>
-                <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="/Pages/Contact.aspx" style="color: #1d4ed8; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-                        Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="listing-card" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="listing-icon" style="color: #b45309; background: #fef3c7; width: 60px; height: 60px; font-size: 1.8rem;">
-                    <i class='bx bx-briefcase-alt-2'></i>
-                </div>
-                <h4 style="font-size: 1.2rem;">DOLE Kabuhayan Program</h4>
-                <div class="listing-tags">
-                    <span class="badge badge-amber">Livelihood Grant</span>
-                </div>
-                <p style="color: #475569; font-size: 0.9rem; line-height: 1.6; flex-grow: 1;">
-                    Ang DOLE Integrated Livelihood Program (DILP) ay nagbibigay ng grant (hindi inuutang, kundi tulong) para sa mga materyales at equipment na kailangan para makapagsimula ng negosyo.
-                </p>
-                <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="/Pages/Contact.aspx" style="color: #b45309; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-                        Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="listing-card" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="listing-icon" style="color: #be123c; background: #ffe4e6; width: 60px; height: 60px; font-size: 1.8rem;">
-                    <i class='bx bxs-id-card'></i>
-                </div>
-                <h4 style="font-size: 1.2rem;">SSS Salary Loan</h4>
-                <div class="listing-tags">
-                    <span class="badge badge-rose">Para sa SSS Members</span>
-                </div>
-                <p style="color: #475569; font-size: 0.9rem; line-height: 1.6; flex-grow: 1;">
-                    Kung ikaw ay may hulog sa SSS kahit self-employed, maaari kang umutang ng katumbas ng isang buwang sahod para pandagdag sa imbentaryo ng iyong tindahan.
-                </p>
-                <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto;">
-                    <a href="/Pages/Contact.aspx" style="color: #be123c; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-                        Alamin ang requirements <i class='bx bx-right-arrow-alt'></i>
-                    </a>
-                </div>
-            </div>
-
         </div>
-    </div>
+
+        <script type="text/javascript">
+            function showRequirements(name, url) {
+                document.getElementById('modalTitle').innerText = name;
+                document.getElementById('modalLink').href = url;
+                document.getElementById('requirementsModal').style.display = 'flex';
+            }
+            function closeModal() {
+                document.getElementById('requirementsModal').style.display = 'none';
+            }
+
+            // Fix for JS after UpdatePanel Postback
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_endRequest(function () {
+                // Modal functions remain globally available, but if you add new JS 
+                // plugins (like tooltips), re-initialize them here.
+            });
+        </script>
+        <!-- Listings end-->
 </asp:Content>
