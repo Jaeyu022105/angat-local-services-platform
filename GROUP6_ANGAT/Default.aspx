@@ -27,33 +27,6 @@
         </div>
     </div>
 
-    <div id="search-bar">
-        <div class="search-box">
-            <div class="search-field">
-                <span class="s-icon">🔍</span>
-                <input type="text" placeholder="Trabaho o Serbisyo..." />
-            </div>
-            <div class="search-field">
-                <span class="s-icon">📍</span>
-                <input type="text" placeholder="Barangay o Lungsod" />
-            </div>
-            <div class="search-field">
-                <span class="s-icon">📂</span>
-                <select>
-                    <option>Lahat ng Kategorya</option>
-                    <option>House Help / Kasambahay</option>
-                    <option>Driver / Kutsero</option>
-                    <option>Karpintero / Konstruksyon</option>
-                    <option>Electrician / Plumber</option>
-                    <option>Laundry / Labandera</option>
-                    <option>Sari-sari Store</option>
-                    <option>Carinderia / Lutuan</option>
-                </select>
-            </div>
-            <button class="search-btn js-coming-soon" data-msg="Search ay ilalagay pa.">Maghanap</button>
-        </div>
-    </div>
-
     <div class="stats-bar">
         <div class="stat-item">
             <span class="stat-num">120+</span>
@@ -73,107 +46,10 @@
         </div>
     </div>
 
-    <div class="section section-white">
-        <div class="section-header">
-            <h3>Piliin ang Inyong <span>Kategorya</span></h3>
-            <p class="section-sub">
-                Ano ang hinahanap ninyo? Pumili ng kategorya para makita
-                ang pinaka-angkop na trabaho o serbisyo para sa inyo.
-            </p>
-        </div>
-        <div class="category-grid">
-            <a href="/Pages/HanapTrabaho.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-green">🏠</div>
-                <span>House Help / Kasambahay</span>
-            </a>
-            <a href="/Pages/HanapTrabaho.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-teal">🚗</div>
-                <span>Driver / Kutsero</span>
-            </a>
-            <a href="/Pages/HanapGawa.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-amber">🔨</div>
-                <span>Karpintero / Konstruksyon</span>
-            </a>
-            <a href="/Pages/HanapGawa.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-blue">⚡</div>
-                <span>Electrician / Plumber</span>
-            </a>
-            <a href="/Pages/HanapTrabaho.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-rose">👕</div>
-                <span>Laundry / Labandera</span>
-            </a>
-            <a href="/Pages/Directory.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-purple">🏪</div>
-                <span>Sari-sari / Tindahan</span>
-            </a>
-        </div>
-    </div>
-
-    <div class="section section-light">
-        <div class="section-header left">
-            <h3>Mga Bagong <span>Trabaho</span></h3>
-            <p class="section-sub">Pinakabagong mga listing mula sa ating lungsod.</p>
-        </div>
-        <div class="listings-grid">
-            <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
-                <div class="listing-top">
-                    <div class="listing-icon">🏠</div>
-                    <span class="badge badge-green">Bukas</span>
-                </div>
-                <h4>House Helper / Kasambahay</h4>
-                <p class="listing-company">📍 Brgy. Dela Paz, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-teal">Full-time</span>
-                    <span class="badge badge-blue">May Tirahan</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay">₱5,000–₱6,500 / buwan</span>
-                    <span class="listing-date">2 araw na ang nakakaraan</span>
-                </div>
-            </a>
-            <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
-                <div class="listing-top">
-                    <div class="listing-icon">🚗</div>
-                    <span class="badge badge-green">Bukas</span>
-                </div>
-                <h4>Personal Driver</h4>
-                <p class="listing-company">📍 Brgy. Canlalay, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-teal">Part-time</span>
-                    <span class="badge badge-amber">May Lisensya</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay">₱600–₱800 / araw</span>
-                    <span class="listing-date">3 araw na ang nakakaraan</span>
-                </div>
-            </a>
-            <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
-                <div class="listing-top">
-                    <div class="listing-icon">👕</div>
-                    <span class="badge badge-green">Bukas</span>
-                </div>
-                <h4>Laundry Helper</h4>
-                <p class="listing-company">📍 Brgy. Platero, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-teal">Part-time</span>
-                    <span class="badge badge-blue">Pang-araw-araw</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay">₱350–₱450 / araw</span>
-                    <span class="listing-date">Kahapon</span>
-                </div>
-            </a>
-        </div>
-        <br />
-        <div style="text-align:center;">
-            <a href="/Pages/HanapTrabaho.aspx" class="btn-green">Tingnan Lahat ng Trabaho →</a>
-        </div>
-    </div>
-
-    <div class="section section-white">
+        <div class="section section-white">
         <div class="section-header">
             <h3>Paano <span>Gamitin</span>?</h3>
-            <p class="section-sub">Simple at libre. Dinisenyo para sa lahat ng Biñaneno.</p>
+            <p class="section-sub">Simple at libre. Dinisenyo para sa lahat ng Biñanense.</p>
         </div>
         <ol class="steps-grid" style="list-style:none;">
             <li class="step-card">
@@ -197,6 +73,71 @@
                 <p>Simulan ang trabaho o negosyo at tulungan ang ating komunidad.</p>
             </li>
         </ol>
+    </div>
+
+    <div class="section section-white">
+        <div class="section-header">
+            <h3>Simulan ang Inyong <span>Paghahanap</span></h3>
+            <p class="section-sub">
+                Pumili ng seksyon para makapagsimula. Mula sa paghahanap ng trabaho hanggang sa pagpapaunlad ng negosyo — nandito ang lahat.
+            </p>
+        </div>
+        <div class="category-grid">
+            <a href="/Pages/HanapTrabaho.aspx" class="cat-card">
+                <div class="cat-icon-wrap cat-icon-green">💼</div>
+                <span>Hanap Trabaho</span>
+            </a>
+            <a href="/Pages/HanapGawa.aspx" class="cat-card">
+                <div class="cat-icon-wrap cat-icon-teal">🛠️</div>
+                <span>Hanap Gawa</span>
+            </a>
+            <a href="/Pages/Directory.aspx" class="cat-card">
+                <div class="cat-icon-wrap cat-icon-amber">🏪</div>
+                <span>Lokal na Negosyo</span>
+            </a>
+            <a href="/Pages/Puhunan.aspx" class="cat-card">
+                <div class="cat-icon-wrap cat-icon-blue">💰</div>
+                <span>Puhunan Tips</span>
+            </a>
+            <a href="/Pages/Training.aspx" class="cat-card">
+                <div class="cat-icon-wrap cat-icon-rose">📚</div>
+                <span>Training Calendar</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="section section-light">
+        <div class="section-header left">
+            <h3>Mga Bagong <span>Trabaho</span></h3>
+            <p class="section-sub">Pinakabagong mga listing mula sa ating lungsod.</p>
+        </div>
+        <div class="listings-grid">
+            <asp:Repeater ID="rptFeaturedJobs" runat="server">
+                <ItemTemplate>
+                    <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
+                        <div class="listing-top">
+                            <div class="listing-icon" style="background: <%# Eval("IconBg") %>; color: <%# Eval("IconColor") %>">
+                                <i class='<%# Eval("IconClass") %>'></i>
+                            </div>
+                            <span class="badge badge-green"><%# Eval("Status") %></span>
+                        </div>
+                        <h4><%# Eval("JobTitle") %></h4>
+                        <p class="listing-company"><i class='bx bx-map'></i> <%# Eval("JobLocation") %></p>
+                        <div class="listing-tags">
+                            <asp:Literal runat="server" Mode="PassThrough" Text='<%# GetTagsHtml(Eval("JobTags"), Eval("Category")) %>' />
+                        </div>
+                        <div class="listing-footer">
+                            <span class="listing-pay"><%# Eval("JobPay") %></span>
+                            <span class="listing-date"><%# Eval("DateLabel") %></span>
+                        </div>
+                    </a>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+        <br />
+        <div style="text-align:center;">
+            <a href="/Pages/HanapTrabaho.aspx" class="btn-green">Tingnan Lahat ng Trabaho →</a>
+        </div>
     </div>
 
     <div class="section section-light">

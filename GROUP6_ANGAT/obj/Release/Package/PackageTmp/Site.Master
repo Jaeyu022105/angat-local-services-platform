@@ -7,6 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> - ANGAT</title>
 
+    <meta name="description" content="Libreng plataporma para sa mga kasambahay, karpintero, labandera, at maliliit na negosyante ng Biñan, Laguna." />
+    <meta property="og:title" content="ANGAT — Ating Negosyo, Galing, at Trabaho" />
+    <meta property="og:description" content="Libreng plataporma para sa mga kasambahay, karpintero, labandera, at maliliit na negosyante ng Biñan, Laguna." />
+    <meta property="og:url" content="https://angat.azurewebsites.net" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://angat-group6.azurewebsites.net/Images/angat_preview.png" />
+
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <asp:PlaceHolder runat="server">
