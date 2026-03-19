@@ -1,6 +1,16 @@
+## Visual Studio temporary files
 .vs/
-bin/
-obj/
+[Vv]s/
 *.user
 *.suo
-*.cache
+*.userosscache
+*.sln.docstates
+
+## Build outputs (The "Bin" files from your earlier screenshot)
+bin/
+obj/
+/bin/
+/obj/
+
+## Personal VS settings
+.vs/GROUP6_ANGAT/
