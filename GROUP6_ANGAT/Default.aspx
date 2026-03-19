@@ -8,8 +8,7 @@
             <div class="c3"></div>
         </div>
         <div class="hero-inner">
-            <span class="hero-badge">📍 Biñan, Laguna — Para sa Komunidad</span>
-            <h2>Hanapin ang Inyong<br /><strong>Trabaho o Kabuhayan</strong></h2>
+            <h2>Hanapin ang Inyong Trabaho o Kabuhayan</h2>
             <p class="hero-desc">
                 Ang <strong>ANGAT</strong> — Ating Negosyo, Galing, at Trabaho — ay isang libreng
                 plataporma para sa mga kasambahay, karpintero, labandera, at maliliit na
@@ -41,7 +40,7 @@
             <span class="stat-label">Lokal na Negosyo</span>
         </div>
         <div class="stat-item">
-            <span class="stat-num">5</span>
+            <span class="stat-num">24</span>
             <span class="stat-label">Mga Barangay</span>
         </div>
     </div>
@@ -144,32 +143,21 @@
         <div class="section-header left">
             <h3>Mga <span>Anunsyo</span></h3>
             <p class="section-sub">
-                Pinakabagong balita mula sa PESO Office at LGU Biñan.<br />
-                Ang seksyong ito ay maglalaman ng mga opisyal na anunsyo sa hinaharap.
+                Pinakabagong balita mula sa PESO Office at LGU Biñan.
             </p>
         </div>
         <ul class="announcement-list">
-            <li>
-                <div class="ann-date">JUN<br />3</div>
-                <div class="ann-body">
-                    <h5>Bagong TESDA Free Training — Cookery NC II</h5>
-                    <p>Magbubukas ang bagong batch ng libreng cookery training sa Biñan City Livelihood Center. Limitado lamang ang slot.</p>
-                </div>
-            </li>
-            <li>
-                <div class="ann-date">MAY<br />28</div>
-                <div class="ann-body">
-                    <h5>DTI Negosyo Center — Micro-Loan Applications Open</h5>
-                    <p>Tumatanggap na ng applications ang DTI para sa P3 program. Hanggang Php 200,000 ang maaaring hiramin.</p>
-                </div>
-            </li>
-            <li>
-                <div class="ann-date">MAY<br />20</div>
-                <div class="ann-body">
-                    <h5>Job Fair — Biñan City Hall, Hunyo 15</h5>
-                    <p>Magsasagawa ng job fair ang PESO Office. Mahigit 30 employer ang lalahok. Magdala ng resume at valid ID.</p>
-                </div>
-            </li>
+            <asp:Repeater ID="rptAnnouncements" runat="server">
+                <ItemTemplate>
+                    <li>
+                        <div class="ann-date"><%# Eval("MonthLabel") %><br /><%# Eval("DayLabel") %></div>
+                        <div class="ann-body">
+                            <h5><%# Eval("Title") %></h5>
+                            <p><%# Eval("Body") %></p>
+                        </div>
+                    </li>
+                </ItemTemplate>
+            </asp:Repeater>
         </ul>
     </div>
 </asp:Content>
