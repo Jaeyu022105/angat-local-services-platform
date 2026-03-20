@@ -94,11 +94,11 @@
                     <button type="button" class="listing-card listing-card-button"
                         data-serviceid='<%# Eval("ServiceId") %>'
                         data-category='<%# Eval("Category") %>'
-                        data-search='<%# GetSearchText(Eval("ServiceTitle"), Eval("ServiceLocation"), Eval("ServiceTags"), Eval("Barangay"), Eval("Category")) %>'
+                        data-search='<%# GROUP6_ANGAT.DisplayHelper.GetSearchText(Eval("ServiceTitle"), Eval("ServiceLocation"), Eval("ServiceTags"), Eval("Barangay"), Eval("Category")) %>'
                         data-title='<%# Eval("ServiceTitle") %>'
-                        data-rate='<%# GetRateDisplay(Eval("ServiceRate")) %>'
-                        data-rate-amount='<%# GetRateSortValue(Eval("ServiceRate")) %>'
-                        data-posted='<%# GetPostedValue(Eval("PostedAt")) %>'
+                        data-rate='<%# GROUP6_ANGAT.DisplayHelper.GetServicePayDisplay(Eval("ServiceRate")) %>'
+                        data-rate-amount='<%# GROUP6_ANGAT.DisplayHelper.GetRateSortValue(Eval("ServiceRate")) %>'
+                        data-posted='<%# GROUP6_ANGAT.DisplayHelper.GetPostedValue(Eval("PostedAt")) %>'
                         data-tags='<%# Eval("ServiceTags") %>'
                         data-status='<%# Eval("Status") %>'
                         data-date='<%# Eval("DateLabel") %>'
@@ -107,15 +107,15 @@
                             <div class="listing-icon" data-category='<%# Eval("Category") %>'>
                                 <i></i>
                             </div>
-                            <span class='badge <%# GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
+                            <span class='badge <%# GROUP6_ANGAT.DisplayHelper.GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>
                         <h4><%# Eval("ServiceTitle") %></h4>
                         <p class="listing-company"><i class='bx bx-map'></i> <%# Eval("ServiceLocation") %></p>
                         <div class="listing-tags">
-                            <asp:Literal ID="litServiceTags" runat="server" Mode="PassThrough" Text='<%# GetTagsHtml(Eval("ServiceTags"), Eval("Category")) %>' />
+                            <asp:Literal ID="litServiceTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("ServiceTags"), Eval("Category")) %>' />
                         </div>
                         <div class="listing-footer">
-                            <span class="listing-pay" style="font-size: 0.9rem;"><i class='bx bx-money'></i> <%# GetRateDisplay(Eval("ServiceRate")) %></span>
+                            <span class="listing-pay" style="font-size: 0.9rem;"><i class='bx bx-money'></i> <%# GROUP6_ANGAT.DisplayHelper.GetServicePayDisplay(Eval("ServiceRate")) %></span>
                             <span class="listing-date" style="color: #475569;"><%# Eval("DateLabel") %></span>
                         </div>
                     </button>

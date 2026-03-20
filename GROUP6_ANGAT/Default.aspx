@@ -123,11 +123,11 @@
                         <h4><%# Eval("JobTitle") %></h4>
                         <p class="listing-company"><i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan</p>
                         <div class="listing-tags">
-                            <asp:Literal runat="server" Mode="PassThrough" Text='<%# GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
+                            <asp:Literal runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
                         </div>
                         <div class="listing-footer">
-                            <span class="listing-pay"><%# GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
-                            <span class="listing-date"><%# GetDateLabel(Eval("PostedAt")) %></span>
+                            <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                            <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
                         </div>
                     </a>
                 </ItemTemplate>
