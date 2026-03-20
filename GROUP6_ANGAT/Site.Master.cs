@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.UI;
 
 namespace GROUP6_ANGAT
@@ -16,6 +19,7 @@ namespace GROUP6_ANGAT
             if (isLoggedIn)
             {
                 lblNavUser.Text = Session["UserName"] != null ? Session["UserName"].ToString() : "User";
+                LoadNotifications();
             }
         }
 
@@ -23,6 +27,137 @@ namespace GROUP6_ANGAT
         {
             Session.Clear();
             Response.Redirect("~/");
+        }
+
+        protected void BtnMarkAllNotifRead_Click(object sender, EventArgs e)
+        {
+            if (Session["UserId"] == null)
+            {
+                return;
+            }
+
+            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"UPDATE Notifications
+                                                     SET IsRead = 1
+                                                     WHERE UserId = @UserId AND IsRead = 0", conn))
+            {
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+
+            LoadNotifications();
+        }
+
+        protected string ResolveNotificationUrl(object targetUrlObj)
+        {
+            string url = targetUrlObj == null ? "~/Pages/Profile.aspx" : targetUrlObj.ToString();
+
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                url = "~/Pages/Profile.aspx";
+            }
+
+            return ResolveUrl(url);
+        }
+
+        protected string GetNotificationItemClass(object isReadObj)
+        {
+            bool isRead = false;
+
+            if (isReadObj != null)
+            {
+                bool.TryParse(isReadObj.ToString(), out isRead);
+            }
+
+            return isRead ? "read" : "unread";
+        }
+
+        protected string GetRelativeNotificationTime(object createdAtObj)
+        {
+            DateTime createdAt;
+
+            if (createdAtObj == null || !DateTime.TryParse(createdAtObj.ToString(), out createdAt))
+            {
+                return string.Empty;
+            }
+
+            TimeSpan age = DateTime.Now - createdAt;
+
+            if (age.TotalMinutes < 1)
+            {
+                return "Ngayon lang";
+            }
+
+            if (age.TotalHours < 1)
+            {
+                int mins = Math.Max(1, (int)Math.Floor(age.TotalMinutes));
+                return mins + " min ago";
+            }
+
+            if (age.TotalDays < 1)
+            {
+                int hrs = Math.Max(1, (int)Math.Floor(age.TotalHours));
+                return hrs + " hr ago";
+            }
+
+            if (age.TotalDays < 7)
+            {
+                int days = Math.Max(1, (int)Math.Floor(age.TotalDays));
+                return days + " day ago";
+            }
+
+            return createdAt.ToString("MMM dd");
+        }
+
+        private void LoadNotifications()
+        {
+            if (Session["UserId"] == null)
+            {
+                return;
+            }
+
+            DataTable notifications = new DataTable();
+            int unreadCount = 0;
+            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+
+                using (SqlCommand countCmd = new SqlCommand(@"SELECT COUNT(*)
+                                                              FROM Notifications
+                                                              WHERE UserId = @UserId AND IsRead = 0", conn))
+                {
+                    countCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    unreadCount = Convert.ToInt32(countCmd.ExecuteScalar());
+                }
+
+                using (SqlCommand listCmd = new SqlCommand(@"SELECT TOP 5 NotificationId, Title, Message, NotificationType, TargetUrl, IsRead, CreatedAt
+                                                             FROM Notifications
+                                                             WHERE UserId = @UserId
+                                                             ORDER BY CreatedAt DESC", conn))
+                {
+                    listCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(listCmd))
+                    {
+                        adapter.Fill(notifications);
+                    }
+                }
+            }
+
+            phUnreadBadge.Visible = unreadCount > 0;
+            lblUnread.Text = unreadCount > 9 ? "9+" : unreadCount.ToString();
+            lblNotificationSummary.Text = unreadCount > 0
+                ? unreadCount + " unread notification" + (unreadCount == 1 ? "" : "s")
+                : "Latest account updates";
+
+            btnMarkAllNotifRead.Visible = unreadCount > 0;
+            pnlNoNotifications.Visible = notifications.Rows.Count == 0;
+            rptNotifications.DataSource = notifications;
+            rptNotifications.DataBind();
         }
     }
 }

@@ -271,16 +271,24 @@ namespace GROUP6_ANGAT.Pages
             {
                 conn.Open();
 
+                int ownerUserId = 0;
+
                 using (SqlCommand ownerCmd = new SqlCommand(@"SELECT PostedByUserId FROM Jobs WHERE JobId = @JobId", conn))
                 {
                     ownerCmd.Parameters.AddWithValue("@JobId", jobId);
                     object ownerId = ownerCmd.ExecuteScalar();
-                    if (ownerId != null && ownerId != DBNull.Value && ownerId.ToString() == Session["UserId"].ToString())
+
+                    if (ownerId != null && ownerId != DBNull.Value)
                     {
-                        pnlApplyMessage.Visible = true;
-                        pnlApplyMessage.CssClass = "form-alert error";
-                        lblApplyMessage.Text = "Hindi ka maaaring mag-apply sa sariling listing.";
-                        return;
+                        int.TryParse(ownerId.ToString(), out ownerUserId);
+
+                        if (ownerUserId == Convert.ToInt32(Session["UserId"]))
+                        {
+                            pnlApplyMessage.Visible = true;
+                            pnlApplyMessage.CssClass = "form-alert error";
+                            lblApplyMessage.Text = "Hindi ka maaaring mag-apply sa sariling listing.";
+                            return;
+                        }
                     }
                 }
 
@@ -319,6 +327,19 @@ namespace GROUP6_ANGAT.Pages
                                     updateCmd.Parameters.AddWithValue("@JobDescription", desc);
                                     updateCmd.Parameters.AddWithValue("@ApplicationId", applicationId);
                                     updateCmd.ExecuteNonQuery();
+                                    //for notifs
+                                    if (ownerUserId > 0)
+                                    {
+                                        string applicantName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
+
+                                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                                            conn,
+                                            ownerUserId,
+                                            "Bagong job application",
+                                            string.Format("{0} applied to your job: {1}.", applicantName, title),
+                                            "job_application_new",
+                                            "~/Pages/Profile.aspx");
+                                    }
                                 }
 
                                 pnlApplyMessage.Visible = true;
@@ -348,6 +369,20 @@ namespace GROUP6_ANGAT.Pages
                     cmd.Parameters.AddWithValue("@JobTags", tags);
                     cmd.Parameters.AddWithValue("@JobDescription", desc);
                     cmd.ExecuteNonQuery();
+
+                    //for notifs
+                    if (ownerUserId > 0)
+                    {
+                        string applicantName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
+
+                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                            conn,
+                            ownerUserId,
+                            "Bagong job application",
+                            string.Format("{0} applied to your job: {1}.", applicantName, title),
+                            "job_application_new",
+                            "~/Pages/Profile.aspx");
+                    }
                 }
             }
 

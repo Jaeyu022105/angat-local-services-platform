@@ -293,6 +293,7 @@ namespace GROUP6_ANGAT
         protected void RptApplicants_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
         {
             string newStatus = null;
+
             if (e.CommandName == "Approve")
             {
                 newStatus = "Approved";
@@ -307,30 +308,58 @@ namespace GROUP6_ANGAT
             }
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            int rows = 0;
+            int targetUserId = 0;
+            string jobTitle = "";
 
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"UPDATE JobApplications
-                                                     SET Status = @Status
-                                                     WHERE ApplicationId = @ApplicationId
-                                                       AND JobId IN (SELECT JobId FROM Jobs WHERE PostedByUserId = @UserId)", conn))
+                                             SET Status = @Status
+                                             OUTPUT INSERTED.UserId, INSERTED.JobTitle
+                                             WHERE ApplicationId = @ApplicationId
+                                               AND JobId IN (SELECT JobId FROM Jobs WHERE PostedByUserId = @UserId)", conn))
             {
                 cmd.Parameters.AddWithValue("@Status", newStatus);
                 cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-                int rows = cmd.ExecuteNonQuery();
 
-                pnlApplicationsMessage.Visible = true;
-                pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                lblApplicationsMessage.Text = rows > 0 ? "Na-update ang status ng applicant." : "Hindi ma-update ang status.";
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        rows = 1;
+                        targetUserId = Convert.ToInt32(reader["UserId"]);
+                        jobTitle = reader["JobTitle"].ToString();
+                    }
+                }
+
+                if (rows > 0 && targetUserId > 0)
+                {
+                    GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                        conn,
+                        targetUserId,
+                        newStatus == "Approved" ? "Na-approve ang job application" : "Na-reject ang job application",
+                        newStatus == "Approved"
+                            ? string.Format("Na-approve ang application mo para sa \"{0}\".", jobTitle)
+                            : string.Format("Na-reject ang application mo para sa \"{0}\".", jobTitle),
+                        newStatus == "Approved" ? "job_application_approved" : "job_application_rejected",
+                        "~/Pages/Profile.aspx");
+                }
             }
+
+            pnlApplicationsMessage.Visible = true;
+            pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+            lblApplicationsMessage.Text = rows > 0 ? "Na-update ang status ng applicant." : "Hindi ma-update ang status.";
 
             LoadMyListings();
         }
 
+
         protected void RptServiceApplicants_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
         {
             string newStatus = null;
+
             if (e.CommandName == "ApproveService")
             {
                 newStatus = "Approved";
@@ -345,26 +374,53 @@ namespace GROUP6_ANGAT
             }
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            int rows = 0;
+            int targetUserId = 0;
+            string serviceTitle = "";
 
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"UPDATE ServiceRequests
-                                                     SET Status = @Status
-                                                     WHERE RequestId = @RequestId
-                                                       AND ServiceId IN (SELECT ServiceId FROM Services WHERE PostedByUserId = @UserId)", conn))
+                                             SET Status = @Status
+                                             OUTPUT INSERTED.UserId, INSERTED.ServiceTitle
+                                             WHERE RequestId = @RequestId
+                                               AND ServiceId IN (SELECT ServiceId FROM Services WHERE PostedByUserId = @UserId)", conn))
             {
                 cmd.Parameters.AddWithValue("@Status", newStatus);
                 cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-                int rows = cmd.ExecuteNonQuery();
 
-                pnlServiceMessage.Visible = true;
-                pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                lblServiceMessage.Text = rows > 0 ? "Na-update ang status ng requester." : "Hindi ma-update ang status.";
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        rows = 1;
+                        targetUserId = Convert.ToInt32(reader["UserId"]);
+                        serviceTitle = reader["ServiceTitle"].ToString();
+                    }
+                }
+
+                if (rows > 0 && targetUserId > 0)
+                {
+                    GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                        conn,
+                        targetUserId,
+                        newStatus == "Approved" ? "Na-approve ang service request" : "Na-reject ang service request",
+                        newStatus == "Approved"
+                            ? string.Format("Na-approve ang request mo para sa \"{0}\".", serviceTitle)
+                            : string.Format("Na-reject ang request mo para sa \"{0}\".", serviceTitle),
+                        newStatus == "Approved" ? "service_request_approved" : "service_request_rejected",
+                        "~/Pages/Profile.aspx");
+                }
             }
+
+            pnlServiceMessage.Visible = true;
+            pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+            lblServiceMessage.Text = rows > 0 ? "Na-update ang status ng requester." : "Hindi ma-update ang status.";
 
             LoadMyServiceListings();
         }
+
 
         protected void RptMyListings_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
         {

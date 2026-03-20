@@ -50,10 +50,49 @@
                         <li class="desktop-only"><a runat="server" href="~/Pages/Login.aspx" class="nav-login">Login</a></li>
                     </asp:PlaceHolder>
                     <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
+                        <li class="desktop-only notification-shell">
+                            <button type="button" id="notification-toggle" class="notification-btn" aria-label="Notifications">
+                                i class='bx bx-bell'></i>
+                                <asp:PlaceHolder ID="phUnreadBadge" runat="server" Visible="false">
+                                    <span class="notification-count">
+                                        <asp:Label ID="lblUnread" runat="server" />
+                                    </span>
+                                </asp:PlaceHolder>
+                            </button>
+                            <div id ="notification-dropdown" class="notification-dropdown">
+                                <div class="notification-header">
+                                    <div>
+                                        <h5>Notifications</h5>
+                                        <p><asp:Label ID="lblNotificationSummary" runat="server" Text="Latest account updates" /></asp:Label></p>
+                                    </div>
+                                <asp:LinkButton ID="btnMarkAllNotifRead" runat="server"
+                                    CssClass="notification-mark"
+                                    CausesValidation ="false" 
+                                    OnClick="BtnMarkAllNotifRead_Click">Mark all as read</asp:LinkButton>
+                                </div>
+                                <asp:Panel ID="pnlNoNotifications" runat="server" CssClass="notification-empty" Visible ="false">
+                                    Wala pang Notifications.
+                                                            </asp:Panel>
+                                <div class ="notification-list">
+                                    <asp:Repeater ID="rptNotifications" runat="server">
+                                        <ItemTemplate>
+                                            <a class='notification-item <%# GetNotificationItemClass(Eval("IsRead")) %>'
+                                                href='<%# ResolveNotificationUrl(Eval("TargetUrl")) %>'>
+                                                    <div class="notification-copy">
+                                                        <strong><%#: Eval("Title") %></strong>
+                                                        <p><%#: Eval("Message") %></p>
+                                                        <span><%# GetRelativeNotificationTime(Eval("CreatedAt")) %></span>
+
+                                                    </div>
+                                              </a>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </div>
+                            </div>
+                        </li>
                         <li class="desktop-only"><span class="nav-user">Hi, <asp:Label ID="lblNavUser" runat="server" /></span></li>
                         <li class="desktop-only"><a runat="server" href="~/Pages/Profile.aspx" class="nav-login">Profile</a></li>
-                        <li class="desktop-only">
-                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-login" OnClick="BtnLogout_Click">Logout</asp:LinkButton>
+                        <li class="desktop-only"><asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-login" OnClick="BtnLogout_Click">Logout</asp:LinkButton>
                         </li>
                     </asp:PlaceHolder>
                     <li><a runat="server" href="~/Pages/Contact.aspx" class="nav-cta">Contact Us</a></li>
@@ -139,6 +178,8 @@
         const closeBtn = document.getElementById('close-menu');
         const sideMenu = document.getElementById('side-menu');
         const overlay = document.getElementById('menu-overlay');
+        const notificationToggle = document.getElementById('notification-toggle');
+        const notificationDropdown = document.getElementById('notification-dropdown');
 
         function openMenu() {
             sideMenu.classList.add('open');
@@ -150,9 +191,33 @@
             overlay.classList.remove('open');
         }
 
-        menuBtn.addEventListener('click', openMenu);
-        closeBtn.addEventListener('click', closeMenu);
-        overlay.addEventListener('click', closeMenu);
+        if (menuBtn && closeBtn && sideMenu && overlay) {
+            menuBtn.addEventListener('click', openMenu);
+            closeBtn.addEventListener('click', closeMenu);
+            overlay.addEventListener('click', closeMenu);
+        }
+
+        if (notificationToggle && notificationDropdown) {
+            notificationToggle.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                notificationDropdown.classList.toggle('open');
+            });
+
+            notificationDropdown.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+
+            document.addEventListener('click', function () {
+                notificationDropdown.classList.remove('open');
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    notificationDropdown.classList.remove('open');
+                }
+            });
+        }
 
         document.querySelectorAll('.js-coming-soon').forEach(function (btn) {
             btn.addEventListener('click', function (event) {
