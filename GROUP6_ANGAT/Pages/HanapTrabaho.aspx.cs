@@ -45,37 +45,6 @@ namespace GROUP6_ANGAT.Pages {
             pnlEmpty.Visible = rptJobs.Items.Count == 0;
         }
 
-        // ── Icon helpers (derived from Category) ──
-        protected string GetIconClass(object categoryObj) {
-            string cat = (categoryObj ?? "").ToString().ToLower();
-            if (cat.Contains("kasambahay")) return "bx bx-home-heart";
-            if (cat.Contains("driver")) return "bx bx-car";
-            if (cat.Contains("labandera")) return "bx bx-water";
-            if (cat.Contains("karpintero")) return "bx bx-hammer";
-            if (cat.Contains("electrician")) return "bx bx-bolt";
-            if (cat.Contains("tubero")) return "bx bx-wrench";
-            if (cat.Contains("mananahi")) return "bx bx-scissors";
-            if (cat.Contains("carinderia")) return "bx bx-restaurant";
-            if (cat.Contains("sari-sari")) return "bx bx-store-alt";
-            if (cat.Contains("bodega")) return "bx bx-package";
-            return "bx bx-briefcase";
-        }
-
-        protected string GetIconBg(object categoryObj) {
-            string cat = (categoryObj ?? "").ToString().ToLower();
-            if (cat.Contains("kasambahay")) return "cat-icon-green";
-            if (cat.Contains("driver")) return "cat-icon-teal";
-            if (cat.Contains("labandera")) return "cat-icon-rose";
-            if (cat.Contains("karpintero")) return "cat-icon-amber";
-            if (cat.Contains("electrician")) return "cat-icon-blue";
-            if (cat.Contains("tubero")) return "cat-icon-blue";
-            if (cat.Contains("mananahi")) return "cat-icon-rose";
-            if (cat.Contains("carinderia")) return "cat-icon-amber";
-            if (cat.Contains("sari-sari")) return "cat-icon-purple";
-            if (cat.Contains("bodega")) return "cat-icon-blue";
-            return "cat-icon-green";
-        }
-
         // ── Pay display ──
         protected string GetPayDisplay(object minObj, object maxObj, object rateObj) {
             string rate = (rateObj ?? "").ToString()

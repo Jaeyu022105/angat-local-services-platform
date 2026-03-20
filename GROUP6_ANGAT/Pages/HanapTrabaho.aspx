@@ -136,8 +136,8 @@
                         data-date='<%# GetDateLabel(Eval("PostedAt")) %>'
                         data-desc='<%# Eval("JobDescription") %>'>
                         <div class="listing-top">
-                            <div class="listing-icon <%# GetIconBg(Eval("Category")) %>">
-                                <i class='<%# GetIconClass(Eval("Category")) %>'></i>
+                            <div class="listing-icon" data-category='<%# Eval("Category") %>'>
+                                <i></i>
                             </div>
                             <span class='badge <%# GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>

@@ -115,8 +115,8 @@
                 <ItemTemplate>
                     <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
                         <div class="listing-top">
-                            <div class="listing-icon <%# GetIconBg(Eval("Category")) %>">
-                                <i class='<%# GetIconClass(Eval("Category")) %>'></i>
+                            <div class="listing-icon" data-category='<%# Eval("Category") %>'>
+                                <i></i>
                             </div>
                             <span class="badge badge-green"><%# Eval("Status") %></span>
                         </div>

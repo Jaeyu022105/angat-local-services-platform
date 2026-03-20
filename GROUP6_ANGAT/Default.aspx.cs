@@ -55,41 +55,28 @@ namespace GROUP6_ANGAT {
             if (tags != null && !string.IsNullOrEmpty(tags.ToString())) {
                 string[] tagList = tags.ToString().Split('|');
                 foreach (string tag in tagList) {
-                    if (!string.IsNullOrWhiteSpace(tag))
-                        result += $"<span class='badge badge-teal'>{tag.Trim()}</span> ";
+                    if (!string.IsNullOrWhiteSpace(tag)) {
+                        string t = tag.Trim();
+                        string css = GetTagCss(t);
+                        result += $"<span class='badge {css}'>{t}</span> ";
+                    }
                 }
             }
             return result;
         }
 
-        protected string GetIconClass(object categoryObj) {
-            string cat = (categoryObj ?? "").ToString().ToLower();
-            if (cat.Contains("kasambahay")) return "bx bx-home-heart";
-            if (cat.Contains("driver")) return "bx bx-car";
-            if (cat.Contains("labandera")) return "bx bx-water";
-            if (cat.Contains("karpintero")) return "bx bx-hammer";
-            if (cat.Contains("electrician")) return "bx bx-bolt";
-            if (cat.Contains("tubero")) return "bx bx-wrench";
-            if (cat.Contains("mananahi")) return "bx bx-scissors";
-            if (cat.Contains("carinderia")) return "bx bx-restaurant";
-            if (cat.Contains("sari-sari")) return "bx bx-store-alt";
-            if (cat.Contains("bodega")) return "bx bx-package";
-            return "bx bx-briefcase";
-        }
-
-        protected string GetIconBg(object categoryObj) {
-            string cat = (categoryObj ?? "").ToString().ToLower();
-            if (cat.Contains("kasambahay")) return "cat-icon-green";
-            if (cat.Contains("driver")) return "cat-icon-teal";
-            if (cat.Contains("labandera")) return "cat-icon-rose";
-            if (cat.Contains("karpintero")) return "cat-icon-amber";
-            if (cat.Contains("electrician")) return "cat-icon-blue";
-            if (cat.Contains("tubero")) return "cat-icon-blue";
-            if (cat.Contains("mananahi")) return "cat-icon-rose";
-            if (cat.Contains("carinderia")) return "cat-icon-amber";
-            if (cat.Contains("sari-sari")) return "cat-icon-purple";
-            if (cat.Contains("bodega")) return "cat-icon-blue";
-            return "cat-icon-green";
+        protected string GetTagCss(string tag) {
+            string t = (tag ?? "").ToLower();
+            if (t.Contains("full-time")) return "tag-fulltime";
+            if (t.Contains("part-time")) return "tag-parttime";
+            if (t.Contains("urgent")) return "tag-urgent";
+            if (t.Contains("pisikal")) return "tag-physical";
+            if (t.Contains("may karanasan")) return "tag-experience";
+            if (t.Contains("flexible")) return "tag-teal";
+            if (t.Contains("live-in")) return "tag-housing";
+            if (t.Contains("weekdays")) return "tag-blue";
+            if (t.Contains("weekends")) return "tag-violet";
+            return "tag-teal";
         }
 
         protected string GetPayDisplay(object minObj, object maxObj, object rateObj) {

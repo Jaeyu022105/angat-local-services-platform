@@ -903,6 +903,42 @@ button.listing-card {
         border: 1.5px solid var(--primary-mid);
     }
 
+    /* Category Icon & Background Mapping (CSS-Driven) */
+    .listing-icon i::before {
+        font-family: 'boxicons' !important;
+        content: "\eafc"; /* Default: briefcase */
+    }
+
+    .listing-icon[data-category*="kasambahay" i] { background: #bbf7d0 !important; }
+    .listing-icon[data-category*="kasambahay" i] i::before { content: "\ee72"; }
+
+    .listing-icon[data-category*="driver" i] { background: #99f6e4 !important; }
+    .listing-icon[data-category*="driver" i] i::before { content: "\eb1a"; }
+
+    .listing-icon[data-category*="labandera" i] { background: #fecdd3 !important; }
+    .listing-icon[data-category*="labandera" i] i::before { content: "\ef43"; }
+
+    .listing-icon[data-category*="karpintero" i] { background: #fde68a !important; }
+    .listing-icon[data-category*="karpintero" i] i::before { content: "\ec66"; }
+
+    .listing-icon[data-category*="electrician" i] { background: #bfdbfe !important; }
+    .listing-icon[data-category*="electrician" i] i::before { content: "\eade"; }
+
+    .listing-icon[data-category*="tubero" i] { background: #bfdbfe !important; }
+    .listing-icon[data-category*="tubero" i] i::before { content: "\ef51"; }
+
+    .listing-icon[data-category*="mananahi" i] { background: #fecdd3 !important; }
+    .listing-icon[data-category*="mananahi" i] i::before { content: "\ed9b"; }
+
+    .listing-icon[data-category*="carinderia" i] { background: #fde68a !important; }
+    .listing-icon[data-category*="carinderia" i] i::before { content: "\ed83"; }
+
+    .listing-icon[data-category*="sari-sari" i] { background: #ddd6fe !important; }
+    .listing-icon[data-category*="sari-sari" i] i::before { content: "\ede4"; }
+
+    .listing-icon[data-category*="bodega" i] { background: #bfdbfe !important; }
+    .listing-icon[data-category*="bodega" i] i::before { content: "\ed1d"; }
+
     .listing-card h4 {
         font-weight: 700;
         font-size: 1.02rem;

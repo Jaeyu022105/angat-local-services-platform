@@ -104,8 +104,8 @@
                         data-date='<%# Eval("DateLabel") %>'
                         data-desc='<%# Eval("ServiceDescription") %>'>
                         <div class="listing-top">
-                            <div class="listing-icon" data-icon-color='<%# Eval("IconColor") %>' data-icon-bg='<%# Eval("IconBg") %>'>
-                                <i class='<%# Eval("IconClass") %>'></i>
+                            <div class="listing-icon" data-category='<%# Eval("Category") %>'>
+                                <i></i>
                             </div>
                             <span class='badge <%# GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>
@@ -167,18 +167,6 @@
             const sortSelect = document.getElementById('hgSort');
             const cards = Array.from(document.querySelectorAll('#hgListings .listing-card'));
             const listingWrap = document.getElementById('hgListings');
-            const icons = Array.from(document.querySelectorAll('#hgListings .listing-icon'));
-
-            icons.forEach(icon => {
-                const color = icon.dataset.iconColor;
-                const bg = icon.dataset.iconBg;
-                if (color) {
-                    icon.style.color = color;
-                }
-                if (bg) {
-                    icon.style.background = bg;
-                }
-            });
 
             function applyFilter() {
                 const q = (searchInput.value || '').toLowerCase();
