@@ -115,19 +115,19 @@
                 <ItemTemplate>
                     <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
                         <div class="listing-top">
-                            <div class="listing-icon" style="background: <%# Eval("IconBg") %>; color: <%# Eval("IconColor") %>">
-                                <i class='<%# Eval("IconClass") %>'></i>
+                            <div class="listing-icon <%# GetIconBg(Eval("Category")) %>">
+                                <i class='<%# GetIconClass(Eval("Category")) %>'></i>
                             </div>
                             <span class="badge badge-green"><%# Eval("Status") %></span>
                         </div>
                         <h4><%# Eval("JobTitle") %></h4>
-                        <p class="listing-company"><i class='bx bx-map'></i> <%# Eval("JobLocation") %></p>
+                        <p class="listing-company"><i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan</p>
                         <div class="listing-tags">
-                            <asp:Literal runat="server" Mode="PassThrough" Text='<%# GetTagsHtml(Eval("JobTags"), Eval("Category")) %>' />
+                            <asp:Literal runat="server" Mode="PassThrough" Text='<%# GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
                         </div>
                         <div class="listing-footer">
-                            <span class="listing-pay"><%# Eval("JobPay") %></span>
-                            <span class="listing-date"><%# Eval("DateLabel") %></span>
+                            <span class="listing-pay"><%# GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                            <span class="listing-date"><%# GetDateLabel(Eval("PostedAt")) %></span>
                         </div>
                     </a>
                 </ItemTemplate>

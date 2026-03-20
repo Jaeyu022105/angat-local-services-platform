@@ -290,7 +290,7 @@ a {
    ========================================== */
 #hero {
     background: var(--primary);
-    padding: 100px;
+    padding: 110px;
     position: relative;
     overflow: visible;
     min-height: 440px;

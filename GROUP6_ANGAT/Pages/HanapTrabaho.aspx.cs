@@ -5,357 +5,245 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Web;
 
-namespace GROUP6_ANGAT.Pages
-{
-    public partial class HanapTrabaho : System.Web.UI.Page
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GROUP6_ANGAT.Pages {
+    public partial class HanapTrabaho : System.Web.UI.Page {
+        protected void Page_Load(object sender, EventArgs e) {
             bool isLoggedIn = Session["UserId"] != null;
             phApplyLoggedIn.Visible = isLoggedIn;
             phApplyLoggedOut.Visible = !isLoggedIn;
 
             if (!IsPostBack)
-            {
                 LoadJobs();
-            }
         }
 
-        private void LoadJobs()
-        {
+        private void LoadJobs() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT JobId, JobTitle, JobLocation, JobPay, JobTags, JobDescription, Status,
-                                                            DateLabel, IconClass, IconBg, IconColor, Barangay, Category, PostedAt
-                                                     FROM Jobs
-                                                     WHERE IsActive = 1
-                                                     ORDER BY PostedAt DESC", conn))
-            {
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    rptJobs.DataSource = reader;
-                    rptJobs.DataBind();
+
+                // Get job count
+                using (SqlCommand countCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Jobs WHERE IsActive = 1", conn)) {
+                    lblJobCount.Text = countCmd.ExecuteScalar().ToString();
+                }
+
+                // Get job listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT JobId, JobTitle, JobDescription, Category, Barangay,
+                   PayMin, PayMax, PayRate, Tags, Status, PostedAt
+            FROM Jobs
+            WHERE IsActive = 1
+            ORDER BY PostedAt DESC", conn)) {
+                    using (SqlDataReader reader = cmd.ExecuteReader()) {
+                        rptJobs.DataSource = reader;
+                        rptJobs.DataBind();
+                    }
                 }
             }
+
+            // Show empty state if no jobs
+            pnlEmpty.Visible = rptJobs.Items.Count == 0;
         }
 
-        protected string GetTagsHtml(object tagsObj, object categoryObj)
-        {
-            string tagsRaw = tagsObj == null ? string.Empty : tagsObj.ToString();
-            if (string.IsNullOrWhiteSpace(tagsRaw))
-            {
-                return string.Empty;
-            }
+        // ── Icon helpers (derived from Category) ──
+        protected string GetIconClass(object categoryObj) {
+            string cat = (categoryObj ?? "").ToString().ToLower();
+            if (cat.Contains("kasambahay")) return "bx bx-home-heart";
+            if (cat.Contains("driver")) return "bx bx-car";
+            if (cat.Contains("labandera")) return "bx bx-water";
+            if (cat.Contains("karpintero")) return "bx bx-hammer";
+            if (cat.Contains("electrician")) return "bx bx-bolt";
+            if (cat.Contains("tubero")) return "bx bx-wrench";
+            if (cat.Contains("mananahi")) return "bx bx-scissors";
+            if (cat.Contains("carinderia")) return "bx bx-restaurant";
+            if (cat.Contains("sari-sari")) return "bx bx-store-alt";
+            if (cat.Contains("bodega")) return "bx bx-package";
+            return "bx bx-briefcase";
+        }
 
-            string category = categoryObj == null ? string.Empty : categoryObj.ToString();
+        protected string GetIconBg(object categoryObj) {
+            string cat = (categoryObj ?? "").ToString().ToLower();
+            if (cat.Contains("kasambahay")) return "cat-icon-green";
+            if (cat.Contains("driver")) return "cat-icon-teal";
+            if (cat.Contains("labandera")) return "cat-icon-rose";
+            if (cat.Contains("karpintero")) return "cat-icon-amber";
+            if (cat.Contains("electrician")) return "cat-icon-blue";
+            if (cat.Contains("tubero")) return "cat-icon-blue";
+            if (cat.Contains("mananahi")) return "cat-icon-rose";
+            if (cat.Contains("carinderia")) return "cat-icon-amber";
+            if (cat.Contains("sari-sari")) return "cat-icon-purple";
+            if (cat.Contains("bodega")) return "cat-icon-blue";
+            return "cat-icon-green";
+        }
+
+        // ── Pay display ──
+        protected string GetPayDisplay(object minObj, object maxObj, object rateObj) {
+            string rate = (rateObj ?? "").ToString()
+                .Replace("per month", "buwan")
+                .Replace("per day", "araw")
+                .Replace("per hour", "oras")
+                .Replace("per job", "bawat trabaho");
+
+            if (minObj == DBNull.Value || minObj == null) return "";
+
+            decimal min = Convert.ToDecimal(minObj);
+            decimal max = maxObj == DBNull.Value || maxObj == null ? min : Convert.ToDecimal(maxObj);
+
+            string formatted = min == max
+                ? $"₱{min:N0}"
+                : $"₱{min:N0}–₱{max:N0}";
+
+            return $"{formatted} / {rate}";
+        }
+
+        // ── Date label (auto-calculated) ──
+        protected string GetDateLabel(object postedObj) {
+            if (postedObj == null || postedObj == DBNull.Value) return "";
+            if (!DateTime.TryParse(postedObj.ToString(), out DateTime posted)) return "";
+
+            var diff = DateTime.Now - posted;
+            if (diff.TotalMinutes < 60) return "Kaninang umaga";
+            if (diff.TotalHours < 24) return "Ngayon";
+            if (diff.TotalDays < 2) return "Kahapon";
+            if (diff.TotalDays < 7) return $"{(int)diff.TotalDays} araw na ang nakalipas";
+            if (diff.TotalDays < 14) return "Isang linggo na ang nakalipas";
+            return $"{(int)(diff.TotalDays / 7)} linggo na ang nakalipas";
+        }
+
+        // ── Tags HTML ──
+        protected string GetTagsHtml(object tagsObj, object categoryObj) {
+            string tagsRaw = (tagsObj ?? "").ToString();
+            if (string.IsNullOrWhiteSpace(tagsRaw)) return "";
 
             string[] tags = tagsRaw.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
 
-            for (int i = 0; i < tags.Length; i++)
-            {
-                string rawTag = tags[i].Trim();
-                string tag = HttpUtility.HtmlEncode(rawTag);
-                string css = GetTagClassForTag(rawTag, category);
-                sb.AppendFormat("<span class=\"badge {0}\">{1}</span>", css, tag);
+            foreach (string tag in tags) {
+                string t = tag.Trim();
+                string css = GetTagCss(t);
+                sb.AppendFormat("<span class=\"badge {0}\">{1}</span>", css, HttpUtility.HtmlEncode(t));
             }
-
             return sb.ToString();
         }
 
-        protected string GetTagClassForTag(string tag, string category)
-        {
-            string normalized = (tag ?? string.Empty).ToLowerInvariant();
-            if (normalized.Contains("full-time"))
-            {
-                return "tag-fulltime";
-            }
-            if (normalized.Contains("part-time"))
-            {
-                return "tag-parttime";
-            }
-            if (normalized.Contains("urgent"))
-            {
-                return "tag-urgent";
-            }
-            if (normalized.Contains("may tirahan"))
-            {
-                return "tag-housing";
-            }
-            if (normalized.Contains("may lisensya"))
-            {
-                return "tag-license";
-            }
-            if (normalized.Contains("pang-araw-araw"))
-            {
-                return "tag-daily";
-            }
-            if (normalized.Contains("pisikal"))
-            {
-                return "tag-physical";
-            }
-            if (normalized.Contains("may karanasan"))
-            {
-                return "tag-experience";
-            }
-
-            return GetTagClass(category);
-        }
-
-        protected string GetTagClass(object categoryObj)
-        {
-            string category = categoryObj == null ? string.Empty : categoryObj.ToString().ToLowerInvariant();
-            if (category.Contains("house") || category.Contains("kasambahay"))
-            {
-                return "tag-mint";
-            }
-            if (category.Contains("driver"))
-            {
-                return "tag-blue";
-            }
-            if (category.Contains("laundry"))
-            {
-                return "tag-rose";
-            }
-            if (category.Contains("store") || category.Contains("retail"))
-            {
-                return "tag-amber";
-            }
-            if (category.Contains("food") || category.Contains("kusinero") || category.Contains("carinderia"))
-            {
-                return "tag-amber";
-            }
-            if (category.Contains("warehouse") || category.Contains("bodega"))
-            {
-                return "tag-violet";
-            }
+        protected string GetTagCss(string tag) {
+            string t = (tag ?? "").ToLower();
+            if (t.Contains("full-time")) return "tag-fulltime";
+            if (t.Contains("part-time")) return "tag-parttime";
+            if (t.Contains("urgent")) return "tag-urgent";
+            if (t.Contains("pisikal")) return "tag-physical";
+            if (t.Contains("may karanasan")) return "tag-experience";
+            if (t.Contains("flexible")) return "tag-teal";
+            if (t.Contains("live-in")) return "tag-housing";
+            if (t.Contains("weekdays")) return "tag-blue";
+            if (t.Contains("weekends")) return "tag-violet";
             return "tag-teal";
         }
 
-        protected string GetSearchText(object titleObj, object locationObj, object tagsObj, object barangayObj, object categoryObj)
-        {
-            string title = titleObj == null ? "" : titleObj.ToString();
-            string location = locationObj == null ? "" : locationObj.ToString();
-            string tags = tagsObj == null ? "" : tagsObj.ToString().Replace("|", " ");
-            string barangay = barangayObj == null ? "" : barangayObj.ToString();
-            string category = categoryObj == null ? "" : categoryObj.ToString();
-            return (title + " " + location + " " + tags + " " + barangay + " " + category).Trim();
+        // ── Search text ──
+        protected string GetSearchText(object titleObj, object tagsObj, object barangayObj, object categoryObj) {
+            string title = (titleObj ?? "").ToString();
+            string tags = (tagsObj ?? "").ToString().Replace("|", " ");
+            string barangay = (barangayObj ?? "").ToString();
+            string category = (categoryObj ?? "").ToString();
+            return $"{title} {tags} {barangay} {category}".Trim();
         }
 
-        protected string GetStatusClass(object statusObj)
-        {
-            string status = statusObj == null ? "" : statusObj.ToString().ToLower();
-            if (status.Contains("busy"))
-            {
-                return "badge-rose";
-            }
-            if (status.Contains("bukas"))
-            {
-                return "badge-green";
-            }
+        // ── Status badge class ──
+        protected string GetStatusClass(object statusObj) {
+            string status = (statusObj ?? "").ToString().ToLower();
+            if (status.Contains("filled")) return "badge-rose";
+            if (status.Contains("paused")) return "badge-amber";
+            if (status.Contains("available")) return "badge-green";
             return "badge-teal";
         }
 
-        protected string GetPayDisplay(object payObj)
-        {
-            string pay = payObj == null ? "" : payObj.ToString();
-            if (string.IsNullOrWhiteSpace(pay))
-            {
-                return "";
-            }
-
-            if (pay.Contains("?"))
-            {
-                pay = pay.Replace("?", "₱");
-            }
-
-            if (!pay.Contains("₱") && !pay.StartsWith("PHP", StringComparison.OrdinalIgnoreCase))
-            {
-                pay = "₱" + pay.TrimStart();
-            }
-
-            return HttpUtility.HtmlEncode(pay);
-        }
-
-        protected string GetPaySortValue(object payObj)
-        {
-            string pay = payObj == null ? "" : payObj.ToString();
-            if (string.IsNullOrWhiteSpace(pay))
-            {
-                return "0";
-            }
-
-            // Extract the highest number found in the pay string
-            string cleaned = pay.Replace(",", "");
-            int max = 0;
-            string current = "";
-            foreach (char c in cleaned)
-            {
-                if (char.IsDigit(c))
-                {
-                    current += c;
-                }
-                else
-                {
-                    if (current.Length > 0)
-                    {
-                        if (int.TryParse(current, out int val) && val > max)
-                        {
-                            max = val;
-                        }
-                        current = "";
-                    }
-                }
-            }
-            if (current.Length > 0)
-            {
-                if (int.TryParse(current, out int val) && val > max)
-                {
-                    max = val;
-                }
-            }
-
-            return max.ToString();
-        }
-
-        protected string GetPostedValue(object postedObj)
-        {
-            if (postedObj == null)
-            {
-                return "0";
-            }
-
+        // ── Posted sort value ──
+        protected string GetPostedValue(object postedObj) {
+            if (postedObj == null || postedObj == DBNull.Value) return "0";
             if (DateTime.TryParse(postedObj.ToString(), out DateTime posted))
-            {
                 return posted.ToFileTimeUtc().ToString();
-            }
-
             return "0";
         }
 
-        protected void BtnApplyJob_Click(object sender, EventArgs e)
-        {
-            if (Session["UserId"] == null)
-            {
+        // ── Apply button ──
+        protected void BtnApplyJob_Click(object sender, EventArgs e) {
+            if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx");
                 return;
             }
 
-            if (!int.TryParse(hfJobId.Value, out int jobId))
-            {
-                pnlApplyMessage.Visible = true;
-                pnlApplyMessage.CssClass = "form-alert error";
-                lblApplyMessage.Text = "Piliin muna ang trabaho bago mag-apply.";
-                return;
-            }
-
-            string title = (hfJobTitle.Value ?? string.Empty).Trim();
-            string location = (hfJobLocation.Value ?? string.Empty).Trim();
-            string pay = (hfJobPay.Value ?? string.Empty).Trim();
-            string tags = (hfJobTags.Value ?? string.Empty).Trim();
-            string desc = (hfJobDesc.Value ?? string.Empty).Trim();
-
-            if (string.IsNullOrEmpty(title))
-            {
-                pnlApplyMessage.Visible = true;
-                pnlApplyMessage.CssClass = "form-alert error";
-                lblApplyMessage.Text = "Piliin muna ang trabaho bago mag-apply.";
+            if (!int.TryParse(hfJobId.Value, out int jobId)) {
+                ShowMessage("error", "Piliin muna ang trabaho bago mag-apply.");
                 return;
             }
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connString))
-            {
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
 
-                using (SqlCommand ownerCmd = new SqlCommand(@"SELECT PostedByUserId FROM Jobs WHERE JobId = @JobId", conn))
-                {
+                // Check if own listing
+                using (SqlCommand ownerCmd = new SqlCommand(
+                    "SELECT PostedByUserId FROM Jobs WHERE JobId = @JobId", conn)) {
                     ownerCmd.Parameters.AddWithValue("@JobId", jobId);
                     object ownerId = ownerCmd.ExecuteScalar();
-                    if (ownerId != null && ownerId != DBNull.Value && ownerId.ToString() == Session["UserId"].ToString())
-                    {
-                        pnlApplyMessage.Visible = true;
-                        pnlApplyMessage.CssClass = "form-alert error";
-                        lblApplyMessage.Text = "Hindi ka maaaring mag-apply sa sariling listing.";
+                    if (ownerId != null && ownerId != DBNull.Value &&
+                        ownerId.ToString() == Session["UserId"].ToString()) {
+                        ShowMessage("error", "Hindi ka maaaring mag-apply sa sariling listing.");
                         return;
                     }
                 }
 
-                using (SqlCommand existsCmd = new SqlCommand(@"SELECT TOP 1 ApplicationId, Status 
-                                                               FROM JobApplications 
-                                                               WHERE UserId = @UserId AND JobId = @JobId
-                                                               ORDER BY AppliedAt DESC", conn))
-                {
+                // Check existing application
+                using (SqlCommand existsCmd = new SqlCommand(@"
+                    SELECT TOP 1 ApplicationId, Status 
+                    FROM JobApplications 
+                    WHERE UserId = @UserId AND JobId = @JobId
+                    ORDER BY AppliedAt DESC", conn)) {
                     existsCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     existsCmd.Parameters.AddWithValue("@JobId", jobId);
 
-                    using (SqlDataReader reader = existsCmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            int applicationId = Convert.ToInt32(reader["ApplicationId"]);
+                    using (SqlDataReader reader = existsCmd.ExecuteReader()) {
+                        if (reader.Read()) {
                             string status = reader["Status"].ToString();
+                            int appId = Convert.ToInt32(reader["ApplicationId"]);
+                            reader.Close();
 
-                            if (string.Equals(status, "Retracted", StringComparison.OrdinalIgnoreCase))
-                            {
-                                reader.Close();
-                                using (SqlCommand updateCmd = new SqlCommand(@"UPDATE JobApplications
-                                                                             SET Status = 'Pending',
-                                                                                 AppliedAt = GETDATE(),
-                                                                                 JobTitle = @JobTitle,
-                                                                                 JobLocation = @JobLocation,
-                                                                                 JobPay = @JobPay,
-                                                                                 JobTags = @JobTags,
-                                                                                 JobDescription = @JobDescription
-                                                                             WHERE ApplicationId = @ApplicationId", conn))
-                                {
-                                    updateCmd.Parameters.AddWithValue("@JobTitle", title);
-                                    updateCmd.Parameters.AddWithValue("@JobLocation", location);
-                                    updateCmd.Parameters.AddWithValue("@JobPay", pay);
-                                    updateCmd.Parameters.AddWithValue("@JobTags", tags);
-                                    updateCmd.Parameters.AddWithValue("@JobDescription", desc);
-                                    updateCmd.Parameters.AddWithValue("@ApplicationId", applicationId);
+                            if (string.Equals(status, "Retracted", StringComparison.OrdinalIgnoreCase)) {
+                                using (SqlCommand updateCmd = new SqlCommand(@"
+                                    UPDATE JobApplications 
+                                    SET Status = 'Pending', AppliedAt = GETDATE()
+                                    WHERE ApplicationId = @AppId", conn)) {
+                                    updateCmd.Parameters.AddWithValue("@AppId", appId);
                                     updateCmd.ExecuteNonQuery();
                                 }
-
-                                pnlApplyMessage.Visible = true;
-                                pnlApplyMessage.CssClass = "form-alert success";
-                                lblApplyMessage.Text = "Na-submit ulit ang inyong application.";
-                                ClientScript.RegisterStartupScript(this.GetType(), "scrollApplyMsg", "window.location.hash='pnlApplyMessage';", true);
+                                ShowMessage("success", "Na-submit ulit ang inyong application.");
                                 return;
                             }
 
-                            pnlApplyMessage.Visible = true;
-                            pnlApplyMessage.CssClass = "form-alert error";
-                            lblApplyMessage.Text = "May active application ka na sa trabahong ito.";
+                            ShowMessage("error", "May active application ka na sa trabahong ito.");
                             return;
                         }
                     }
                 }
 
-                using (SqlCommand cmd = new SqlCommand(@"INSERT INTO JobApplications
-                                                         (UserId, JobId, JobTitle, JobLocation, JobPay, JobTags, JobDescription, Status, AppliedAt)
-                                                         VALUES (@UserId, @JobId, @JobTitle, @JobLocation, @JobPay, @JobTags, @JobDescription, 'Pending', GETDATE())", conn))
-                {
+                // Insert new application
+                using (SqlCommand cmd = new SqlCommand(@"
+                    INSERT INTO JobApplications (UserId, JobId, Status, AppliedAt)
+                    VALUES (@UserId, @JobId, 'Pending', GETDATE())", conn)) {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     cmd.Parameters.AddWithValue("@JobId", jobId);
-                    cmd.Parameters.AddWithValue("@JobTitle", title);
-                    cmd.Parameters.AddWithValue("@JobLocation", location);
-                    cmd.Parameters.AddWithValue("@JobPay", pay);
-                    cmd.Parameters.AddWithValue("@JobTags", tags);
-                    cmd.Parameters.AddWithValue("@JobDescription", desc);
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            pnlApplyMessage.Visible = true;
-            pnlApplyMessage.CssClass = "form-alert success";
-            lblApplyMessage.Text = "Na-submit ang inyong application. Makikita ito sa inyong profile status.";
+            ShowMessage("success", "Na-submit ang inyong application! Makikita ito sa inyong Profile.");
+        }
 
-            ClientScript.RegisterStartupScript(this.GetType(), "scrollApplyMsg", "window.location.hash='pnlApplyMessage';", true);
+        private void ShowMessage(string type, string message) {
+            pnlApplyMessage.Visible = true;
+            pnlApplyMessage.CssClass = $"form-alert {type}";
+            lblApplyMessage.Text = message;
         }
     }
 }

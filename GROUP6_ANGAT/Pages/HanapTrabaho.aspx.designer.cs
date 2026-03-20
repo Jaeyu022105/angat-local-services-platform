@@ -7,71 +7,126 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT.Pages
-{
+namespace GROUP6_ANGAT.Pages {
 
 
-    public partial class HanapTrabaho
-    {
-        
+    public partial class HanapTrabaho {
+
         /// <summary>
-        /// phApplyLoggedIn control.
+        /// lblJobCount control.
         /// </summary>
-        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedIn;
-        
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblJobCount;
+
         /// <summary>
-        /// phApplyLoggedOut control.
+        /// phPostJobBtn control.
         /// </summary>
-        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedOut;
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder phPostJobBtn;
 
         /// <summary>
         /// pnlApplyMessage control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlApplyMessage;
 
         /// <summary>
         /// lblApplyMessage control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblApplyMessage;
-
-        /// <summary>
-        /// btnApplyJob control.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.Button btnApplyJob;
 
         /// <summary>
         /// rptJobs control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptJobs;
+
+        /// <summary>
+        /// pnlEmpty control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlEmpty;
+
+        /// <summary>
+        /// phApplyLoggedIn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedIn;
+
+        /// <summary>
+        /// btnApplyJob control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnApplyJob;
+
+        /// <summary>
+        /// phApplyLoggedOut control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedOut;
 
         /// <summary>
         /// hfJobId control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfJobId;
 
         /// <summary>
         /// hfJobTitle control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfJobTitle;
-
-        /// <summary>
-        /// hfJobLocation control.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.HiddenField hfJobLocation;
-
-        /// <summary>
-        /// hfJobPay control.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.HiddenField hfJobPay;
 
         /// <summary>
         /// hfJobTags control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfJobTags;
 
         /// <summary>
         /// hfJobDesc control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfJobDesc;
     }
 }

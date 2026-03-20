@@ -1,7 +1,8 @@
 ﻿<%@ Page Title="Hanap Trabaho" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="HanapTrabaho.aspx.cs" Inherits="GROUP6_ANGAT.Pages.HanapTrabaho" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    
+
+    <%-- PAGE HERO --%>
     <div id="page-hero">
         <div class="hero-circles">
             <div class="c1"></div>
@@ -11,7 +12,8 @@
             <span class="hero-badge"><i class='bx bx-briefcase'></i> Job Board</span>
             <h2>Hanap <strong>Trabaho</strong></h2>
             <p class="hero-desc">
-                Tingnan ang mga bakanteng posisyon mula sa mga employer at negosyante dito sa Biñan. Mag-apply nang direkta at magsimulang kumita.
+                Tingnan ang mga bakanteng posisyon mula sa mga employer sa Biñan.
+                Mag-apply nang direkta at magsimulang kumita.
             </p>
         </div>
         <div class="wave">
@@ -21,30 +23,32 @@
         </div>
     </div>
 
+    <%-- QUICK STATS --%>
     <div class="page-quick">
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-briefcase'></i></div>
             <div>
-                <h5>120+ Jobs</h5>
-                <p>Pinakabagong opportunities sa bawat barangay.</p>
+                <h5><asp:Label ID="lblJobCount" runat="server" Text="0" /> Trabaho</h5>
+                <p>Available na ngayon sa Biñan.</p>
             </div>
         </div>
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-check-circle'></i></div>
             <div>
                 <h5>Madaling Apply</h5>
-                <p>Diretsong contact at mabilis na process.</p>
+                <p>Isang click lang para mag-apply.</p>
             </div>
         </div>
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-refresh'></i></div>
             <div>
                 <h5>Regular Updates</h5>
-                <p>Updated listings linggo-linggo.</p>
+                <p>Bagong listings araw-araw.</p>
             </div>
         </div>
     </div>
 
+    <%-- SEARCH BAR --%>
     <div id="search-bar" style="margin-top: 24px;">
         <div class="search-box">
             <div class="search-field">
@@ -55,77 +59,115 @@
                 <span class="s-icon"><i class='bx bx-map'></i></span>
                 <select id="htLocation">
                     <option value="All">Kahit Saan (Biñan)</option>
-                    <option value="Dela Paz">Brgy. Dela Paz</option>
-                    <option value="Canlalay">Brgy. Canlalay</option>
-                    <option value="Platero">Brgy. Platero</option>
-                    <option value="San Antonio">Brgy. San Antonio</option>
+                    <option value="Biñan">Biñan (Poblacion)</option>
+                    <option value="Bungahan">Bungahan</option>
+                    <option value="Canlalay">Canlalay</option>
+                    <option value="Casile">Casile</option>
+                    <option value="De La Paz">De La Paz</option>
+                    <option value="Ganado">Ganado</option>
+                    <option value="Langkiwa">Langkiwa</option>
+                    <option value="Loma">Loma</option>
+                    <option value="Malaban">Malaban</option>
+                    <option value="Malamig">Malamig</option>
+                    <option value="Mampalasan">Mampalasan</option>
+                    <option value="Mapagong">Mapagong</option>
+                    <option value="Masile">Masile</option>
+                    <option value="Maysilo">Maysilo</option>
+                    <option value="Munting Ilog">Munting Ilog</option>
+                    <option value="New Biñan">New Biñan</option>
+                    <option value="Platero">Platero</option>
+                    <option value="San Antonio">San Antonio</option>
+                    <option value="San Francisco">San Francisco</option>
+                    <option value="San Jose">San Jose</option>
+                    <option value="San Vicente">San Vicente</option>
+                    <option value="Santo Domingo">Santo Domingo</option>
+                    <option value="Santo Tomas">Santo Tomas</option>
+                    <option value="Soro-soro Ibaba">Soro-soro Ibaba</option>
+                    <option value="Soro-soro Ilaya">Soro-soro Ilaya</option>
+                    <option value="Timbao">Timbao</option>
+                    <option value="Tubigan">Tubigan</option>
+                    <option value="Zapote">Zapote</option>
                 </select>
             </div>
             <button id="htFilterBtn" class="search-btn" type="button">Maghanap</button>
         </div>
     </div>
 
+    <%-- LISTINGS SECTION --%>
     <div class="section section-light" style="padding-top: 40px;">
-        <div class="section-header left" style="display: flex; justify-content: space-between; align-items: flex-end;">
+
+        <div class="section-header left" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
             <div>
                 <h3>Mga Bakanteng <span>Trabaho</span></h3>
-                <p class="section-sub">Mayroong 120+ na available na trabaho ngayon.</p>
+                <p class="section-sub">Pinakabagong mga trabaho mula sa ating lungsod.</p>
             </div>
-            <div style="display:flex; gap: 10px; align-items: center;">
-                <a runat="server" href="~/Pages/PostJob.aspx" class="btn-outline" style="padding: 8px 16px;">
-                    <i class='bx bx-plus'></i> I-post ang Trabaho
-                </a>
-                <select id="htSort" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; outline:none; font-family: inherit;">
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <asp:PlaceHolder ID="phPostJobBtn" runat="server">
+                    <a runat="server" href="~/Pages/PostJob.aspx" class="btn-outline" style="padding:8px 16px;">
+                        <i class='bx bx-plus'></i> I-post ang Trabaho
+                    </a>
+                </asp:PlaceHolder>
+                <select id="htSort" style="padding:8px 16px; border-radius:8px; border:1px solid var(--border); outline:none; font-family:inherit; font-size:0.88rem;">
                     <option value="newest">Pinakabago</option>
                     <option value="pay">Pinakamataas na Sahod</option>
                 </select>
             </div>
         </div>
 
+        <%-- Alert message --%>
         <asp:Panel ID="pnlApplyMessage" runat="server" CssClass="form-alert" Visible="false" ClientIDMode="Static">
             <asp:Label ID="lblApplyMessage" runat="server" />
         </asp:Panel>
-        
+
+        <%-- Job cards --%>
         <div id="htListings" class="listings-grid">
             <asp:Repeater ID="rptJobs" runat="server">
                 <ItemTemplate>
                     <button type="button" class="listing-card listing-card-button"
                         data-jobid='<%# Eval("JobId") %>'
                         data-location='<%# Eval("Barangay") %>'
-                        data-search='<%# GetSearchText(Eval("JobTitle"), Eval("JobLocation"), Eval("JobTags"), Eval("Barangay"), Eval("Category")) %>'
+                        data-search='<%# GetSearchText(Eval("JobTitle"), Eval("Tags"), Eval("Barangay"), Eval("Category")) %>'
                         data-title='<%# Eval("JobTitle") %>'
-                        data-pay='<%# GetPayDisplay(Eval("JobPay")) %>'
-                        data-pay-amount='<%# GetPaySortValue(Eval("JobPay")) %>'
+                        data-pay='<%# GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %>'
+                        data-pay-amount='<%# Eval("PayMax") ?? Eval("PayMin") ?? 0 %>'
                         data-posted='<%# GetPostedValue(Eval("PostedAt")) %>'
-                        data-tags='<%# Eval("JobTags") %>'
+                        data-tags='<%# Eval("Tags") %>'
                         data-status='<%# Eval("Status") %>'
-                        data-date='<%# Eval("DateLabel") %>'
+                        data-date='<%# GetDateLabel(Eval("PostedAt")) %>'
                         data-desc='<%# Eval("JobDescription") %>'>
                         <div class="listing-top">
-                            <div class="listing-icon" data-icon-color='<%# Eval("IconColor") %>' data-icon-bg='<%# Eval("IconBg") %>'>
-                                <i class='<%# Eval("IconClass") %>'></i>
+                            <div class="listing-icon <%# GetIconBg(Eval("Category")) %>">
+                                <i class='<%# GetIconClass(Eval("Category")) %>'></i>
                             </div>
                             <span class='badge <%# GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>
                         <h4><%# Eval("JobTitle") %></h4>
-                        <p class="listing-company"><i class='bx bx-map'></i> <%# Eval("JobLocation") %></p>
+                        <p class="listing-company">
+                            <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                        </p>
                         <div class="listing-tags">
-                            <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GetTagsHtml(Eval("JobTags"), Eval("Category")) %>' />
+                            <asp:Literal ID="litTags" runat="server" Mode="PassThrough"
+                                Text='<%# GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
                         </div>
                         <div class="listing-footer">
-                            <span class="listing-pay"><%# GetPayDisplay(Eval("JobPay")) %></span>
-                            <span class="listing-date"><%# Eval("DateLabel") %></span>
+                            <span class="listing-pay"><%# GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                            <span class="listing-date"><%# GetDateLabel(Eval("PostedAt")) %></span>
                         </div>
                     </button>
                 </ItemTemplate>
             </asp:Repeater>
         </div>
-        
-        <div style="text-align:center; margin-top: 40px;">
-            <button class="btn-outline js-coming-soon" data-msg="Wala pang dagdag na trabaho ngayon.">Mag-load ng iba pang trabaho <i class='bx bx-chevron-down'></i></button>
-        </div>
+
+        <%-- Empty state --%>
+        <asp:Panel ID="pnlEmpty" runat="server" Visible="false" CssClass="empty-state">
+            <i class='bx bx-briefcase-alt'></i>
+            <h4>Walang trabaho sa ngayon</h4>
+            <p>Subukan ulit mamaya o mag-post ng trabaho.</p>
+        </asp:Panel>
+
     </div>
 
+    <%-- JOB MODAL --%>
     <div id="jobModal" class="job-modal">
         <div class="job-modal-backdrop"></div>
         <div class="job-modal-card">
@@ -136,6 +178,7 @@
             </div>
             <h4 id="jobTitle"></h4>
             <p id="jobLocation" class="job-location"></p>
+            <div id="jobPay" class="job-pay"></div>
             <div id="jobTags" class="job-tags"></div>
             <p id="jobDesc" class="job-desc"></p>
             <div class="job-modal-actions">
@@ -143,116 +186,92 @@
                     <asp:Button ID="btnApplyJob" runat="server" Text="Mag-apply" CssClass="btn-green" OnClick="BtnApplyJob_Click" />
                 </asp:PlaceHolder>
                 <asp:PlaceHolder ID="phApplyLoggedOut" runat="server" Visible="false">
-                    <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx" class="btn-green">Mag-login para mag-apply</a>
+                    <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx" class="btn-green">
+                        Mag-login para mag-apply
+                    </a>
                 </asp:PlaceHolder>
                 <button type="button" class="btn-outline job-modal-close">Isara</button>
             </div>
         </div>
     </div>
 
+    <%-- Hidden fields for apply --%>
     <asp:HiddenField ID="hfJobId" runat="server" />
     <asp:HiddenField ID="hfJobTitle" runat="server" />
-    <asp:HiddenField ID="hfJobLocation" runat="server" />
-    <asp:HiddenField ID="hfJobPay" runat="server" />
     <asp:HiddenField ID="hfJobTags" runat="server" />
     <asp:HiddenField ID="hfJobDesc" runat="server" />
 
     <script>
+        // ── FILTER & SORT ──
         (function () {
-            const searchInput = document.getElementById('htSearch');
+            const searchInput   = document.getElementById('htSearch');
             const locationSelect = document.getElementById('htLocation');
-            const filterBtn = document.getElementById('htFilterBtn');
-            const sortSelect = document.getElementById('htSort');
-            const cards = Array.from(document.querySelectorAll('#htListings .listing-card'));
-            const listingWrap = document.getElementById('htListings');
-            const icons = Array.from(document.querySelectorAll('#htListings .listing-icon'));
-
-            icons.forEach(icon => {
-                const color = icon.dataset.iconColor;
-                const bg = icon.dataset.iconBg;
-                if (color) {
-                    icon.style.color = color;
-                }
-                if (bg) {
-                    icon.style.background = bg;
-                }
-            });
+            const filterBtn     = document.getElementById('htFilterBtn');
+            const sortSelect    = document.getElementById('htSort');
+            const listingWrap   = document.getElementById('htListings');
+            const cards         = Array.from(listingWrap.querySelectorAll('.listing-card'));
 
             function applyFilter() {
-                const q = (searchInput.value || '').toLowerCase();
+                const q   = searchInput.value.toLowerCase().trim();
                 const loc = locationSelect.value;
 
-                cards.forEach(card => {
-                    const text = (card.dataset.search || '').toLowerCase();
-                    const location = card.dataset.location || '';
-                    const matchQ = !q || text.includes(q);
-                    const matchLoc = loc === 'All' || location === loc || (loc === 'All' && location === 'Biñan');
+                cards.forEach(function (card) {
+                    const text     = (card.dataset.search || '').toLowerCase();
+                    const barangay = card.dataset.location || '';
+                    const matchQ   = !q || text.includes(q);
+                    const matchLoc = loc === 'All' || barangay === loc;
                     card.style.display = (matchQ && matchLoc) ? '' : 'none';
                 });
             }
 
             function applySort() {
-                const mode = sortSelect.value;
-                const sorted = cards.slice().sort((a, b) => {
+                const mode   = sortSelect.value;
+                const sorted = cards.slice().sort(function (a, b) {
                     if (mode === 'pay') {
-                        const payA = parseFloat(a.dataset.payAmount || '0');
-                        const payB = parseFloat(b.dataset.payAmount || '0');
-                        return payB - payA;
+                        return parseFloat(b.dataset.payAmount || 0) - parseFloat(a.dataset.payAmount || 0);
                     }
-                    const postA = parseFloat(a.dataset.posted || '0');
-                    const postB = parseFloat(b.dataset.posted || '0');
-                    return postB - postA;
+                    return parseFloat(b.dataset.posted || 0) - parseFloat(a.dataset.posted || 0);
                 });
-
-                sorted.forEach(card => listingWrap.appendChild(card));
+                sorted.forEach(function (card) { listingWrap.appendChild(card); });
             }
 
             filterBtn.addEventListener('click', applyFilter);
             searchInput.addEventListener('keyup', applyFilter);
             locationSelect.addEventListener('change', applyFilter);
-            sortSelect.addEventListener('change', () => {
-                applySort();
-                applyFilter();
-            });
+            sortSelect.addEventListener('change', function () { applySort(); applyFilter(); });
         })();
 
+        // ── MODAL ──
         (function () {
-            const modal = document.getElementById('jobModal');
-            const modalBackdrop = modal.querySelector('.job-modal-backdrop');
-            const closeButtons = modal.querySelectorAll('.job-modal-close');
-            const jobTitle = document.getElementById('jobTitle');
-            const jobLocation = document.getElementById('jobLocation');
-            const jobStatus = document.getElementById('jobStatus');
-            const jobDate = document.getElementById('jobDate');
-            const jobTags = document.getElementById('jobTags');
-            const jobDesc = document.getElementById('jobDesc');
-            const hfJobId = document.getElementById('<%= hfJobId.ClientID %>');
-            const hfJobTitle = document.getElementById('<%= hfJobTitle.ClientID %>');
-            const hfJobLocation = document.getElementById('<%= hfJobLocation.ClientID %>');
-            const hfJobPay = document.getElementById('<%= hfJobPay.ClientID %>');
-            const hfJobTags = document.getElementById('<%= hfJobTags.ClientID %>');
-            const hfJobDesc = document.getElementById('<%= hfJobDesc.ClientID %>');
+            const modal       = document.getElementById('jobModal');
+            const backdrop    = modal.querySelector('.job-modal-backdrop');
+            const closeBtns   = modal.querySelectorAll('.job-modal-close');
+            const hfJobId     = document.getElementById('<%= hfJobId.ClientID %>');
+            const hfJobTitle  = document.getElementById('<%= hfJobTitle.ClientID %>');
+            const hfJobTags   = document.getElementById('<%= hfJobTags.ClientID %>');
+            const hfJobDesc   = document.getElementById('<%= hfJobDesc.ClientID %>');
 
             function openModal(card) {
-                jobTitle.textContent = card.dataset.title || '';
-                jobLocation.textContent = card.querySelector('.listing-company') ? card.querySelector('.listing-company').innerText : '';
-                jobStatus.textContent = card.dataset.status || '';
-                jobDate.textContent = card.dataset.date || '';
-                jobDesc.textContent = card.dataset.desc || '';
+                modal.querySelector('#jobTitle').textContent = card.dataset.title || '';
+                modal.querySelector('#jobStatus').textContent = card.dataset.status || '';
+                modal.querySelector('#jobDate').textContent = card.dataset.date || '';
+                modal.querySelector('#jobDesc').textContent = card.dataset.desc || '';
+                modal.querySelector('#jobLocation').textContent = 'Brgy. ' + (card.dataset.location || '') + ', Biñan';
+                modal.querySelector('#jobPay').textContent = card.dataset.pay || '';
 
-                jobTags.innerHTML = '';
-                const tags = (card.dataset.tags || '').split('|').filter(Boolean);
-                tags.forEach(tag => {
+                // Render tags
+                const tagsEl = modal.querySelector('#jobTags');
+                tagsEl.innerHTML = '';
+                (card.dataset.tags || '').split('|').filter(Boolean).forEach(function (tag) {
                     const span = document.createElement('span');
                     span.className = 'badge badge-teal';
-                    span.textContent = tag;
-                    jobTags.appendChild(span);
+                    span.textContent = tag.trim();
+                    tagsEl.appendChild(span);
                 });
 
+                // Set hidden fields
                 hfJobId.value = card.dataset.jobid || '';
                 hfJobTitle.value = card.dataset.title || '';
-                hfJobLocation.value = jobLocation.textContent || '';
-                hfJobPay.value = card.dataset.pay || '';
                 hfJobTags.value = (card.dataset.tags || '').replace(/\|/g, ', ');
                 hfJobDesc.value = card.dataset.desc || '';
 
@@ -265,17 +284,16 @@
                 document.body.style.overflow = '';
             }
 
-            document.querySelectorAll('#htListings .listing-card-button').forEach(card => {
-                card.addEventListener('click', () => openModal(card));
+            document.querySelectorAll('#htListings .listing-card-button').forEach(function (card) {
+                card.addEventListener('click', function () { openModal(card); });
             });
 
-            closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
-            modalBackdrop.addEventListener('click', closeModal);
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('open')) {
-                    closeModal();
-                }
+            closeBtns.forEach(function (btn) { btn.addEventListener('click', closeModal); });
+            backdrop.addEventListener('click', closeModal);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
             });
         })();
     </script>
+
 </asp:Content>
