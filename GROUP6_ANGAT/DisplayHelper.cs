@@ -20,7 +20,7 @@ namespace GROUP6_ANGAT
             foreach (string tag in tags)
             {
                 string t = tag.Trim();
-                if (string.IsNullOrEmpty(t)) continue;
+                if (string.IsNullOrEmpty(t)) continue;  
 
                 string css = GetTagCss(t, categoryObj?.ToString());
                 sb.AppendFormat("<span class=\"badge {0}\">{1}</span> ", css, HttpUtility.HtmlEncode(t));

@@ -45,7 +45,6 @@
             </div>
 
             <div class="login-spotlight">
-                <span class="spotlight-badge"><i class='bx bx-shield-quarter'></i> ANGAT Access</span>
                 <h4>Kasama ka sa Komunidad</h4>
                 <p>
                     Ang login ay nagbibigay ng mabilis na access sa inyong mga saved listings,

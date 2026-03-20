@@ -187,6 +187,30 @@
                 alert(msg);
             });
         });
+
+        // ── SET LISTING ICONS FROM CATEGORY ──
+        document.querySelectorAll('.listing-icon[data-category]').forEach(function (el) {
+            var map = {
+                'kasambahay': 'bx bx-brush',
+                'driver': 'bx bx-car',
+                'labandera': 'bx bx-basket',
+                'karpintero': 'bx bx-hammer',
+                'electrician': 'bx bx-bolt-circle',
+                'tubero': 'bx bx-droplet',
+                'mananahi': 'bx bx-cut',
+                'carinderia': 'bx bx-dish',
+                'sari-sari': 'bx bx-store-alt',
+                'bodega': 'bx bx-box',
+                'aircon': 'bx bx-wind'
+            };
+            var cat = (el.dataset.category || '').toLowerCase();
+            var icon = 'bx bx-briefcase';
+            Object.keys(map).forEach(function (k) {
+                if (cat.includes(k)) icon = map[k];
+            });
+            var i = el.querySelector('i');
+            if (i) i.className = icon;
+        });
     </script>
 </body>
 </html>
