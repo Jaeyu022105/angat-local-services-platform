@@ -913,35 +913,89 @@ button.listing-card {
         content: "\eafc"; /* Default: briefcase */
     }
 
-    .listing-icon[data-category*="kasambahay" i] { background: #bbf7d0 !important; }
-    .listing-icon[data-category*="kasambahay" i] i::before { content: "\ee72"; }
+    /* Kasambahay / Cleaning -> Broom */
+    .listing-icon[data-category*="kasambahay" i], 
+    .listing-icon[data-category*="linis" i],
+    .listing-icon[data-category*="cleaning" i] { background: #bbf7d0 !important; }
+    .listing-icon[data-category*="kasambahay" i] i::before,
+    .listing-icon[data-category*="linis" i] i::before,
+    .listing-icon[data-category*="cleaning" i] i::before { content: "\eb6a"; }
 
-    .listing-icon[data-category*="driver" i] { background: #99f6e4 !important; }
-    .listing-icon[data-category*="driver" i] i::before { content: "\eb1a"; }
+    /* Driver / Delivery -> Car */
+    .listing-icon[data-category*="driver" i],
+    .listing-icon[data-category*="delivery" i],
+    .listing-icon[data-category*="transport" i] { background: #99f6e4 !important; }
+    .listing-icon[data-category*="driver" i] i::before,
+    .listing-icon[data-category*="delivery" i] i::before,
+    .listing-icon[data-category*="transport" i] i::before { content: "\e99e"; }
 
-    .listing-icon[data-category*="labandera" i] { background: #fecdd3 !important; }
-    .listing-icon[data-category*="labandera" i] i::before { content: "\ef43"; }
+    /* Labandera / Clothes -> Closet/Hanger */
+    .listing-icon[data-category*="labandera" i],
+    .listing-icon[data-category*="laundry" i],
+    .listing-icon[data-category*="damit" i] { background: #fecdd3 !important; }
+    .listing-icon[data-category*="labandera" i] i::before,
+    .listing-icon[data-category*="laundry" i] i::before,
+    .listing-icon[data-category*="damit" i] i::before { content: "\eb91"; }
 
-    .listing-icon[data-category*="karpintero" i] { background: #fde68a !important; }
-    .listing-icon[data-category*="karpintero" i] i::before { content: "\ec66"; }
+    /* Karpintero / Construction -> Hammer */
+    .listing-icon[data-category*="karpintero" i],
+    .listing-icon[data-category*="carpentry" i],
+    .listing-icon[data-category*="construction" i] { background: #fde68a !important; }
+    .listing-icon[data-category*="karpintero" i] i::before,
+    .listing-icon[data-category*="carpentry" i] i::before,
+    .listing-icon[data-category*="construction" i] i::before { content: "\eb9d"; }
 
-    .listing-icon[data-category*="electrician" i] { background: #bfdbfe !important; }
-    .listing-icon[data-category*="electrician" i] i::before { content: "\eade"; }
+    /* Electrician -> Lightning/Bolt */
+    .listing-icon[data-category*="electrician" i],
+    .listing-icon[data-category*="kuryente" i],
+    .listing-icon[data-category*="electrical" i] { background: #bfdbfe !important; }
+    .listing-icon[data-category*="electrician" i] i::before,
+    .listing-icon[data-category*="kuryente" i] i::before,
+    .listing-icon[data-category*="electrical" i] i::before { content: "\e99b"; }
 
-    .listing-icon[data-category*="tubero" i] { background: #bfdbfe !important; }
-    .listing-icon[data-category*="tubero" i] i::before { content: "\ef51"; }
+    /* Tubero / Plumbing -> Droplet */
+    .listing-icon[data-category*="tubero" i],
+    .listing-icon[data-category*="plumbing" i],
+    .listing-icon[data-category*="water" i] { background: #bfdbfe !important; }
+    .listing-icon[data-category*="tubero" i] i::before,
+    .listing-icon[data-category*="plumbing" i] i::before,
+    .listing-icon[data-category*="water" i] i::before { content: "\e9f1"; }
 
-    .listing-icon[data-category*="mananahi" i] { background: #fecdd3 !important; }
-    .listing-icon[data-category*="mananahi" i] i::before { content: "\ed9b"; }
+    /* Mananahi / Tailoring -> Needle */
+    .listing-icon[data-category*="mananahi" i],
+    .listing-icon[data-category*="tailor" i],
+    .listing-icon[data-category*="sewing" i] { background: #fecdd3 !important; }
+    .listing-icon[data-category*="mananahi" i] i::before,
+    .listing-icon[data-category*="tailor" i] i::before,
+    .listing-icon[data-category*="sewing" i] i::before { content: "\ec01"; }
 
-    .listing-icon[data-category*="carinderia" i] { background: #fde68a !important; }
-    .listing-icon[data-category*="carinderia" i] i::before { content: "\ed83"; }
+    /* Carinderia / Food -> Dish */
+    .listing-icon[data-category*="carinderia" i],
+    .listing-icon[data-category*="pagkain" i],
+    .listing-icon[data-category*="food" i],
+    .listing-icon[data-category*="restaurant" i] { background: #fde68a !important; }
+    .listing-icon[data-category*="carinderia" i] i::before,
+    .listing-icon[data-category*="pagkain" i] i::before,
+    .listing-icon[data-category*="food" i] i::before,
+    .listing-icon[data-category*="restaurant" i] i::before { content: "\e9e4"; }
 
-    .listing-icon[data-category*="sari-sari" i] { background: #ddd6fe !important; }
-    .listing-icon[data-category*="sari-sari" i] i::before { content: "\ede4"; }
+    /* Sari-sari / Store -> Store */
+    .listing-icon[data-category*="sari-sari" i],
+    .listing-icon[data-category*="tindahan" i],
+    .listing-icon[data-category*="store" i] { background: #ddd6fe !important; }
+    .listing-icon[data-category*="sari-sari" i] i::before,
+    .listing-icon[data-category*="tindahan" i] i::before,
+    .listing-icon[data-category*="store" i] i::before { content: "\ea9e"; }
 
-    .listing-icon[data-category*="bodega" i] { background: #bfdbfe !important; }
-    .listing-icon[data-category*="bodega" i] i::before { content: "\ed1d"; }
+    /* Bodega / Warehouse -> Box */
+    .listing-icon[data-category*="bodega" i],
+    .listing-icon[data-category*="warehouse" i],
+    .listing-icon[data-category*="box" i],
+    .listing-icon[data-category*="stock" i] { background: #bfdbfe !important; }
+    .listing-icon[data-category*="bodega" i] i::before,
+    .listing-icon[data-category*="warehouse" i] i::before,
+    .listing-icon[data-category*="box" i] i::before,
+    .listing-icon[data-category*="stock" i] i::before { content: "\e99f"; }
 
     .listing-card h4 {
         font-weight: 700;
