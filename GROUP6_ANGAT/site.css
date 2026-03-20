@@ -1820,6 +1820,41 @@ button.listing-card {
             padding: 4px 14px;
             border-radius: 20px;
         }
+/* Required / Optional labels */
+.required {
+    color: #dc2626;
+    font-size: 0.8rem;
+}
+
+.optional {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+/* Field hint */
+.field-hint {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* Login helper messages */
+.login-helper {
+    display: block;
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
+}
+
+    .login-helper.error {
+        color: #dc2626;
+    }
+
+    .login-helper.success {
+        color: var(--primary);
+    }
 
 /* ==========================================
    RESPONSIVE
