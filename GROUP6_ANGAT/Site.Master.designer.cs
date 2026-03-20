@@ -33,60 +33,6 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.PlaceHolder phLoggedIn;
 
         /// <summary>
-        /// phUnreadBadge control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder phUnreadBadge;
-
-        /// <summary>
-        /// lblUnread control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUnread;
-
-        /// <summary>
-        /// lblNotificationSummary control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNotificationSummary;
-
-        /// <summary>
-        /// btnMarkAllNotifRead control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnMarkAllNotifRead;
-
-        /// <summary>
-        /// pnlNoNotifications control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNoNotifications;
-
-        /// <summary>
-        /// rptNotifications control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptNotifications;
-
-        /// <summary>
         /// lblNavUser control.
         /// </summary>
         /// <remarks>

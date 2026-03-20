@@ -101,16 +101,7 @@ namespace GROUP6_ANGAT.Pages {
                                     updateCmd.ExecuteNonQuery();
 
                                     //for notifs
-                                    if (ownerUserId > 0) {
-                                        string applicantName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
-                                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
-                                            conn,
-                                            ownerUserId,
-                                            "Bagong job application",
-                                            string.Format("{0} applied to your job: {1}.", applicantName, title),
-                                            "job_application_new",
-                                            "~/Pages/Profile.aspx");
-                                    }
+                                   
                                 }
                                 ShowMessage("success", "Na-submit ulit ang inyong application.");
                                 return;
@@ -131,16 +122,7 @@ namespace GROUP6_ANGAT.Pages {
                     cmd.ExecuteNonQuery();
 
                     //for notifs
-                    if (ownerUserId > 0) {
-                        string applicantName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
-                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
-                            conn,
-                            ownerUserId,
-                            "Bagong job application",
-                            string.Format("{0} applied to your job: {1}.", applicantName, title),
-                            "job_application_new",
-                            "~/Pages/Profile.aspx");
-                    }
+                   
                 }
             }
 

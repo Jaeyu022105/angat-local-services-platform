@@ -135,18 +135,7 @@ namespace GROUP6_ANGAT.Pages
                                     updateCmd.ExecuteNonQuery();
 
                                     //for notifs
-                                    if (ownerUserId > 0)
-                                    {
-                                        string requesterName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
-
-                                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
-                                            conn,
-                                            ownerUserId,
-                                            "Bagong service request",
-                                            string.Format("{0} requested your service: {1}.", requesterName, title),
-                                            "service_request_new",
-                                            "~/Pages/Profile.aspx");
-                                    }
+                                   
                                 }
 
                                 pnlServiceApplyMessage.Visible = true;
@@ -178,18 +167,7 @@ namespace GROUP6_ANGAT.Pages
                     cmd.ExecuteNonQuery();
 
                     //for notifs
-                    if (ownerUserId > 0)
-                    {
-                        string requesterName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
-
-                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
-                            conn,
-                            ownerUserId,
-                            "Bagong service request",
-                            string.Format("{0} requested your service: {1}.", requesterName, title),
-                            "service_request_new",
-                            "~/Pages/Profile.aspx");
-                    }
+                    
                 }
             }
 
