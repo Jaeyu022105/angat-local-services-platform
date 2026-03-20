@@ -257,19 +257,27 @@ namespace GROUP6_ANGAT.Pages
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
+                int ownerUserId = 0;
 
                 using (SqlCommand ownerCmd = new SqlCommand(@"SELECT PostedByUserId FROM Services WHERE ServiceId = @ServiceId", conn))
                 {
                     ownerCmd.Parameters.AddWithValue("@ServiceId", serviceId);
                     object ownerId = ownerCmd.ExecuteScalar();
-                    if (ownerId != null && ownerId != DBNull.Value && ownerId.ToString() == Session["UserId"].ToString())
+
+                    if (ownerId != null && ownerId != DBNull.Value)
                     {
-                        pnlServiceApplyMessage.Visible = true;
-                        pnlServiceApplyMessage.CssClass = "form-alert error";
-                        lblServiceApplyMessage.Text = "Hindi ka maaaring mag-request sa sariling listing.";
-                        return;
+                        int.TryParse(ownerId.ToString(), out ownerUserId);
+
+                        if (ownerUserId == Convert.ToInt32(Session["UserId"]))
+                        {
+                            pnlServiceApplyMessage.Visible = true;
+                            pnlServiceApplyMessage.CssClass = "form-alert error";
+                            lblServiceApplyMessage.Text = "Hindi ka maaaring mag-request sa sariling listing.";
+                            return;
+                        }
                     }
                 }
+
 
                 using (SqlCommand existsCmd = new SqlCommand(@"SELECT TOP 1 RequestId, Status 
                                                                FROM ServiceRequests 
@@ -306,6 +314,20 @@ namespace GROUP6_ANGAT.Pages
                                     updateCmd.Parameters.AddWithValue("@ServiceDescription", desc);
                                     updateCmd.Parameters.AddWithValue("@RequestId", requestId);
                                     updateCmd.ExecuteNonQuery();
+
+                                    //for notifs
+                                    if (ownerUserId > 0)
+                                    {
+                                        string requesterName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
+
+                                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                                            conn,
+                                            ownerUserId,
+                                            "Bagong service request",
+                                            string.Format("{0} requested your service: {1}.", requesterName, title),
+                                            "service_request_new",
+                                            "~/Pages/Profile.aspx");
+                                    }
                                 }
 
                                 pnlServiceApplyMessage.Visible = true;
@@ -335,6 +357,20 @@ namespace GROUP6_ANGAT.Pages
                     cmd.Parameters.AddWithValue("@ServiceTags", tags);
                     cmd.Parameters.AddWithValue("@ServiceDescription", desc);
                     cmd.ExecuteNonQuery();
+
+                    //for notifs
+                    if (ownerUserId > 0)
+                    {
+                        string requesterName = Session["UserName"] == null ? "May user" : Session["UserName"].ToString();
+
+                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                            conn,
+                            ownerUserId,
+                            "Bagong service request",
+                            string.Format("{0} requested your service: {1}.", requesterName, title),
+                            "service_request_new",
+                            "~/Pages/Profile.aspx");
+                    }
                 }
             }
 

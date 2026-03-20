@@ -184,6 +184,29 @@ ALTER TABLE [dbo].[ServiceRequests] WITH CHECK ADD CONSTRAINT [FK_ServiceRequest
 GO
 
 -- =============================================
+-- NOTIFICATIONS TABLE	
+-- =============================================
+CREATE TABLE [dbo].[Notifications](
+	[NotificationId] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[Message] [nvarchar](50) NOT NULL,
+	[TargetUrl] [nvarchar](260) NULL,
+	[IsRead] [bit] NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+	PRIMARY KEY CLUSTERED ([NotificationId] ASC)
+	) 
+	GO
+	ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_IsRead] DEFAULT ((0)) FOR [IsRead]
+	GO
+	ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_CreatedAt] DEFAULT (getdate()) FOR [CreatedAt]
+	GO
+	CREATE NONCLUSTERED INDEX [IX_Notifications_UserId] ON [dbo].[Notifications] ([UserId] ASC, [IsRead] ASC, [CreatedAt] DESC)
+	GO
+	ALTER TABLE [dbo].[Notifications] WITH CHECK ADD CONSTRAINT [FK_Notifications_Users] FOREIGN KEY([UserId]) REFERENCES [dbo].[Users] ([UserId])
+	GO
+
+-- =============================================
 -- SAMPLE DATA
 -- =============================================
 SET IDENTITY_INSERT [dbo].[Users] ON
