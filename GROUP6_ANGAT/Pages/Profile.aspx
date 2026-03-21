@@ -1,4 +1,4 @@
-<%@ Page Title="Profile" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Profile.aspx.cs" Inherits="GROUP6_ANGAT.Profile" %>
+<%@ Page Title="Profile" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Profile.aspx.cs" Inherits="GROUP6_ANGAT.Profile" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -248,7 +248,8 @@
                                 <asp:LinkButton ID="btnDeleteListing" runat="server"
                                     CssClass="btn-outline app-retract"
                                     CommandName="DeleteListing"
-                                    CommandArgument='<%# Eval("JobId") %>'>
+                                    CommandArgument='<%# Eval("JobId") %>'
+                                    UseSubmitBehavior="false">
                                     I-delete
                                 </asp:LinkButton>
                             </div>

@@ -7,10 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT.Pages {
+namespace GROUP6_ANGAT.Pages
+{
 
 
-    public partial class HanapGawa {
+    public partial class HanapGawa
+    {
 
         /// <summary>
         /// lblServiceCount control.
@@ -31,24 +33,6 @@ namespace GROUP6_ANGAT.Pages {
         protected global::System.Web.UI.WebControls.PlaceHolder phPostServiceBtn;
 
         /// <summary>
-        /// pnlServiceApplyMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlServiceApplyMessage;
-
-        /// <summary>
-        /// lblServiceApplyMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblServiceApplyMessage;
-
-        /// <summary>
         /// rptServices control.
         /// </summary>
         /// <remarks>
@@ -65,6 +49,33 @@ namespace GROUP6_ANGAT.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
+
+        /// <summary>
+        /// UpdatePanelService control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanelService;
+
+        /// <summary>
+        /// pnlServiceApplyMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlServiceApplyMessage;
+
+        /// <summary>
+        /// lblServiceApplyMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblServiceApplyMessage;
 
         /// <summary>
         /// phServiceLoggedIn control.

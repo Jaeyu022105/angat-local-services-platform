@@ -19,7 +19,7 @@ namespace GROUP6_ANGAT.Pages {
             if (postedAt == null || postedAt == DBNull.Value)
                 return "";
             DateTime postDate = Convert.ToDateTime(postedAt);
-            DateTime localNow = DateTime.Now.AddHours(-8); // offset fix
+            DateTime localNow = DateTime.Now.AddHours(-8);
             TimeSpan ts = localNow - postDate;
             if (ts.TotalSeconds < 60)
                 return "just now";

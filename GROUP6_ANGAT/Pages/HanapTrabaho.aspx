@@ -59,8 +59,8 @@
             <div class="search-field">
                 <span class="s-icon"><i class='bx bx-map'></i></span>
                 <select id="htLocation">
-                    <option value="All">Kahit Saan (Biñan)</option>
-                    <option value="Biñan">Biñan (Poblacion)</option>
+                    <option value="All">Kahit Saan (Bi&ntilde;an)</option>
+                    <option value="Biñan">Bi&ntilde;an (Poblacion)</option>
                     <option value="Bungahan">Bungahan</option>
                     <option value="Canlalay">Canlalay</option>
                     <option value="Casile">Casile</option>
@@ -75,7 +75,7 @@
                     <option value="Masile">Masile</option>
                     <option value="Maysilo">Maysilo</option>
                     <option value="Munting Ilog">Munting Ilog</option>
-                    <option value="New Biñan">New Biñan</option>
+                    <option value="New Biñan">New Bi&ntilde;an</option>
                     <option value="Platero">Platero</option>
                     <option value="San Antonio">San Antonio</option>
                     <option value="San Francisco">San Francisco</option>
@@ -112,11 +112,6 @@
                 </select>
             </div>
         </div>
-
-        <%-- Alert message --%>
-        <asp:Panel ID="pnlApplyMessage" runat="server" CssClass="form-alert" Visible="false" ClientIDMode="Static">
-            <asp:Label ID="lblApplyMessage" runat="server" />
-        </asp:Panel>
 
         <%-- Job cards --%>
         <div id="htListings" class="listings-grid">
@@ -218,19 +213,36 @@
             </div>
 
             <%-- Actions --%>
-            <div class="job-modal-actions">
-                <asp:PlaceHolder ID="phApplyLoggedIn" runat="server">
-                    <asp:Button ID="btnApplyJob" runat="server" Text="Mag-apply" CssClass="btn-green" OnClick="BtnApplyJob_Click" />
-                </asp:PlaceHolder>
-                <asp:PlaceHolder ID="phApplyLoggedOut" runat="server" Visible="false">
-                    <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx" class="btn-green">
-                        Mag-login para mag-apply
-                    </a>
-                </asp:PlaceHolder>
+               <div class="job-modal-content"> 
+                    <div class="job-modal-actions">
+                        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                            <ContentTemplate>
+                
+                                <%-- The ONLY ALERT message panel --%>
+                                <asp:Panel ID="pnlApplyMessage" runat="server" Visible="false" Style="margin-bottom: 15px;">
+                                    <asp:Label ID="lblApplyMessage" runat="server" />
+                                </asp:Panel>
+
+                                <%-- Logged In View --%>
+                                <asp:PlaceHolder ID="phApplyLoggedIn" runat="server">
+                                    <asp:Button ID="btnApplyJob" runat="server" 
+                                                Text="Mag-apply" 
+                                                CssClass="btn-green" 
+                                                OnClick="BtnApplyJob_Click" />
+                                </asp:PlaceHolder>
+
+                                <asp:PlaceHolder ID="phApplyLoggedOut" runat="server" Visible="false">
+                                    <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx" class="btn-green">
+                                        Mag-login para mag-apply
+                                    </a>
+                                </asp:PlaceHolder>
+
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
     <%-- Hidden fields for apply --%>
     <asp:HiddenField ID="hfJobId" runat="server" />
     <asp:HiddenField ID="hfJobTitle" runat="server" />
@@ -335,6 +347,6 @@
                 if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
             });
         })();
-    </script>
+    </script>pt>
 
 </asp:Content>

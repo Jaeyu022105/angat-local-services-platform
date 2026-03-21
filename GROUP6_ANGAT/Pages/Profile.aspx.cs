@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace GROUP6_ANGAT {
@@ -114,7 +115,7 @@ namespace GROUP6_ANGAT {
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
-                       Tags, Category, Status, PostedAt, Slots
+                       Tags, Category, Status, PostedAt, Slots, IsActive
                 FROM Jobs
                 WHERE PostedByUserId = @UserId
                 ORDER BY PostedAt DESC", conn)) {
@@ -175,16 +176,17 @@ namespace GROUP6_ANGAT {
         }
         // ITEM DATA BOUND — load nested applicants
         // =============================================
-        protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
-            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
+        protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item &&
+                e.Item.ItemType != ListItemType.AlternatingItem) return;
 
-            var hf = (System.Web.UI.WebControls.HiddenField)e.Item.FindControl("hfListingJobId");
-            var rptApplicants = (Repeater)e.Item.FindControl("rptApplicants");
-            var pnlNoApplicants = (System.Web.UI.WebControls.Panel)e.Item.FindControl("pnlNoApplicants");
+            System.Data.Common.DbDataRecord row =
+                (System.Data.Common.DbDataRecord)e.Item.DataItem;
 
-            int jobId;
-            if (hf != null && int.TryParse(hf.Value, out jobId))
-                LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
+            LinkButton btnDelete = (LinkButton)e.Item.FindControl("btnDeleteListing");
+            bool isActive = Convert.ToBoolean(row["IsActive"]);
+            btnDelete.Visible = isActive;
         }
 
         protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
@@ -290,6 +292,9 @@ namespace GROUP6_ANGAT {
             lblApplicationsMessage.Text = rows > 0 ? "Na-update ang status ng applicant." : "Hindi ma-update ang status.";
 
             LoadMyListings();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -321,21 +326,36 @@ namespace GROUP6_ANGAT {
             lblServiceMessage.Text = rows > 0 ? "Na-update ang status ng requester." : "Hindi ma-update ang status.";
 
             LoadMyServiceListings();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
         // DELETE JOB LISTING
         // =============================================
-        protected void RptMyListings_ItemCommand(object source, RepeaterCommandEventArgs e) {
+     protected void RptMyListings_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
             if (e.CommandName != "DeleteListing") return;
 
+            if (!int.TryParse(e.CommandArgument.ToString(), out int jobId))
+                return;
+
+            if (Session["UserId"] == null) return;
+
+            if (!int.TryParse(Session["UserId"].ToString(), out int userId))
+                return;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                UPDATE Jobs SET IsActive = 0
-                WHERE JobId = @JobId AND PostedByUserId = @UserId", conn)) {
-                cmd.Parameters.AddWithValue("@JobId", e.CommandArgument);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+        UPDATE Jobs SET IsActive = 0
+        WHERE JobId = @JobId AND PostedByUserId = @UserId", conn))
+            {
+                cmd.Parameters.Add("@JobId", SqlDbType.Int).Value = jobId;
+                cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+
                 conn.Open();
                 int rows = cmd.ExecuteNonQuery();
 
@@ -345,6 +365,8 @@ namespace GROUP6_ANGAT {
             }
 
             LoadMyListings();
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+                "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -369,6 +391,9 @@ namespace GROUP6_ANGAT {
             }
 
             LoadMyServiceListings();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -393,6 +418,9 @@ namespace GROUP6_ANGAT {
             }
 
             LoadMyBusinessListings();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
         // =============================================
         // RETRACT APPLICATION
@@ -416,6 +444,9 @@ namespace GROUP6_ANGAT {
             }
 
             LoadApplications();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -440,6 +471,9 @@ namespace GROUP6_ANGAT {
             }
 
             LoadServiceRequests();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -498,6 +532,9 @@ namespace GROUP6_ANGAT {
             Session["UserEmail"] = txtEmail.Text.Trim();
             lblProfileMessage.Text = "Na-save ang profile!";
             LoadProfile();
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -547,6 +584,9 @@ namespace GROUP6_ANGAT {
             txtNewPassword.Text = "";
             txtConfirmPassword.Text = "";
             lblPasswordMessage.Text = "Na-update ang password!";
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+            "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -579,20 +619,3 @@ namespace GROUP6_ANGAT {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -64,7 +64,7 @@
                 <label>Barangay <span class="required">*</span></label>
                 <asp:DropDownList ID="ddlBarangay" runat="server">
                     <asp:ListItem Value="">-- Pumili ng Barangay --</asp:ListItem>
-                    <asp:ListItem Value="Biñan">Biñan (Poblacion)</asp:ListItem>
+                    <asp:ListItem Value="Biñan">Bi&ntilde;an (Poblacion)</asp:ListItem>
                     <asp:ListItem Value="Bungahan">Bungahan</asp:ListItem>
                     <asp:ListItem Value="Canlalay">Canlalay</asp:ListItem>
                     <asp:ListItem Value="Casile">Casile</asp:ListItem>
@@ -79,7 +79,7 @@
                     <asp:ListItem Value="Masile">Masile</asp:ListItem>
                     <asp:ListItem Value="Maysilo">Maysilo</asp:ListItem>
                     <asp:ListItem Value="Munting Ilog">Munting Ilog</asp:ListItem>
-                    <asp:ListItem Value="New Biñan">New Biñan</asp:ListItem>
+                    <asp:ListItem Value="New Biñan">New Bi&ntilde;an</asp:ListItem>
                     <asp:ListItem Value="Platero">Platero</asp:ListItem>
                     <asp:ListItem Value="San Antonio">San Antonio</asp:ListItem>
                     <asp:ListItem Value="San Francisco">San Francisco</asp:ListItem>

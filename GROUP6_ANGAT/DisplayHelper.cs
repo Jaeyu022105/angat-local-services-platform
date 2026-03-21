@@ -121,9 +121,14 @@ namespace GROUP6_ANGAT
             if (postedObj == null || postedObj == DBNull.Value) return string.Empty;
             if (!DateTime.TryParse(postedObj.ToString(), out DateTime posted)) return string.Empty;
 
-            var diff = DateTime.Now - posted;
-            if (diff.TotalMinutes < 60) return "Kaninang umaga";
-            if (diff.TotalHours < 24) return "Ngayon";
+            var now = DateTime.Now.AddHours(-8);
+            var diff = now - posted;
+
+            if (diff.TotalHours < 24)
+            {
+                int hour = posted.Hour;
+                if (hour < 24) return "Ngayong Araw";
+            }
             if (diff.TotalDays < 2) return "Kahapon";
             if (diff.TotalDays < 7) return $"{(int)diff.TotalDays} araw na ang nakalipas";
             if (diff.TotalDays < 14) return "Isang linggo na ang nakalipas";

@@ -59,8 +59,8 @@
             <div class="search-field">
                 <span class="s-icon"><i class='bx bx-map'></i></span>
                 <select id="hgLocation">
-                    <option value="All">Kahit Saan (Biñan)</option>
-                    <option value="Biñan">Biñan (Poblacion)</option>
+                    <option value="All">Kahit Saan (Bi&ntilde;an)</option>
+                    <option value="Biñan">Bi&ntilde;an (Poblacion)</option>
                     <option value="Bungahan">Bungahan</option>
                     <option value="Canlalay">Canlalay</option>
                     <option value="Casile">Casile</option>
@@ -75,7 +75,7 @@
                     <option value="Masile">Masile</option>
                     <option value="Maysilo">Maysilo</option>
                     <option value="Munting Ilog">Munting Ilog</option>
-                    <option value="New Biñan">New Biñan</option>
+                    <option value="New Biñan">New Bi&ntilde;an</option>
                     <option value="Platero">Platero</option>
                     <option value="San Antonio">San Antonio</option>
                     <option value="San Francisco">San Francisco</option>
@@ -112,11 +112,6 @@
                 </select>
             </div>
         </div>
-
-        <%-- Alert message --%>
-        <asp:Panel ID="pnlServiceApplyMessage" runat="server" CssClass="form-alert" Visible="false" ClientIDMode="Static">
-            <asp:Label ID="lblServiceApplyMessage" runat="server" />
-        </asp:Panel>
 
         <%-- Service cards --%>
         <div id="hgListings" class="listings-grid">
@@ -215,17 +210,35 @@
 
             <%-- Actions --%>
             <div class="job-modal-actions">
-                <asp:PlaceHolder ID="phServiceLoggedIn" runat="server">
-                    <asp:Button ID="btnRequestService" runat="server" Text="Mag-request" CssClass="btn-green" OnClick="BtnRequestService_Click" />
-                </asp:PlaceHolder>
-                <asp:PlaceHolder ID="phServiceLoggedOut" runat="server" Visible="false">
-                    <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapGawa.aspx" class="btn-green">
-                        Mag-login para mag-request
-                    </a>
-                </asp:PlaceHolder>
+                <asp:UpdatePanel ID="UpdatePanelService" runat="server">
+                    <ContentTemplate>
+            
+                        <%-- The Message Panel for Service Requests --%>
+                        <asp:Panel ID="pnlServiceApplyMessage" runat="server" Visible="false" Style="margin-bottom: 15px;">
+                            <asp:Label ID="lblServiceApplyMessage" runat="server" />
+                        </asp:Panel>
+
+                        <%-- Logged In: Show Request Button --%>
+                        <asp:PlaceHolder ID="phServiceLoggedIn" runat="server">
+                            <asp:Button ID="btnRequestService" runat="server" 
+                                        Text="Mag-request" 
+                                        CssClass="btn-green" 
+                                        OnClick="BtnRequestService_Click" />
+                        </asp:PlaceHolder>
+
+                        <%-- Logged Out: Show Login Link --%>
+                        <asp:PlaceHolder ID="phServiceLoggedOut" runat="server" Visible="false">
+                            <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapGawa.aspx" class="btn-green">
+                                Mag-login para mag-request
+                            </a>
+                        </asp:PlaceHolder>
+
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </div>
     </div>
+
 
     <%-- Hidden fields --%>
     <asp:HiddenField ID="hfServiceId" runat="server" />

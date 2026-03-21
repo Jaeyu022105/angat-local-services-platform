@@ -7,10 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT.Pages {
+namespace GROUP6_ANGAT.Pages
+{
 
 
-    public partial class HanapTrabaho {
+    public partial class HanapTrabaho
+    {
 
         /// <summary>
         /// lblJobCount control.
@@ -31,24 +33,6 @@ namespace GROUP6_ANGAT.Pages {
         protected global::System.Web.UI.WebControls.PlaceHolder phPostJobBtn;
 
         /// <summary>
-        /// pnlApplyMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlApplyMessage;
-
-        /// <summary>
-        /// lblApplyMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblApplyMessage;
-
-        /// <summary>
         /// rptJobs control.
         /// </summary>
         /// <remarks>
@@ -65,6 +49,33 @@ namespace GROUP6_ANGAT.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
+
+        /// <summary>
+        /// UpdatePanel1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+
+        /// <summary>
+        /// pnlApplyMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlApplyMessage;
+
+        /// <summary>
+        /// lblApplyMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblApplyMessage;
 
         /// <summary>
         /// phApplyLoggedIn control.
