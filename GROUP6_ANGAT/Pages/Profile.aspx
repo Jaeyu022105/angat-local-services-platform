@@ -140,7 +140,8 @@
 
                 <asp:Repeater ID="rptApplications" runat="server" OnItemCommand="RptApplications_ItemCommand">
                     <ItemTemplate>
-                        <div class="app-card">
+                        <div class="app-card" data-application-id='<%# Eval("ApplicationId") %>'> <%-- changed so js can find the card for notifs --%>
+
                             <div class="app-card-top">
                                 <div>
                                     <h4><%# Eval("JobTitle") %></h4>
@@ -181,7 +182,7 @@
 
                 <asp:Repeater ID="rptServiceRequests" runat="server" OnItemCommand="RptServiceRequests_ItemCommand">
                     <ItemTemplate>
-                        <div class="app-card">
+                        <div class="app-card" data-request-id='<%# Eval("RequestId") %>'><%--changed for notifs again --%>
                             <div class="app-card-top">
                                 <div>
                                     <h4><%# Eval("ServiceTitle") %></h4>
@@ -224,7 +225,7 @@
                     OnItemDataBound="RptMyListings_ItemDataBound"
                     OnItemCommand="RptMyListings_ItemCommand">
                     <ItemTemplate>
-                        <div class="app-card">
+                        <div class="app-card" data-job-id='<%# Eval("JobId") %>'>
                             <div class="app-card-top">
                                 <div>
                                     <h4><%# Eval("JobTitle") %></h4>
@@ -263,7 +264,7 @@
                                 </asp:Panel>
                                 <asp:Repeater ID="rptApplicants" runat="server" OnItemCommand="RptApplicants_ItemCommand">
                                     <ItemTemplate>
-                                        <div class="applicant-row">
+                                        <div class="applicant-row" data-application-id='<%# Eval("ApplicationId") %>'>
                                             <div>
                                                 <strong><%# Eval("FullName") %></strong>
                                                 <div class="applicant-meta">
@@ -312,7 +313,7 @@
                     OnItemDataBound="RptServiceListings_ItemDataBound"
                     OnItemCommand="RptServiceListings_ItemCommand">
                     <ItemTemplate>
-                        <div class="app-card">
+                        <div class="app-card" data-service-id='<%# Eval("ServiceId") %>'>
                             <div class="app-card-top">
                                 <div>
                                     <h4><%# Eval("ServiceTitle") %></h4>
@@ -347,7 +348,7 @@
                                 </asp:Panel>
                                 <asp:Repeater ID="rptServiceApplicants" runat="server" OnItemCommand="RptServiceApplicants_ItemCommand">
                                     <ItemTemplate>
-                                        <div class="applicant-row">
+                                        <div class="applicant-row" data-request-id='<%# Eval("RequestId") %>'>
                                             <div>
                                                 <strong><%# Eval("FullName") %></strong>
                                                 <div class="applicant-meta">
@@ -434,14 +435,56 @@
         // Tab switching
         var tabBtns    = document.querySelectorAll('.profile-tab-btn');
         var tabContents = document.querySelectorAll('.profile-tab-content');
+        //modified for notifs so we can activate the correct tab when user clicks on a notif related to a listing/request/application   
+        function activateProfileTab(tabName) {
+            tabBtns.forEach(function (b) { b.classList.remove('active'); });
+            tabContents.forEach(function (c) { c.classList.remove('active'); });
+
+            var btn = document.querySelector('.profile-tab-btn[data-tab="' + tabName + '"]');
+            var panel = document.getElementById('tab-' + tabName);
+
+            if (btn) btn.classList.add('active');
+            if (panel) panel.classList.add('active');
+        }
 
         tabBtns.forEach(function(btn) {
             btn.addEventListener('click', function() {
-                tabBtns.forEach(function(b) { b.classList.remove('active'); });
-                tabContents.forEach(function(c) { c.classList.remove('active'); });
-                btn.classList.add('active');
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                activateProfileTab(btn.dataset.tab);
             });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var params = new URLSearchParams(window.location.search);
+            var tab = params.get('tab');
+            var applicationId = params.get('applicationId');
+            var requestId = params.get('requestId');
+            var jobId = params.get('jobId');
+            var serviceId = params.get('serviceId');
+            if (tab) {
+                activateProfileTab(tab);
+            }
+            var scope = tab ? document.getElementById('tab-' + tab) : document;
+            var selectors = [];
+
+            if (applicationId) selectors.push('[data-application-id="' + applicationId + '"]');
+            if(requestId) selectors.push('[data-request-id="' + requestId + '"]');
+            if(jobId) selectors.push('[data-job-id="' + jobId + '"]');
+            if (serviceId) selectors.push('[data-service-id="' + serviceId + '"]');
+            if (!selectors.length) return;
+            setTimeout(function () {
+                var target = null;
+                selectors.some(function (selector) {
+                    target = scope ? scope.querySelector(selector) : null;
+                    if (!target) target = document.querySelector(selector);
+                    return !!target;
+                });
+                if (target) {
+                    var highlightTarget = target.closest('.app-card') || target;
+                    highlightTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    highlightTarget.style.outline = '2px solid #1f7a5a';
+                    highlightTarget.style.outlineOffset = '4px';
+                }
+
+            }, 100);
         });
     </script>
 </asp:Content>

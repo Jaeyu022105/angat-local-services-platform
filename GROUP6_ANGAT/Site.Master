@@ -53,20 +53,66 @@
                         <li class="desktop-only"><a runat="server" href="~/Pages/Login.aspx" class="nav-login">Login</a></li>
                     </asp:PlaceHolder>
                     <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
-                        <li class="desktop-only nav-profile-dropdown">
-                            <button type="button" class="nav-profile-icon" id="profileMenuBtn" title="Profile">
-                                <i class='bx bx-user-circle'></i>
-                            </button>
-                            <ul class="profile-dropdown-menu">
-                                <li><a runat="server" href="~/Pages/Profile.aspx"><i class='bx bx-user'></i> Profile</a></li>
-                                <li>
-                                    <asp:LinkButton ID="btnLogout" runat="server" CssClass="dropdown-logout" OnClick="BtnLogout_Click">
-                                        <i class='bx bx-log-out'></i> Logout
-                                    </asp:LinkButton>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="desktop-only notification-shell">
+                                <button type="button" id="notification-toggle" class="notification-btn" aria-label="Notifications">
+                                    <i class='bx bx-bell'></i>
+                                    <asp:PlaceHolder ID="phUnreadBadge" runat="server" Visible="false">
+                                        <span class="notification-count">
+                                            <asp:Label ID="lblUnread" runat="server" />
+                                        </span>
+                                    </asp:PlaceHolder>
+                                </button>
+
+                                <div id="notification-dropdown" class="notification-dropdown">
+                                    <div class="notification-header">
+                                        <div>
+                                            <h5>Notifications</h5>
+                                            <p><asp:Label ID="lblNotificationSummary" runat="server" Text="Latest account updates" /></p>
+                                        </div>
+                                        <asp:LinkButton ID="btnMarkAllNotifRead" runat="server"
+                                            CssClass="notification-mark"
+                                            CausesValidation="false"
+                                            OnClick="BtnMarkAllNotifRead_Click">
+                                            Mark all as read
+                                        </asp:LinkButton>
+                                    </div>
+
+                                    <asp:Panel ID="pnlNoNotifications" runat="server" CssClass="notification-empty" Visible="false">
+                                        Wala pang notifications.
+                                    </asp:Panel>
+
+                                    <div class="notification-list">
+                                        <asp:Repeater ID="rptNotifications" runat="server">
+                                            <ItemTemplate>
+                                                <a class='notification-item <%# GetNotificationItemClass(Eval("IsRead")) %>'
+                                                   href='<%# ResolveNotificationUrl(Eval("TargetUrl")) %>'>
+                                                    <div class="notification-copy">
+                                                        <strong><%#: Eval("Title") %></strong>
+                                                        <p><%#: Eval("Message") %></p>
+                                                        <span><%# GetRelativeNotificationTime(Eval("CreatedAt")) %></span>
+                                                    </div>
+                                                </a>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="desktop-only nav-profile-dropdown">
+                                <button type="button" class="nav-profile-icon" id="profileMenuBtn" title="Profile">
+                                    <i class='bx bx-user-circle'></i>
+                                </button>
+                                <ul class="profile-dropdown-menu">
+                                    <li><a runat="server" href="~/Pages/Profile.aspx"><i class='bx bx-user'></i> Profile</a></li>
+                                    <li>
+                                        <asp:LinkButton ID="btnLogout" runat="server" CssClass="dropdown-logout" OnClick="BtnLogout_Click">
+                                            <i class='bx bx-log-out'></i> Logout
+                                        </asp:LinkButton>
+                                    </li>
+                                </ul>
+                            </li>
                     </asp:PlaceHolder>
+
                     <li><a runat="server" href="~/Pages/Contact.aspx" class="nav-cta">Contact Us</a></li>
                 </ul>
             </div>

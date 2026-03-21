@@ -187,6 +187,14 @@ namespace GROUP6_ANGAT {
             LinkButton btnDelete = (LinkButton)e.Item.FindControl("btnDeleteListing");
             bool isActive = Convert.ToBoolean(row["IsActive"]);
             btnDelete.Visible = isActive;
+
+            var hf = (HiddenField)e.Item.FindControl("hfListingJobId");
+            var rptApplicants = (Repeater)e.Item.FindControl("rptApplicants");
+            var pnlNoApplicants = (Panel)e.Item.FindControl("pnlNoApplicants");
+
+            int jobId;
+            if (hf != null && int.TryParse(hf.Value, out jobId))
+                LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
         }
 
         protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
@@ -254,9 +262,30 @@ namespace GROUP6_ANGAT {
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             int rows = 0;
+            //notifs
+            int targetUserId = 0;
+            string jobTitle = "";
+
 
             using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
+                //notifs
+                using (SqlCommand infoCmd = new SqlCommand(@"SELECT TOP 1 ja.UserId, j.JobTitle FROM JobApplications ja INNER JOIN Jobs j ON ja.JobId = j.JobId WHERE ja.ApplicationId = @ApplicationId AND j.PostedByUserId = @UserId", conn))
+                {
+                    infoCmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
+                    infoCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+
+                    using (SqlDataReader reader = infoCmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            targetUserId = Convert.ToInt32(reader["UserId"]);
+                            jobTitle = reader["JobTitle"].ToString();
+                        }
+                    }
+                }
+
+                
 
                 // Update application status
                 using (SqlCommand cmd = new SqlCommand(@"
@@ -285,6 +314,20 @@ namespace GROUP6_ANGAT {
                         slotsCmd.ExecuteNonQuery();
                     }
                 }
+                //notifs
+                if (rows > 0 && targetUserId > 0)
+                {
+                    GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                        conn,
+                        targetUserId,
+                        newStatus == "Approved" ? "Na-approve ang job application" : "Na-reject ang job application",
+                        newStatus == "Approved"
+                            ? string.Format("Na-approve ang application mo para sa \"{0}\".", jobTitle)
+                            : string.Format("Na-reject ang application mo para sa \"{0}\".", jobTitle),
+                        newStatus == "Approved" ? "job_application_approved" : "job_application_rejected",
+                        string.Format("~/Pages/Profile.aspx?tab=applications&applicationId={0}", e.CommandArgument));
+                }
+
             }
 
             pnlApplicationsMessage.Visible = true;
@@ -308,19 +351,58 @@ namespace GROUP6_ANGAT {
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             int rows = 0;
+            //notifs
+            int targetUserId = 0;
+            string serviceTitle = "";
 
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
+            {
+                conn.Open();
+                //notifs
+                using (SqlCommand infoCmd = new SqlCommand(@"
+                SELECT TOP 1 sr.UserId, s.ServiceTitle
+                FROM ServiceRequests sr
+                INNER JOIN Services s ON sr.ServiceId = s.ServiceId
+                WHERE sr.RequestId = @RequestId
+                AND s.PostedByUserId = @UserId", conn)) {
+                    infoCmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
+                    infoCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = infoCmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            targetUserId = Convert.ToInt32(reader["UserId"]);
+                            serviceTitle = reader["ServiceTitle"].ToString();
+                        }
+                    }
+                }
+
+                using (SqlCommand cmd = new SqlCommand(@"
                 UPDATE ServiceRequests SET Status = @Status
                 WHERE RequestId = @RequestId
-                AND ServiceId IN (SELECT ServiceId FROM Services WHERE PostedByUserId = @UserId)", conn)) {
-                cmd.Parameters.AddWithValue("@Status", newStatus);
-                cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
-                conn.Open();
-                rows = cmd.ExecuteNonQuery();
-            }
+                AND ServiceId IN (SELECT ServiceId FROM Services WHERE PostedByUserId = @UserId)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Status", newStatus);
+                    cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    
+                    rows = cmd.ExecuteNonQuery();
+                }
+                //notifs
+                if (rows > 0 && targetUserId > 0)
+                {
+                    GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                        conn,
+                        targetUserId,
+                        newStatus == "Approved" ? "Na-approve ang service request" : "Na-reject ang service request",
+                        newStatus == "Approved"
+                            ? string.Format("Na-approve ang request mo para sa \"{0}\".", serviceTitle)
+                            : string.Format("Na-reject ang request mo para sa \"{0}\".", serviceTitle),
+                        newStatus == "Approved" ? "service_request_approved" : "service_request_rejected",
+                        string.Format("~/Pages/Profile.aspx?tab=requests&requestId={0}", e.CommandArgument));
 
+                }
+            }
             pnlServiceMessage.Visible = true;
             pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
             lblServiceMessage.Text = rows > 0 ? "Na-update ang status ng requester." : "Hindi ma-update ang status.";
