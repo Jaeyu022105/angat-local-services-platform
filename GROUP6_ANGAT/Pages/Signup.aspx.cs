@@ -79,8 +79,8 @@ namespace GROUP6_ANGAT {
                 }
             }
 
-            lblSignupMessage.CssClass = "login-helper success";
-            lblSignupMessage.Text = "Matagumpay ang pag-sign up! Maaari ka nang mag-login.";
+            //change that when they are successfully registered, they will be redirected to the login page
+            Response.Redirect("Login.aspx?signup=success");
         }
 
         private bool IsValidPhone(string phone) {

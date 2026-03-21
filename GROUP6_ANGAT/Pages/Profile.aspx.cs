@@ -31,7 +31,7 @@ namespace GROUP6_ANGAT
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT FullName, Email, Phone, AddressLine, Barangay, Bio, Role, ProfileImagePath
+            using (SqlCommand cmd = new SqlCommand(@"SELECT FullName, Email, Phone, AddressLine, Barangay, Role, ProfileImagePath
                                                      FROM Users
                                                      WHERE UserId = @UserId", conn))
             {
@@ -53,7 +53,6 @@ namespace GROUP6_ANGAT
                         txtPhone.Text = reader["Phone"].ToString();
                         txtAddress.Text = reader["AddressLine"].ToString();
                         txtBarangay.Text = reader["Barangay"].ToString();
-                        txtBio.Text = reader["Bio"].ToString();
 
                         string imagePath = reader["ProfileImagePath"].ToString();
                         imgProfile.ImageUrl = string.IsNullOrWhiteSpace(imagePath) ? "~/Images/angat_logo.png" : imagePath;
@@ -527,7 +526,6 @@ namespace GROUP6_ANGAT
                                                          Phone = @Phone,
                                                          AddressLine = @AddressLine,
                                                          Barangay = @Barangay,
-                                                         Bio = @Bio,
                                                          ProfileImagePath = COALESCE(@ProfileImagePath, ProfileImagePath)
                                                      WHERE UserId = @UserId", conn))
             {
@@ -536,7 +534,6 @@ namespace GROUP6_ANGAT
                 cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
                 cmd.Parameters.AddWithValue("@AddressLine", txtAddress.Text.Trim());
                 cmd.Parameters.AddWithValue("@Barangay", txtBarangay.Text.Trim());
-                cmd.Parameters.AddWithValue("@Bio", txtBio.Text.Trim());
                 cmd.Parameters.AddWithValue("@ProfileImagePath", (object)newImagePath ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
 

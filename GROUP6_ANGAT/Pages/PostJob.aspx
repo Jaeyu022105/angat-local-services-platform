@@ -98,17 +98,19 @@
             <%-- Pay --%>
             <div class="form-group">
                 <label>Sahod <span class="required">*</span></label>
-                <div class="pay-inputs">
-                    <div class="pay-field">
-                        <span class="pay-currency">₱</span>
+                <div class="pay-row"> <div class="pay-field">
+                        <span class="pay-currency">&#8369;</span>
                         <asp:TextBox ID="txtPayMin" runat="server" placeholder="Min"></asp:TextBox>
                     </div>
-                    <span class="pay-sep">–</span>
+
+                    <span class="pay-sep">&ndash;</span> 
+
                     <div class="pay-field">
-                        <span class="pay-currency">₱</span>
+                        <span class="pay-currency">&#8369;</span>
                         <asp:TextBox ID="txtPayMax" runat="server" placeholder="Max"></asp:TextBox>
                     </div>
-                    <asp:DropDownList ID="ddlPayRate" runat="server" CssClass="pay-unit">
+
+                    <asp:DropDownList ID="ddlPayRate" runat="server">
                         <asp:ListItem Value="per hour">/ oras</asp:ListItem>
                         <asp:ListItem Value="per day" Selected="True">/ araw</asp:ListItem>
                         <asp:ListItem Value="per month">/ buwan</asp:ListItem>
@@ -116,7 +118,6 @@
                     </asp:DropDownList>
                 </div>
             </div>
-
             <%-- Tags --%>
             <div class="form-group">
                 <label>Tags</label>
@@ -176,6 +177,7 @@
         tagPills.forEach(function(cb) {
             cb.addEventListener('change', function() {
                 cb.closest('.tag-pill').classList.toggle('active', cb.checked);
+
                 updateTags();
             });
         });

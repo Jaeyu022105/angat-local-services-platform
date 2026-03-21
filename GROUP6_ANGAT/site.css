@@ -2134,4 +2134,49 @@ button.listing-card {
     font-size: 0.75rem;
     color: var(--muted);
 }
+/* ==========================================
+   SPECIALIZED CSS FOR POST JOB
+   ========================================== */
+
+/* Container: ensures pills wrap to the next line if there are many */
+.tag-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* The individual Pill */
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+.tag-pill input[type="checkbox"] {
+    display: none; /* Checkbox is gone */
+}
+/* The Checkbox inside the pill */
+.tag-pill input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+/* Active/Selected State (Matches your JS logic) */
+.tag-pill.active {
+    background-color: #087a54;
+    color: white;
+    border-color: #087a54;
+}
+.pay-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
