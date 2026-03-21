@@ -73,112 +73,35 @@
                 <p class="section-sub">Mayroong 60+ na lokal na negosyo ang nakarehistro ngayon.</p>
             </div>
             <div style="display:flex; gap: 10px;">
-                <a href="/Pages/Contact.aspx" class="btn-outline" style="padding: 8px 16px;"><i class='bx bx-plus'></i> I-rehistro ang Negosyo</a>
+                <a href="/Pages/PostNegosyo.aspx" class="btn-outline" style="padding: 8px 16px;"><i class='bx bx-plus'></i> I-rehistro ang Negosyo</a>
             </div>
         </div>
         
         <div id="dirListings" class="listings-grid">
-            <a href="#" class="listing-card" data-category="Sari-Sari Store" data-search="Aling Nena Sari-Sari Store Dela Paz Nena Cruz">
-                <div class="listing-top">
-                    <div class="listing-icon" style="color: #0d9e6e; background: #e6f7f1;"><i class='bx bx-store'></i></div>
-                    <span class="badge badge-teal">Sari-Sari Store</span>
-                </div>
-                <h4>Aling Nena's Sari-Sari Store</h4>
-                <p class="listing-company"><i class='bx bx-map'></i> Brgy. Dela Paz, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-blue"><i class='bx bx-time-five'></i> 6AM - 10PM</span>
-                    <span class="badge badge-green">Gcash Accepted</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> Nena Cruz</span>
-                    <span class="listing-date" style="color: #0d9e6e; font-weight: bold;">Bukas Ngayon</span>
-                </div>
-            </a>
-
-            <a href="#" class="listing-card" data-category="Carinderia" data-search="Mang Berto Lomi House Carinderia San Antonio Berto Reyes">
-                <div class="listing-top">
-                    <div class="listing-icon" style="color: #b45309; background: #fef3c7;"><i class='bx bx-restaurant'></i></div>
-                    <span class="badge badge-amber">Carinderia</span>
-                </div>
-                <h4>Mang Berto's Lomi House</h4>
-                <p class="listing-company"><i class='bx bx-map'></i> Brgy. San Antonio, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-blue"><i class='bx bx-time-five'></i> 7AM - 8PM</span>
-                    <span class="badge badge-green">Dine-in & Takeout</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> Berto Reyes</span>
-                    <span class="listing-date" style="color: #0d9e6e; font-weight: bold;">Bukas Ngayon</span>
-                </div>
-            </a>
-
-            <a href="#" class="listing-card" data-category="Ukay-Ukay" data-search="Ukay-Ukay ni Jane Platero Jane Gomez">
-                <div class="listing-top">
-                    <div class="listing-icon" style="color: #be123c; background: #ffe4e6;"><i class='bx bx-closet'></i></div>
-                    <span class="badge badge-rose">Ukay-Ukay</span>
-                </div>
-                <h4>Ukay-Ukay ni Jane</h4>
-                <p class="listing-company"><i class='bx bx-map'></i> Brgy. Platero, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-blue"><i class='bx bx-time-five'></i> 9AM - 6PM</span>
-                    <span class="badge badge-green">Bagsak Presyo</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> Jane Gomez</span>
-                    <span class="listing-date" style="color: #be123c; font-weight: bold;">Sarado</span>
-                </div>
-            </a>
-
-            <a href="#" class="listing-card" data-category="Iba" data-search="Jun Vulcanizing Repair Shop Canlalay Jun Santos">
-                <div class="listing-top">
-                    <div class="listing-icon" style="color: #1d4ed8; background: #dbeafe;"><i class='bx bx-wrench'></i></div>
-                    <span class="badge badge-blue">Repair Shop</span>
-                </div>
-                <h4>Jun's Vulcanizing Shop</h4>
-                <p class="listing-company"><i class='bx bx-map'></i> Highway, Brgy. Canlalay</p>
-                <div class="listing-tags">
-                    <span class="badge badge-blue"><i class='bx bx-time-five'></i> 24 Oras</span>
-                    <span class="badge badge-green">Home Service</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> Jun Santos</span>
-                    <span class="listing-date" style="color: #0d9e6e; font-weight: bold;">Bukas Ngayon</span>
-                </div>
-            </a>
-
-            <a href="#" class="listing-card" data-category="Agrivet" data-search="Tessie Bigasan Agrivet Palengke Tubigan Tessie Dantes">
-                <div class="listing-top">
-                    <div class="listing-icon" style="color: #14b8a6; background: #ccfbf1;"><i class='bx bx-leaf'></i></div>
-                    <span class="badge badge-teal">Agrivet</span>
-                </div>
-                <h4>Tessie's Bigasan & Agrivet</h4>
-                <p class="listing-company"><i class='bx bx-map'></i> Palengke, Brgy. Tubigan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-blue"><i class='bx bx-time-five'></i> 5AM - 5PM</span>
-                    <span class="badge badge-green">Wholesale Available</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> Tessie Dantes</span>
-                    <span class="listing-date" style="color: #0d9e6e; font-weight: bold;">Bukas Ngayon</span>
-                </div>
-            </a>
-
-            <a href="#" class="listing-card" data-category="Iba" data-search="Kape at Pandesal Corner Kapehan San Vicente Lolo Tonio">
-                <div class="listing-top">
-                    <div class="listing-icon" style="color: #6d28d9; background: #ede9fe;"><i class='bx bx-coffee-togo'></i></div>
-                    <span class="badge badge-purple" style="background:#ede9fe; color:#6d28d9;">Kapehan</span>
-                </div>
-                <h4>Kape at Pandesal Corner</h4>
-                <p class="listing-company"><i class='bx bx-map'></i> Brgy. San Vicente, Biñan</p>
-                <div class="listing-tags">
-                    <span class="badge badge-blue"><i class='bx bx-time-five'></i> 4AM - 10AM</span>
-                    <span class="badge badge-green">Bagong Luto</span>
-                </div>
-                <div class="listing-footer">
-                    <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> Lolo Tonio</span>
-                    <span class="listing-date" style="color: #be123c; font-weight: bold;">Sarado</span>
-                </div>
-            </a>
+            <asp:Repeater ID="rptDirectory" runat="server">
+                <ItemTemplate>
+                    <a href="#" class="listing-card"
+                       data-category='<%# Eval("Category") %>'
+                       data-search='<%# BuildSearchText(Eval("BusinessName"), Eval("Tags"), Eval("Barangay"), Eval("Category"), Eval("AddressLine"), Eval("OwnerDisplay")) %>'>
+                        <div class="listing-top">
+                            <div class="listing-icon" style='<%# GetCategoryIconStyle(Eval("Category")) %>'>
+                                <i class='bx <%# GetCategoryIconClass(Eval("Category")) %>'></i>
+                            </div>
+                            <span class='badge <%# GetCategoryBadgeClass(Eval("Category")) %>'><%# Eval("Category") %></span>
+                        </div>
+                        <h4><%# Eval("BusinessName") %></h4>
+                        <p class="listing-company"><i class='bx bx-map'></i> <%# GetDisplayLocation(Eval("AddressLine"), Eval("Barangay")) %></p>
+                        <div class="listing-tags">
+                            <asp:Literal ID="litHours" runat="server" Mode="PassThrough" Text='<%# GetHoursBadge(Eval("Hours")) %>' />
+                            <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
+                        </div>
+                        <div class="listing-footer">
+                            <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerDisplay")) %></span>
+                            <span class="listing-date" style='<%# GetStatusStyle(Eval("Status")) %>'><%# Eval("Status") %></span>
+                        </div>
+                    </a>
+                </ItemTemplate>
+            </asp:Repeater>
         </div>
         
         <div style="text-align:center; margin-top: 40px;">

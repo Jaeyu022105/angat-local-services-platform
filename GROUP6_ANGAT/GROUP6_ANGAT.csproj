@@ -114,6 +114,7 @@
     <Content Include="Pages\Signup.aspx" />
     <Content Include="Pages\Profile.aspx" />
     <Content Include="Pages\PostJob.aspx" />
+    <Content Include="Pages\PostNegosyo.aspx" />
     <Content Include="Pages\PostService.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
@@ -214,6 +215,13 @@
     </Compile>
     <Compile Include="Pages\PostJob.aspx.designer.cs">
       <DependentUpon>PostJob.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PostNegosyo.aspx.cs">
+      <DependentUpon>PostNegosyo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\PostNegosyo.aspx.designer.cs">
+      <DependentUpon>PostNegosyo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\PostService.aspx.cs">
       <DependentUpon>PostService.aspx</DependentUpon>
