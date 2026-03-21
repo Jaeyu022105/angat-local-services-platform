@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -8,57 +8,82 @@ namespace GROUP6_ANGAT {
         protected void Page_Load(object sender, EventArgs e) { }
 
         protected void btnSignup_Click(object sender, EventArgs e) {
-            string fullName = (txtFullName.Text ?? "").Trim();
-            string phone = (txtPhone.Text ?? "").Trim();
-            string email = (txtEmail.Text ?? "").Trim().ToLowerInvariant();
-            string barangay = ddlBarangay.SelectedValue;
-            string address = (txtAddress.Text ?? "").Trim();
+
+            // ── SANITIZE INPUTS ──
+            string fullName = SanitizeText(txtFullName.Text, maxLength: 100);
+            string phone = SanitizeText(txtPhone.Text, maxLength: 15);
+            string email = SanitizeText(txtEmail.Text, maxLength: 150).ToLowerInvariant();
+            string barangay = SanitizeText(ddlBarangay.SelectedValue, maxLength: 60);
+            string address = SanitizeText(txtAddress.Text, maxLength: 255);
             string password = (txtPassword.Text ?? "").Trim();
             string confirm = (txtConfirmPassword.Text ?? "").Trim();
 
-            // Required field checks
+            // ── REQUIRED FIELD CHECKS ──
             if (string.IsNullOrEmpty(fullName)) {
                 ShowError("Pakiusap ilagay ang inyong buong pangalan."); return;
             }
+            if (fullName.Length < 2) {
+                ShowError("Ang pangalan ay dapat hindi bababa sa 2 karakter."); return;
+            }
+            if (!Regex.IsMatch(fullName, @"^[\p{L}\s\.\-']+$")) {
+                ShowError("Ang pangalan ay dapat letra at espasyo lang."); return;
+            }
+
+            // ── PHONE VALIDATION ──
             if (string.IsNullOrEmpty(phone)) {
                 ShowError("Pakiusap ilagay ang inyong mobile number."); return;
             }
             if (!IsValidPhone(phone)) {
                 ShowError("Invalid na format ng mobile number. Gamitin: 09XXXXXXXXX o +639XXXXXXXXX"); return;
             }
+
+            // ── EMAIL VALIDATION (optional field but strict if provided) ──
             if (!string.IsNullOrEmpty(email) && !IsValidEmail(email)) {
-                ShowError("Invalid na format ng email address."); return;
+                ShowError("Invalid na email address. Gumamit ng tunay na email (hal. ikaw@gmail.com)."); return;
             }
-            if (string.IsNullOrEmpty(barangay)) {
+
+            // ── BARANGAY VALIDATION ──
+            if (string.IsNullOrEmpty(barangay) || barangay == "0") {
                 ShowError("Pakiusap piliin ang inyong barangay."); return;
             }
+
+            // ── ADDRESS VALIDATION ──
             if (string.IsNullOrEmpty(address)) {
                 ShowError("Pakiusap ilagay ang inyong address."); return;
             }
+            if (address.Length < 5) {
+                ShowError("Pakiusap ilagay ang kumpletong address."); return;
+            }
+
+            // ── PASSWORD VALIDATION ──
             if (string.IsNullOrEmpty(password)) {
                 ShowError("Pakiusap ilagay ang password."); return;
             }
-            if (password.Length < 6) {
-                ShowError("Ang password ay dapat hindi bababa sa 6 na karakter."); return;
+            if (password.Length < 8) {
+                ShowError("Ang password ay dapat hindi bababa sa 8 na karakter."); return;
+            }
+            if (!Regex.IsMatch(password, @"[A-Za-z]") || !Regex.IsMatch(password, @"[0-9]")) {
+                ShowError("Ang password ay dapat may letra at numero."); return;
             }
             if (!string.Equals(password, confirm, StringComparison.Ordinal)) {
                 ShowError("Hindi magkatugma ang password."); return;
             }
 
+            // ── INSERT TO DATABASE (parameterized — SQL injection safe) ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO Users 
-                (FullName, Phone, Email, Password, Barangay, AddressLine, CreatedAt, IsActive, Role, ProfileImagePath)
+                    (FullName, Phone, Email, Password, Barangay, AddressLine, CreatedAt, IsActive, Role, ProfileImagePath)
                 VALUES 
-                (@FullName, @Phone, @Email, @Password, @Barangay, @AddressLine, GETDATE(), 1, 'User', '~/Images/default-icon.jpg')", conn))
-                {
-                cmd.Parameters.AddWithValue("@FullName", fullName);
-                cmd.Parameters.AddWithValue("@Phone", phone);
-                cmd.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
-                cmd.Parameters.AddWithValue("@Password", password);
-                cmd.Parameters.AddWithValue("@Barangay", barangay);
-                cmd.Parameters.AddWithValue("@AddressLine", address);
+                    (@FullName, @Phone, @Email, @Password, @Barangay, @AddressLine, GETDATE(), 1, 'User', '~/Images/default-icon.jpg')", conn)) {
+
+                cmd.Parameters.Add("@FullName", System.Data.SqlDbType.NVarChar, 100).Value = fullName;
+                cmd.Parameters.Add("@Phone", System.Data.SqlDbType.VarChar, 15).Value = phone;
+                cmd.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 150).Value = string.IsNullOrEmpty(email) ? (object)DBNull.Value : email;
+                cmd.Parameters.Add("@Password", System.Data.SqlDbType.NVarChar, 255).Value = password;
+                cmd.Parameters.Add("@Barangay", System.Data.SqlDbType.NVarChar, 60).Value = barangay;
+                cmd.Parameters.Add("@AddressLine", System.Data.SqlDbType.NVarChar, 255).Value = address;
 
                 try {
                     conn.Open();
@@ -74,14 +99,23 @@ namespace GROUP6_ANGAT {
                             ShowError("Duplicate entry. Subukan ng ibang details.");
                     }
                     else {
-                        ShowError("Nagkaroon ng error. Subukan ulit.");
+                        ShowError("Nagkaroon ng error sa server. Subukan ulit.");
                     }
                     return;
                 }
             }
 
-            //change that when they are successfully registered, they will be redirected to the login page
-            Response.Redirect("Login.aspx?signup=success");
+            Response.Redirect("~/Pages/Login.aspx?signup=success");
+        }
+
+        // ── HELPERS ──
+
+        // Trims, removes null, enforces max length
+        private string SanitizeText(string input, int maxLength) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            if (input.Length > maxLength) input = input.Substring(0, maxLength);
+            return input;
         }
 
         private bool IsValidPhone(string phone) {
@@ -89,7 +123,22 @@ namespace GROUP6_ANGAT {
         }
 
         private bool IsValidEmail(string email) {
-            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            // Must match standard email format with a real TLD (letters only, 2+ chars)
+            if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$"))
+                return false;
+
+            // Must have a valid-looking domain (at least one dot after @)
+            string domain = email.Split('@')[1].ToLowerInvariant();
+
+            // Block fake/internal TLDs
+            string[] blockedTlds = { ".local", ".test", ".internal", ".invalid", ".localhost", ".example", ".lan" };
+            foreach (var tld in blockedTlds)
+                if (domain.EndsWith(tld)) return false;
+
+            // Block single-label domains (no dot) e.g. user@angat
+            if (!domain.Contains(".")) return false;
+
+            return true;
         }
 
         private void ShowError(string message) {

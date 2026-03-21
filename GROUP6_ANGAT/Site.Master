@@ -53,11 +53,19 @@
                         <li class="desktop-only"><a runat="server" href="~/Pages/Login.aspx" class="nav-login">Login</a></li>
                     </asp:PlaceHolder>
                     <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
-                        <li class="desktop-only"><span class="nav-user">Hi, <asp:Label ID="lblNavUser" runat="server" /></span></li>
-                        <li class="desktop-only"><a runat="server" href="~/Pages/Profile.aspx" class="nav-login">Profile</a></li>
-                        <li class="desktop-only">
-                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-login" OnClick="BtnLogout_Click">Logout</asp:LinkButton>
-                         </li>
+                        <li class="desktop-only nav-profile-dropdown">
+                            <button type="button" class="nav-profile-icon" id="profileMenuBtn" title="Profile">
+                                <i class='bx bx-user-circle'></i>
+                            </button>
+                            <ul class="profile-dropdown-menu">
+                                <li><a runat="server" href="~/Pages/Profile.aspx"><i class='bx bx-user'></i> Profile</a></li>
+                                <li>
+                                    <asp:LinkButton ID="btnLogout" runat="server" CssClass="dropdown-logout" OnClick="BtnLogout_Click">
+                                        <i class='bx bx-log-out'></i> Logout
+                                    </asp:LinkButton>
+                                </li>
+                            </ul>
+                        </li>
                     </asp:PlaceHolder>
                     <li><a runat="server" href="~/Pages/Contact.aspx" class="nav-cta">Contact Us</a></li>
                 </ul>
@@ -116,9 +124,9 @@
                 <div class="footer-col">
                     <h5>Tulong</h5>
                     <ul>
-                        <li><a runat="server" href="~/Pages/Negosyo.aspx">Directory</a></li>
-                        <li><a runat="server" href="~/Pages/Puhunan.aspx">Puhunan Tips</a></li>
-                        <li><a runat="server" href="~/Pages/Training.aspx">Training Calendar</a></li>
+                        <li><a runat="server" href="~/Pages/Negosyo.aspx">Negosyo</a></li>
+                        <li><a runat="server" href="~/Pages/Puhunan.aspx">Puhunan</a></li>
+                        <li><a runat="server" href="~/Pages/Training.aspx">Training</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -199,6 +207,24 @@
                 }
             });
         });
+
+        var profileMenuBtn = document.getElementById('profileMenuBtn');
+        if (profileMenuBtn) {
+            profileMenuBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profileMenuBtn.nextElementSibling.classList.toggle('open');
+            });
+            document.addEventListener('click', function () {
+                var menu = profileMenuBtn.nextElementSibling;
+                if (menu) menu.classList.remove('open');
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    var menu = profileMenuBtn.nextElementSibling;
+                    if (menu) menu.classList.remove('open');
+                }
+            });
+        }
 
         document.querySelectorAll('.js-coming-soon').forEach(function (btn) {
             btn.addEventListener('click', function (event) {

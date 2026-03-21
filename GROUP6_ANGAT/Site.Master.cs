@@ -14,10 +14,6 @@ namespace GROUP6_ANGAT
             phLoggedOut.Visible = !isLoggedIn;
             phSideLoggedIn.Visible = isLoggedIn;
             phSideLoggedOut.Visible = !isLoggedIn;
-
-            if (isLoggedIn) {
-                lblNavUser.Text = Session["UserName"] != null ? Session["UserName"].ToString() : "User";
-            }
         }
 
         protected void BtnLogout_Click(object sender, EventArgs e)

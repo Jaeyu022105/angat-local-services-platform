@@ -15,8 +15,7 @@
                 negosyante ng ating lungsod. Walang pinipili, lahat tutulungan.
             </p>
             <div class="hero-btns">
-                <a href="/Pages/HanapTrabaho.aspx" class="btn-primary">Maghanap ng Trabaho</a>
-                <a href="/Pages/HanapGawa.aspx" class="btn-secondary">Mag-alok ng Serbisyo</a>
+                <a href="/Pages/About.aspx" class="btn-primary">Tungkol Sa Amin → </a>
             </div>
         </div>
         <div class="wave">

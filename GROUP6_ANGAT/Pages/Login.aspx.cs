@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -9,23 +9,30 @@ namespace GROUP6_ANGAT {
         protected void Page_Load(object sender, EventArgs e) { }
 
         protected void BtnLogin_Click(object sender, EventArgs e) {
-            string identifier = (txtLoginIdentifier.Text ?? "").Trim();
+
+            // ── SANITIZE INPUTS ──
+            string identifier = SanitizeText(txtLoginIdentifier.Text, maxLength: 150);
             string password = (txtLoginPassword.Text ?? "").Trim();
 
+            // ── REQUIRED CHECKS ──
             if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(password)) {
-                lblLoginMessage.Text = "Paki-kumpleto ang lahat ng field.";
-                return;
+                ShowError("Paki-kumpleto ang lahat ng field."); return;
             }
 
-            // Determine if phone or email
-            bool isPhone = Regex.IsMatch(identifier, @"^(09|\+639)\d{9}$");
-            bool isEmail = Regex.IsMatch(identifier, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            // ── DETERMINE LOGIN TYPE ──
+            bool isPhone = IsValidPhone(identifier);
+            bool isEmail = IsValidEmail(identifier.ToLowerInvariant());
 
             if (!isPhone && !isEmail) {
-                lblLoginMessage.Text = "Invalid na format. Ilagay ang inyong mobile number o email.";
-                return;
+                ShowError("Invalid na format. Ilagay ang inyong mobile number o email address."); return;
             }
 
+            // ── PASSWORD LENGTH SANITY CHECK ──
+            if (password.Length < 8 || password.Length > 255) {
+                ShowError("Maling password. Subukan ulit."); return;
+            }
+
+            // ── QUERY DATABASE (parameterized — SQL injection safe) ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString)) {
                 string query = isPhone
@@ -33,22 +40,23 @@ namespace GROUP6_ANGAT {
                     : "SELECT UserId, FullName, Password, Phone FROM Users WHERE Email = @Identifier AND IsActive = 1";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn)) {
-                    cmd.Parameters.AddWithValue("@Identifier",
-                        isEmail ? identifier.ToLowerInvariant() : identifier);
+                    if (isPhone)
+                        cmd.Parameters.Add("@Identifier", SqlDbType.VarChar, 15).Value = identifier;
+                    else
+                        cmd.Parameters.Add("@Identifier", SqlDbType.VarChar, 150).Value = identifier.ToLowerInvariant();
 
                     conn.Open();
                     using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleRow)) {
                         if (!reader.Read()) {
-                            lblLoginMessage.Text = isPhone
+                            ShowError(isPhone
                                 ? "Walang account na tumutugma sa mobile number na ito."
-                                : "Walang account na tumutugma sa email na ito.";
+                                : "Walang account na tumutugma sa email na ito.");
                             return;
                         }
 
                         string storedPassword = reader["Password"].ToString();
                         if (!string.Equals(password, storedPassword, StringComparison.Ordinal)) {
-                            lblLoginMessage.Text = "Maling password. Subukan ulit.";
-                            return;
+                            ShowError("Maling password. Subukan ulit."); return;
                         }
 
                         Session["UserId"] = reader["UserId"];
@@ -58,12 +66,45 @@ namespace GROUP6_ANGAT {
                 }
             }
 
+            // ── REDIRECT ──
             string returnUrl = Request.QueryString["returnUrl"];
-            if (!string.IsNullOrWhiteSpace(returnUrl) && returnUrl.StartsWith("/")) {
+            if (!string.IsNullOrWhiteSpace(returnUrl) && returnUrl.StartsWith("/"))
                 Response.Redirect(returnUrl);
-                return;
-            }
-            Response.Redirect("~/");
+            else
+                Response.Redirect("~/");
+        }
+
+        // ── HELPERS ──
+
+        private string SanitizeText(string input, int maxLength) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            if (input.Length > maxLength) input = input.Substring(0, maxLength);
+            return input;
+        }
+
+        private bool IsValidPhone(string phone) {
+            return Regex.IsMatch(phone, @"^(09|\+639)\d{9}$");
+        }
+
+        private bool IsValidEmail(string email) {
+            if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$"))
+                return false;
+
+            string domain = email.Split('@')[1].ToLowerInvariant();
+
+            string[] blockedTlds = { ".local", ".test", ".internal", ".invalid", ".localhost", ".example", ".lan" };
+            foreach (var tld in blockedTlds)
+                if (domain.EndsWith(tld)) return false;
+
+            if (!domain.Contains(".")) return false;
+
+            return true;
+        }
+
+        private void ShowError(string message) {
+            lblLoginMessage.CssClass = "login-helper error";
+            lblLoginMessage.Text = message;
         }
     }
 }

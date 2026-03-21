@@ -223,7 +223,6 @@
                         Mag-login para mag-request
                     </a>
                 </asp:PlaceHolder>
-                <button type="button" class="btn-outline job-modal-close">Isara</button>
             </div>
         </div>
     </div>

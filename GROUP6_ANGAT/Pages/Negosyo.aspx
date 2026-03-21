@@ -158,7 +158,6 @@
             </div>
 
             <div class="job-modal-actions">
-                <button type="button" class="btn-outline job-modal-close">Isara</button>
             </div>
         </div>
     </div>
