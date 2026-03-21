@@ -20,16 +20,10 @@ namespace GROUP6_ANGAT.Pages
                 BindTrainingData();
             }
         }
-
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            // Capture current inputs
-            string searchTerm = txtSearch.Text.Trim();
-            string statusFilter = ddlStatus.SelectedValue;
-
-            BindTrainingData(searchTerm, statusFilter);
+            BindTrainingData();
         }
-
         private void BindTrainingData(string search = "", string status = "All")
         {
             // Ensure "AngatDB" matches your Web.config connection string name

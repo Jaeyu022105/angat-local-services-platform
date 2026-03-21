@@ -19,47 +19,47 @@ namespace GROUP6_ANGAT.Pages
             }
         }
 
-        // =============================================
-        // SEARCH & FILTER LOGIC
-        // =============================================
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            string search = txtSearch.Text.Trim();
-            string filter = ddlLoanType.SelectedValue;
-            LoadPuhunanPrograms(search, filter);
+            LoadPuhunanPrograms();
         }
 
-        private void LoadPuhunanPrograms(string searchQuery = "", string loanFilter = "All")
+        private void LoadPuhunanPrograms()
         {
-            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            var connSettings = ConfigurationManager.ConnectionStrings["AngatDB"];
+
+            if (connSettings == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Error: AngatDB connection string not found in Web.config");
+                return;
+            }
+
+            string connString = connSettings.ConnectionString;
+
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Including LoanType in the SELECT so we can use it if needed
-                string query = "SELECT ProgramName, TagText, CategorySlug, Description, TargetURL, LoanType FROM PuhunanPrograms WHERE 1=1";
-
-                if (!string.IsNullOrEmpty(searchQuery))
-                    query += " AND ProgramName LIKE @search";
-
-                if (!string.IsNullOrEmpty(loanFilter) && loanFilter != "All")
-                    query += " AND LoanType = @type";
-
+                string query = "SELECT ProgramName, TagText, CategorySlug, Description, TargetURL, LoanType FROM PuhunanPrograms";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@search", "%" + searchQuery + "%");
-                cmd.Parameters.AddWithValue("@type", loanFilter);
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
+
                 try
                 {
                     conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
-                    rptPuhunan.DataSource = dt;
-                    rptPuhunan.DataBind();
+
+                    if (rptPuhunan != null)
+                    {
+                        rptPuhunan.DataSource = dt;
+                        rptPuhunan.DataBind();
+                    }
                 }
-                catch (Exception) { /* Handle error or log it */ }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Database Error: " + ex.Message);
+                }
             }
         }
-
         // =============================================
         // ICONS AND STYLING HELPERS
         // =============================================
@@ -77,7 +77,9 @@ namespace GROUP6_ANGAT.Pages
 
         protected string GetIconClass(string slug)
         {
-            switch (slug.ToUpper())
+            if (string.IsNullOrEmpty(slug)) return "bx-help-circle";
+
+            switch (slug.Trim().ToUpper())
             {
                 case "DOLE": return "bx-briefcase-alt-2";
                 case "SSS": return "bxs-id-card";

@@ -20,7 +20,7 @@
             </svg>
         </div>
     </div>
-
+<div class="section section-light" style="padding-top: 40px;">
     <div class="page-quick">
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-store'></i></div>
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="section section-light" style="padding-top: 40px;">
+
         <div class="section-header left" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
                 <h3>Ating Mga <span>Tindahan</span></h3>
