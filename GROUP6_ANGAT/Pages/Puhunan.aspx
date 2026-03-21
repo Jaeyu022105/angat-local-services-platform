@@ -56,7 +56,7 @@
                 <div class="search-field">
                     <span class="s-icon"><i class='bx bx-calendar'></i></span>
                     <select id="loanTypeFilter" onchange="filterLoans()">
-                        <option value="All">Lahat ng Loans</option>
+                        <option value="all">Lahat ng Loans</option>
                         <option value="Micro">Micro Loans</option>
                         <option value="Small">Small Loans</option>
                         <option value="Big">Big Loans</option>
@@ -68,8 +68,8 @@
             </div>
         </div>
         <!-- SearchBar done -->
-
             <div class="section-header">
+                <br>
                     <h3>Mga Programa para sa <span>Micro-Entrepreneurs</span></h3>
                     <p class="section-sub">Huwag nang kumagat sa "5-6". Narito ang mga ligtas na ahensya na handang tumulong sa pag-asenso ng iyong kabuhayan.</p>
                 </div>
@@ -79,7 +79,7 @@
                         <ItemTemplate>
                             <div class="listing-card" 
                                  data-search='<%# Eval("ProgramName").ToString().ToLower() %> <%# Eval("Description").ToString().ToLower() %>' 
-                                 data-category='<%# Eval("CategorySlug") %>'
+                                 data-category='<%# Eval("LoanType") %>'
                                  style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0;">
                 
                                 <div class="listing-icon" style='<%# GetIconStyle(Eval("CategorySlug").ToString()) %>'>
@@ -122,29 +122,22 @@
     <script type="text/javascript">
         function filterLoans() {
             const query = document.getElementById('loanSearch').value.toLowerCase().trim();
-            const categoryFilter = document.getElementById('loanTypeFilter').value;
+            const categoryFilter = document.getElementById('loanTypeFilter').value.toLowerCase().trim(); // Convert dropdown value to lowercase
             const cards = document.querySelectorAll('.listing-card');
-            const noResults = document.getElementById('noLoanResults');
-            let visibleCount = 0;
 
             cards.forEach(card => {
-                const searchText = card.getAttribute('data-search') || '';
-                const cardCategory = card.getAttribute('data-category') || '';
-
-                // Match logic
+                const searchText = (card.getAttribute('data-search') || '').toLowerCase();
+                const cardCategory = (card.getAttribute('data-category') || '').trim();
                 const matchesSearch = !query || searchText.includes(query);
-                const matchesCategory = (categoryFilter === 'All') || (cardCategory === categoryFilter);
+                const matchesCategory = (categoryFilter === 'all') ||
+                    (cardCategory.toLowerCase() === categoryFilter.toLowerCase());
 
                 if (matchesSearch && matchesCategory) {
                     card.style.display = 'flex';
-                    visibleCount++;
                 } else {
                     card.style.display = 'none';
                 }
             });
-
-            // Show/Hide no results message
-            noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
         }
 
         // Modal Functions

@@ -150,7 +150,7 @@
             <div class="form-group">
                 <label>Bilang ng Kailangan <span class="required">*</span></label>
                 <asp:TextBox ID="txtSlots" runat="server" TextMode="Number" Text="1"></asp:TextBox>
-                <small class="field-hint">Ilang tao ang kailangan mo? (1–10)</small>
+                <small class="field-hint">Ilang tao ang kailangan mo? (1-10)</small>
             </div>
 
             <%-- Description --%>

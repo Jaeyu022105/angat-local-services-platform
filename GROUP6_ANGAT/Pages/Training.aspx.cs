@@ -26,7 +26,6 @@ namespace GROUP6_ANGAT.Pages
         }
         private void BindTrainingData(string search = "", string status = "All")
         {
-            // Ensure "AngatDB" matches your Web.config connection string name
             string connStr = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connStr))

@@ -77,6 +77,7 @@
     </div>
 </div>
         <div class="section-header">
+            <br>
         <h3>Mga Libreng Training para sa <span>Masa</span></h3>
         <p class="section-sub">Huwag nang mag-alala kung wala kang budget—narito ang mga ahensya na handang tumulong sa paghasa ng iyong kakayahan at pag-angat ng iyong kinabukasan</p>
     </div>
@@ -107,15 +108,17 @@
 
                     <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; margin-top: auto;">
                         <button type="button" 
-                            <%# Eval("Status").ToString() != "Open" ? "disabled" : "" %>
+                            <%# Eval("Status").ToString().Trim().Equals("Open", StringComparison.OrdinalIgnoreCase) ? "" : "disabled" %>
                             onclick="showTrainingModal('<%# Eval("Title").ToString().Replace("'", "\\'") %>', '<%# Eval("ApplyURL") %>')" 
                             style="background: none; border: none; 
-                                   color: <%# Eval("Status").ToString() == "Open" ? "#15803d" : "#94a3b8" %>; 
+                                   color: <%# Eval("Status").ToString().Trim().Equals("Open", StringComparison.OrdinalIgnoreCase) ? "#15803d" : "#94a3b8" %>; 
                                    font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; 
-                                   cursor: <%# Eval("Status").ToString() == "Open" ? "pointer" : "not-allowed" %>; 
-                                   padding: 0;">
-                            <%# Eval("Status").ToString() == "Open" ? "Alamin ang requirements" : "Registration Closed" %> 
-                            <i class='bx bx-right-arrow-alt'></i>
+                                   cursor: <%# Eval("Status").ToString().Trim().Equals("Open", StringComparison.OrdinalIgnoreCase) ? "pointer" : "default" %>; 
+                                   padding: 0; width: auto; min-height: 24px;">
+
+                            <%# Eval("Status").ToString().Trim().Equals("Open", StringComparison.OrdinalIgnoreCase) ? "Alamin ang requirements" : "Registration Closed" %> 
+    
+                            <i class='bx bx-right-arrow-alt' style="font-size: 1.2rem;"></i>
                         </button>
                     </div>
                 </div>
@@ -123,7 +126,23 @@
         </asp:Repeater>
     </div>
 </div>
-
+<div id="requirementsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <h2 id="modalTitle" style="margin-bottom: 15px; color: #1e293b; font-weight: bold; font-family: sans-serif;">Program Name</h2>
+        <p style="color: #64748b; margin-bottom: 25px; line-height: 1.6; font-family: sans-serif;">Siguraduhing handa ang iyong mga dokumento bago mag-apply sa website ng ahensya.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" onclick="closeModal()" 
+                    style="padding: 12px 24px; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; font-weight: bold; font-size: 1rem; background: #f8fafc; color: #475569;">
+                Cancel
+            </button>
+            <a id="modalLink" href="#" target="_blank" 
+               style="padding: 12px 24px; border-radius: 8px; background: #15803d; color: white; text-decoration: none; font-weight: bold; font-size: 1rem; display: inline-block;">
+                Bisitahin ang Website
+            </a>
+        </div>
+    </div>
+</div>
     <script type="text/javascript">
         function applyClientFilter() {
             const query = document.getElementById('hgSearch').value.toLowerCase().trim();
@@ -147,19 +166,22 @@
                 }
             });
 
-            // Show "No Results" message if everything is hidden
             noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
         }
-
-        // Modal Logic
         function showTrainingModal(name, url) {
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalLink').href = url;
-            document.getElementById('trainingModal').style.display = 'flex';
+            document.getElementById('requirementsModal').style.display = 'flex';
         }
 
-        function closeTrainingModal() {
-            document.getElementById('trainingModal').style.display = 'none';
+        function closeModal() {
+            document.getElementById('requirementsModal').style.display = 'none';
         }
-</script>
+        window.onclick = function (event) {
+            const modal = document.getElementById('requirementsModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 </asp:Content>
