@@ -64,8 +64,19 @@
             </div>
 
             <div class="form-group">
+                <label>Contact Number <span class="optional">(optional)</span></label>
+                <asp:TextBox ID="txtContactNumber" runat="server" placeholder="09XXXXXXXXX"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
                 <label>Oras ng Operasyon</label>
                 <asp:TextBox ID="txtHours" runat="server" placeholder="Hal. 6AM - 10PM"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
+                <label>Google Maps Embed Link <span class="optional">(optional)</span></label>
+                <asp:TextBox ID="txtMapEmbedUrl" runat="server" placeholder="I-paste ang Google Maps embed link"></asp:TextBox>
+                <small class="field-hint">Kung may iframe embed code, ilagay lang ang src link.</small>
             </div>
 
             <div class="form-group">

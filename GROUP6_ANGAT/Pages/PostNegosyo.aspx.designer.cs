@@ -50,9 +50,19 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.TextBox txtOwnerName;
 
         /// <summary>
+        /// txtContactNumber control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtContactNumber;
+
+        /// <summary>
         /// txtHours control.
         /// </summary>
         protected global::System.Web.UI.WebControls.TextBox txtHours;
+
+        /// <summary>
+        /// txtMapEmbedUrl control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtMapEmbedUrl;
 
         /// <summary>
         /// txtTags control.

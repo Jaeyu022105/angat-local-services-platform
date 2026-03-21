@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace GROUP6_ANGAT
 {
@@ -49,7 +50,9 @@ namespace GROUP6_ANGAT
             string barangay = (txtBarangay.Text ?? "").Trim();
             string address = (txtAddressLine.Text ?? "").Trim();
             string ownerName = (txtOwnerName.Text ?? "").Trim();
+            string contactNumber = (txtContactNumber.Text ?? "").Trim();
             string hours = (txtHours.Text ?? "").Trim();
+            string mapEmbedUrl = NormalizeMapEmbedUrl(txtMapEmbedUrl.Text);
             string tags = (txtTags.Text ?? "").Trim();
             string status = ddlStatus.SelectedValue;
 
@@ -69,17 +72,19 @@ namespace GROUP6_ANGAT
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO DirectoryBusinesses
-                    (BusinessName, Category, Barangay, AddressLine, OwnerName, Hours, Tags, Status, IsActive, CreatedAt, UserId)
+                    (BusinessName, Category, Barangay, AddressLine, OwnerName, ContactNumber, Hours, Tags, MapEmbedUrl, Status, IsActive, CreatedAt, UserId)
                 VALUES
-                    (@BusinessName, @Category, @Barangay, @AddressLine, @OwnerName, @Hours, @Tags, @Status, 1, GETDATE(), @UserId)", conn))
+                    (@BusinessName, @Category, @Barangay, @AddressLine, @OwnerName, @ContactNumber, @Hours, @Tags, @MapEmbedUrl, @Status, 1, GETDATE(), @UserId)", conn))
             {
                 cmd.Parameters.AddWithValue("@BusinessName", name);
                 cmd.Parameters.AddWithValue("@Category", category);
                 cmd.Parameters.AddWithValue("@Barangay", barangay);
                 cmd.Parameters.AddWithValue("@AddressLine", string.IsNullOrWhiteSpace(address) ? (object)DBNull.Value : address);
                 cmd.Parameters.AddWithValue("@OwnerName", string.IsNullOrWhiteSpace(ownerName) ? (object)DBNull.Value : ownerName);
+                cmd.Parameters.AddWithValue("@ContactNumber", string.IsNullOrWhiteSpace(contactNumber) ? (object)DBNull.Value : contactNumber);
                 cmd.Parameters.AddWithValue("@Hours", string.IsNullOrWhiteSpace(hours) ? (object)DBNull.Value : hours);
                 cmd.Parameters.AddWithValue("@Tags", string.IsNullOrWhiteSpace(tags) ? (object)DBNull.Value : tags);
+                cmd.Parameters.AddWithValue("@MapEmbedUrl", string.IsNullOrWhiteSpace(mapEmbedUrl) ? (object)DBNull.Value : mapEmbedUrl);
                 cmd.Parameters.AddWithValue("@Status", status);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
 
@@ -93,7 +98,9 @@ namespace GROUP6_ANGAT
             txtBarangay.Text = "";
             txtAddressLine.Text = "";
             txtOwnerName.Text = Session["UserName"] != null ? Session["UserName"].ToString() : "";
+            txtContactNumber.Text = "";
             txtHours.Text = "";
+            txtMapEmbedUrl.Text = "";
             txtTags.Text = "";
             ddlStatus.SelectedIndex = 0;
         }
@@ -122,6 +129,32 @@ namespace GROUP6_ANGAT
             pnlPostMessage.Visible = true;
             pnlPostMessage.CssClass = $"form-alert {type}";
             lblPostMessage.Text = message;
+        }
+
+        private string NormalizeMapEmbedUrl(string raw)
+        {
+            string text = (raw ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return "";
+            }
+
+            if (text.IndexOf("<iframe", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                Match match = Regex.Match(text, "src\\s*=\\s*\"([^\"]+)\"", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    return match.Groups[1].Value.Trim();
+                }
+
+                match = Regex.Match(text, "src\\s*=\\s*'([^']+)'", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    return match.Groups[1].Value.Trim();
+                }
+            }
+
+            return text;
         }
     }
 }

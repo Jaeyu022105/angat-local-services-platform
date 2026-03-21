@@ -21,8 +21,9 @@ namespace GROUP6_ANGAT.Pages
 
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                SELECT d.BusinessName, d.Category, d.Barangay, d.AddressLine, d.OwnerName, d.Hours, d.Tags, d.Status,
-                       COALESCE(u.FullName, d.OwnerName) AS OwnerDisplay
+                SELECT d.BusinessName, d.Category, d.Barangay, d.AddressLine, d.OwnerName, d.ContactNumber,
+                       d.MapEmbedUrl, d.Hours, d.Tags, d.Status,
+                       COALESCE(NULLIF(LTRIM(RTRIM(d.OwnerName)), ''), u.FullName) AS OwnerDisplay
                 FROM DirectoryBusinesses d
                 LEFT JOIN Users u ON d.UserId = u.UserId
                 WHERE d.IsActive = 1
@@ -43,6 +44,29 @@ namespace GROUP6_ANGAT.Pages
             string owner = (ownerObj ?? "").ToString();
             string extra = (address + " " + owner).Trim();
             return GROUP6_ANGAT.DisplayHelper.GetSearchText(nameObj, tagsObj, barangayObj, categoryObj, extra);
+        }
+
+        protected string GetAddressValue(object addressObj, object barangayObj)
+        {
+            string address = (addressObj ?? "").ToString().Trim();
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                return address;
+            }
+
+            string barangay = (barangayObj ?? "").ToString().Trim();
+            if (string.IsNullOrWhiteSpace(barangay))
+            {
+                return "Bi\u00f1an";
+            }
+
+            return "Brgy. " + barangay + ", Bi\u00f1an";
+        }
+
+        protected string EncodeAttr(object value)
+        {
+            string text = value == null ? "" : value.ToString();
+            return HttpUtility.HtmlAttributeEncode(text);
         }
 
         protected string GetDisplayLocation(object addressObj, object barangayObj)

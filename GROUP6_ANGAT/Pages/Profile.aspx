@@ -114,6 +114,9 @@
                 <button type="button" class="profile-tab-btn" data-tab="servicelistings">
                     <i class='bx bx-store-alt'></i> Aking Service Listings
                 </button>
+                <button type="button" class="profile-tab-btn" data-tab="businesslistings">
+                    <i class='bx bx-store'></i> Aking Negosyo Listings
+                </button>
             </div>
 
             <%-- Global alert --%>
@@ -122,6 +125,9 @@
             </asp:Panel>
             <asp:Panel ID="pnlServiceMessage" runat="server" CssClass="form-alert" Visible="false" style="margin-top:16px;">
                 <asp:Label ID="lblServiceMessage" runat="server" />
+            </asp:Panel>
+            <asp:Panel ID="pnlBusinessMessage" runat="server" CssClass="form-alert" Visible="false" style="margin-top:16px;">
+                <asp:Label ID="lblBusinessMessage" runat="server" />
             </asp:Panel>
 
             <%-- TAB 1: My Applications --%>
@@ -377,7 +383,50 @@
                 </asp:Repeater>
             </div>
 
-        </div><%-- end profile-tabs --%>
+        
+            <%-- TAB 5: My Business Listings --%>
+            <div class="profile-tab-content" id="tab-businesslistings">
+                <asp:Panel ID="pnlNoBusinessListings" runat="server" CssClass="empty-state" Visible="false">
+                    <i class='bx bx-store'></i>
+                    <h4>Wala ka pang negosyo listings</h4>
+                    <p><a href="/Pages/PostNegosyo.aspx">Mag-rehistro ng negosyo</a> para magsimula.</p>
+                </asp:Panel>
+
+                <asp:Repeater ID="rptBusinessListings" runat="server" OnItemCommand="RptBusinessListings_ItemCommand">
+                    <ItemTemplate>
+                        <div class="app-card">
+                            <div class="app-card-top">
+                                <div>
+                                    <h4><%# Eval("BusinessName") %></h4>
+                                    <p class="app-location">
+                                        <i class='bx bx-map'></i> <%# GetBusinessLocation(Eval("AddressLine"), Eval("Barangay")) %>
+                                    </p>
+                                </div>
+                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                    <%# Eval("Status") %>
+                                </span>
+                            </div>
+                            <div class="app-meta">
+                                <span class="app-pay"><%# Eval("Category") %></span>
+                                <span><%# Eval("CreatedAt", "{0:MMM dd, yyyy}") %></span>
+                            </div>
+                            <p class="app-tags"><%# FormatTags(Eval("Tags")) %></p>
+                            <p style="font-size:0.82rem; color:var(--text-soft); margin-top:6px;">
+                                <i class='bx bx-phone'></i> <%# GetBusinessContact(Eval("ContactNumber")) %>
+                            </p>
+                            <div class="app-actions">
+                                <asp:LinkButton ID="btnDeleteBusinessListing" runat="server"
+                                    CssClass="btn-outline app-retract"
+                                    CommandName="DeleteBusinessListing"
+                                    CommandArgument='<%# Eval("DirectoryId") %>'>
+                                    I-delete
+                                </asp:LinkButton>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
+</div><%-- end profile-tabs --%>
     </div>
 
     <script>
@@ -395,3 +444,4 @@
         });
     </script>
 </asp:Content>
+

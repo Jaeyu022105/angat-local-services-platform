@@ -19,6 +19,7 @@ namespace GROUP6_ANGAT {
                 LoadServiceRequests();
                 LoadMyListings();
                 LoadMyServiceListings();
+                LoadMyBusinessListings();
             }
         }
 
@@ -152,6 +153,26 @@ namespace GROUP6_ANGAT {
         }
 
         // =============================================
+        // LOAD MY BUSINESS LISTINGS (user posted negosyo)
+        // =============================================
+        private void LoadMyBusinessListings() {
+            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT DirectoryId, BusinessName, Category, Barangay, AddressLine, Tags, Status, CreatedAt, ContactNumber
+                FROM DirectoryBusinesses
+                WHERE UserId = @UserId AND IsActive = 1
+                ORDER BY CreatedAt DESC", conn)) {
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rptBusinessListings.DataSource = reader;
+                    rptBusinessListings.DataBind();
+                    pnlNoBusinessListings.Visible = !hasRows;
+                }
+            }
+        }
         // ITEM DATA BOUND — load nested applicants
         // =============================================
         protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
@@ -351,6 +372,29 @@ namespace GROUP6_ANGAT {
         }
 
         // =============================================
+        // DELETE BUSINESS LISTING
+        // =============================================
+        protected void RptBusinessListings_ItemCommand(object source, RepeaterCommandEventArgs e) {
+            if (e.CommandName != "DeleteBusinessListing") return;
+
+            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE DirectoryBusinesses SET IsActive = 0
+                WHERE DirectoryId = @DirectoryId AND UserId = @UserId", conn)) {
+                cmd.Parameters.AddWithValue("@DirectoryId", e.CommandArgument);
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                conn.Open();
+                int rows = cmd.ExecuteNonQuery();
+
+                pnlBusinessMessage.Visible = true;
+                pnlBusinessMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+                lblBusinessMessage.Text = rows > 0 ? "Na-delete ang negosyo listing." : "Hindi ma-delete ang listing.";
+            }
+
+            LoadMyBusinessListings();
+        }
+        // =============================================
         // RETRACT APPLICATION
         // =============================================
         protected void RptApplications_ItemCommand(object source, RepeaterCommandEventArgs e) {
@@ -515,5 +559,40 @@ namespace GROUP6_ANGAT {
         protected string GetPayLabel(object minObj, object maxObj, object rateObj) {
             return GROUP6_ANGAT.DisplayHelper.GetPayDisplay(minObj, maxObj, rateObj);
         }
+        protected string GetBusinessLocation(object addressObj, object barangayObj) {
+            string address = addressObj == null ? "" : addressObj.ToString().Trim();
+            if (!string.IsNullOrWhiteSpace(address)) {
+                return address;
+            }
+
+            string barangay = barangayObj == null ? "" : barangayObj.ToString().Trim();
+            if (string.IsNullOrWhiteSpace(barangay)) {
+                return "Bi\u00f1an";
+            }
+
+            return "Brgy. " + barangay + ", Bi\u00f1an";
+        }
+
+        protected string GetBusinessContact(object contactObj) {
+            string contact = contactObj == null ? "" : contactObj.ToString().Trim();
+            return string.IsNullOrWhiteSpace(contact) ? "Walang contact number" : contact;
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

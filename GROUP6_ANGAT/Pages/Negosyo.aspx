@@ -80,8 +80,17 @@
         <div id="dirListings" class="listings-grid">
             <asp:Repeater ID="rptDirectory" runat="server">
                 <ItemTemplate>
-                    <a href="#" class="listing-card"
-                       data-category='<%# Eval("Category") %>'
+                    <button type="button" class="listing-card listing-card-button"
+                       data-name='<%# EncodeAttr(Eval("BusinessName")) %>'
+                       data-category='<%# EncodeAttr(Eval("Category")) %>'
+                       data-status='<%# EncodeAttr(Eval("Status")) %>'
+                       data-address='<%# EncodeAttr(GetAddressValue(Eval("AddressLine"), Eval("Barangay"))) %>'
+                       data-contact='<%# EncodeAttr(Eval("ContactNumber")) %>'
+                       data-map='<%# EncodeAttr(Eval("MapEmbedUrl")) %>'
+                       data-owner='<%# EncodeAttr(Eval("OwnerDisplay")) %>'
+                       data-icon-class='<%# EncodeAttr(GetCategoryIconClass(Eval("Category"))) %>'
+                       data-icon-style='<%# EncodeAttr(GetCategoryIconStyle(Eval("Category"))) %>'
+                       data-badge-class='<%# EncodeAttr(GetCategoryBadgeClass(Eval("Category"))) %>'
                        data-search='<%# BuildSearchText(Eval("BusinessName"), Eval("Tags"), Eval("Barangay"), Eval("Category"), Eval("AddressLine"), Eval("OwnerDisplay")) %>'>
                         <div class="listing-top">
                             <div class="listing-icon" style='<%# GetCategoryIconStyle(Eval("Category")) %>'>
@@ -99,13 +108,58 @@
                             <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerDisplay")) %></span>
                             <span class="listing-date" style='<%# GetStatusStyle(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>
-                    </a>
+                    </button>
                 </ItemTemplate>
             </asp:Repeater>
         </div>
         
         <div style="text-align:center; margin-top: 40px;">
             <button class="btn-outline js-coming-soon" data-msg="Wala pang dagdag na negosyo ngayon.">Mag-load ng iba pang negosyo <i class='bx bx-chevron-down'></i></button>
+        </div>
+    </div>
+
+    <%-- BUSINESS MODAL --%>
+    <div id="businessModal" class="job-modal">
+        <div class="job-modal-backdrop"></div>
+        <div class="job-modal-card">
+            <button type="button" class="job-modal-close job-modal-close-icon" aria-label="Isara">✕</button>
+
+            <div class="job-modal-header">
+                <div id="bizIcon" class="listing-icon" style="margin-right:6px;">
+                    <i id="bizIconI" class='bx'></i>
+                </div>
+                <div>
+                    <h4 id="bizName" style="margin:0;"></h4>
+                    <span id="bizCategory" class="badge"></span>
+                </div>
+            </div>
+
+            <p id="bizOwner" class="job-meta"></p>
+
+            <div class="modal-info-grid">
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Address</span>
+                    <span class="modal-info-value" id="bizAddress"></span>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Contact</span>
+                    <span class="modal-info-value" id="bizContact"></span>
+                </div>
+            </div>
+
+            <div class="modal-desc-block">
+                <span class="modal-info-label">Google Map</span>
+                <div id="bizMapWrap" style="margin-top:8px; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+                    <iframe id="bizMap" title="Business location" loading="lazy"
+                        style="width:100%; height:220px; border:0;" allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <p id="bizMapEmpty" class="job-meta" style="margin-top:8px;">Walang map link.</p>
+            </div>
+
+            <div class="job-modal-actions">
+                <button type="button" class="btn-outline job-modal-close">Isara</button>
+            </div>
         </div>
     </div>
 
@@ -132,6 +186,105 @@
             filterBtn.addEventListener('click', applyFilter);
             searchInput.addEventListener('keyup', applyFilter);
             categorySelect.addEventListener('change', applyFilter);
+        })();
+
+        (function () {
+            const modal = document.getElementById('businessModal');
+            const backdrop = modal.querySelector('.job-modal-backdrop');
+            const closeBtns = modal.querySelectorAll('.job-modal-close');
+            const mapFrame = modal.querySelector('#bizMap');
+            const mapWrap = modal.querySelector('#bizMapWrap');
+            const mapEmpty = modal.querySelector('#bizMapEmpty');
+            const categoryBadge = modal.querySelector('#bizCategory');
+            const iconWrap = modal.querySelector('#bizIcon');
+            const iconI = modal.querySelector('#bizIconI');
+
+            function buildEmbedUrl(mapUrl, address) {
+                const addr = (address || '').trim();
+                const fallback = addr
+                    ? 'https://www.google.com/maps?q=' + encodeURIComponent(addr) + '&output=embed'
+                    : '';
+
+                const raw = (mapUrl || '').trim();
+                if (!raw) return fallback;
+
+                let url;
+                try {
+                    url = new URL(raw, window.location.origin);
+                } catch (e) {
+                    return fallback;
+                }
+
+                const host = url.hostname.toLowerCase();
+                const allowed = url.protocol === 'https:' && (
+                    host.endsWith('google.com') ||
+                    host.endsWith('google.com.ph') ||
+                    host === 'maps.google.com' ||
+                    host === 'maps.app.goo.gl' ||
+                    host === 'goo.gl'
+                );
+
+                if (!allowed) return fallback;
+
+                const rawLower = raw.toLowerCase();
+                if (rawLower.includes('/maps/embed') || rawLower.includes('output=embed')) {
+                    return raw;
+                }
+
+                if (addr) return fallback;
+
+                if (rawLower.includes('/maps')) {
+                    const joiner = raw.includes('?') ? '&' : '?';
+                    return raw + joiner + 'output=embed';
+                }
+
+                return raw;
+            }
+
+            function openModal(card) {
+                modal.querySelector('#bizName').textContent = card.dataset.name || '';
+                modal.querySelector('#bizOwner').textContent = card.dataset.owner ? ('Owner: ' + card.dataset.owner) : 'Owner: N/A';
+                modal.querySelector('#bizAddress').textContent = card.dataset.address || 'Biñan';
+                modal.querySelector('#bizContact').textContent = card.dataset.contact || 'Walang contact number';
+
+                const category = card.dataset.category || '';
+                categoryBadge.textContent = category;
+                categoryBadge.className = 'badge ' + (card.dataset.badgeClass || 'badge-teal');
+
+                iconWrap.style.cssText = card.dataset.iconStyle || '';
+                iconI.className = 'bx ' + (card.dataset.iconClass || 'bx-store');
+
+                const mapUrl = card.dataset.map || '';
+                const embedUrl = buildEmbedUrl(mapUrl, card.dataset.address || '');
+                if (embedUrl) {
+                    mapFrame.src = embedUrl;
+                    mapWrap.style.display = '';
+                    mapEmpty.style.display = 'none';
+                } else {
+                    mapFrame.src = '';
+                    mapWrap.style.display = 'none';
+                    mapEmpty.style.display = '';
+                }
+
+                modal.classList.add('open');
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                document.body.classList.remove('modal-open');
+                mapFrame.src = '';
+            }
+
+            document.querySelectorAll('#dirListings .listing-card-button').forEach(function (card) {
+                card.addEventListener('click', function () { openModal(card); });
+            });
+
+            closeBtns.forEach(function (btn) { btn.addEventListener('click', closeModal); });
+            backdrop.addEventListener('click', closeModal);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+            });
         })();
     </script>
 </asp:Content>
