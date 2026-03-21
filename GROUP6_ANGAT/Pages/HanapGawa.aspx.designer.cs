@@ -7,71 +7,99 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT.Pages
-{
+namespace GROUP6_ANGAT.Pages {
 
 
-    public partial class HanapGawa
-    {
+    public partial class HanapGawa {
 
         /// <summary>
         /// pnlServiceApplyMessage control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlServiceApplyMessage;
 
         /// <summary>
         /// lblServiceApplyMessage control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblServiceApplyMessage;
 
         /// <summary>
         /// rptServices control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptServices;
+
+        /// <summary>
+        /// pnlEmpty control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlEmpty;
 
         /// <summary>
         /// phServiceLoggedIn control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder phServiceLoggedIn;
 
         /// <summary>
         /// btnRequestService control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRequestService;
 
         /// <summary>
         /// phServiceLoggedOut control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder phServiceLoggedOut;
 
         /// <summary>
         /// hfServiceId control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfServiceId;
 
         /// <summary>
         /// hfServiceTitle control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfServiceTitle;
-
-        /// <summary>
-        /// hfServiceLocation control.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.HiddenField hfServiceLocation;
-
-        /// <summary>
-        /// hfServiceRate control.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.HiddenField hfServiceRate;
-
-        /// <summary>
-        /// hfServiceTags control.
-        /// </summary>
-        protected global::System.Web.UI.WebControls.HiddenField hfServiceTags;
 
         /// <summary>
         /// hfServiceDesc control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfServiceDesc;
     }
 }
