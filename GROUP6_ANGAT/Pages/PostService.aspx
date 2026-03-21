@@ -60,15 +60,18 @@
 
             <div class="form-group">
                 <label>Rate</label>
-                <div class="pay-inputs">
-                    <div class="pay-field">
+            <div class="form-group">
+                <label>Sahod <span class="required">*</span></label>
+                <div class="pay-row"> <div class="pay-field">
                         <span class="pay-currency">&#8369;</span>
-                        <asp:TextBox ID="txtRateMin" runat="server" placeholder="500"></asp:TextBox>
+                        <asp:TextBox ID="txtPayMin" runat="server" placeholder="Min"></asp:TextBox>
                     </div>
-                    <span class="pay-sep">-</span>
+
+                    <span class="pay-sep">&ndash;</span> 
+
                     <div class="pay-field">
                         <span class="pay-currency">&#8369;</span>
-                        <asp:TextBox ID="txtRateMax" runat="server" placeholder="800"></asp:TextBox>
+                        <asp:TextBox ID="txtPayMax" runat="server" placeholder="Max"></asp:TextBox>
                     </div>
                     <asp:DropDownList ID="ddlRateUnit" runat="server" CssClass="pay-unit">
                         <asp:ListItem Value="/ araw">/ araw</asp:ListItem>

@@ -72,10 +72,10 @@
                 </div>
     <!-- Repeater lists --LEAN -->
             <div style="max-width: 1280px; margin: 40px auto; padding: 0 20px;">
-                    <div class="listings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+                    <div class="listings-grid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                         <asp:Repeater ID="Repeater1" runat="server">
                             <ItemTemplate>
-                                <div class="listing-card" style="display: flex; flex-direction: column; background: #fff; padding: 40px; border-radius: 20px; border: 1px solid #eef2f6; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); height: 100%; min-height: 400px;">
+                                <div class="listing-card" style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0;">
                                     <div style="width: 48px; height: 48px; background: #e8f5e9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
                                         <i class='bx bx-book-open' style="color: #2e7d32; font-size: 1.5rem;"></i>
                                     </div>
@@ -85,8 +85,17 @@
                                     </div>
                                     <p style="color: #64748b; font-size: 1rem; line-height: 1.7; flex-grow: 1; margin-bottom: 24px;"><%# Eval("Description") %></p>
                                     <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; margin-top: auto;">
-                                        <button type="button" onclick="showTrainingModal('<%# Eval("Title") %>', '<%# Eval("ApplyURL") %>')" style="background: none; border: none; color: <%# Eval("Status").ToString() == "Open" ? "#15803d" : "#94a3b8" %>; font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 0;">
-                                            <%# Eval("Status").ToString() == "Open" ? "Alamin ang requirements" : "Closed" %> <i class='bx bx-right-arrow-alt'></i>
+                                        <button type="button" 
+                                            <%# Eval("Status").ToString() != "Open" ? "disabled" : "" %>
+                                            onclick="showTrainingModal('<%# Eval("Title") %>', '<%# Eval("ApplyURL") %>')" 
+                                            style="background: none; border: none; 
+                                                   color: <%# Eval("Status").ToString() == "Open" ? "#15803d" : "#94a3b8" %>; 
+                                                   font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; 
+                                                   cursor: <%# Eval("Status").ToString() == "Open" ? "pointer" : "not-allowed" %>; 
+                                                   padding: 0;">
+    
+                                            <%# Eval("Status").ToString() == "Open" ? "Alamin ang requirements" : "Closed" %> 
+                                            <i class='bx bx-right-arrow-alt'></i>
                                         </button>
                                     </div>
                                 </div>

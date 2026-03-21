@@ -1,5 +1,6 @@
 <%@ Page Title="Post Job" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="PostJob.aspx.cs" Inherits="GROUP6_ANGAT.PostJob" %>
-
+    
+<%-- PAGE HERO --%>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div id="page-hero">
         <div class="hero-circles">
@@ -20,7 +21,7 @@
         </div>
     </div>
 
-    <div class="section section-white">
+    <div class="section section-light">
         <div class="section-header">
             <h3>Job <span>Details</span></h3>
             <p class="section-sub">Punan ang impormasyon para sa bagong listing.</p>

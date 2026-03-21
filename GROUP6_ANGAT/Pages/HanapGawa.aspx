@@ -24,6 +24,7 @@
     </div>
 
     <%-- QUICK STATS --%>
+    <div class="section section-light" style="padding-top: 40px;">
     <div class="page-quick">
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-check-shield'></i></div>
@@ -72,8 +73,6 @@
     </div>
 
     <%-- LISTINGS SECTION --%>
-    <div class="section section-white" style="padding-top: 40px;">
-
         <div class="section-header left" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
             <div>
                 <h3>Mga Magagaling na <span>Manggagawa</span></h3>

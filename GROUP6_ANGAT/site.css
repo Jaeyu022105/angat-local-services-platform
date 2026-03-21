@@ -1337,11 +1337,12 @@ button.listing-card {
    LOGIN
    ========================================== */
 .login-wrap {
-    background: linear-gradient(180deg, #e6f7f1 0%, #ffffff 60%);
+    background: var(--light);
     padding: 60px 60px 90px;
 }
 
 .login-grid {
+    background: var(--light);
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 32px;

@@ -19,7 +19,6 @@
             </svg>
         </div>
     </div>
-
     <div class="login-wrap">
         <div class="login-grid">
             <div class="login-card">

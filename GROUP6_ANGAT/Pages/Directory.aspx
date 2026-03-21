@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="section section-light" style="padding-top: 40px;">
+
         <div class="section-header left" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
                 <h3>Ating Mga <span>Tindahan</span></h3>
