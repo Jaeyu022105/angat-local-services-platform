@@ -22,6 +22,15 @@ namespace GROUP6_ANGAT {
         protected global::System.Web.UI.WebControls.Repeater rptFeaturedJobs;
 
         /// <summary>
+        /// rptFeaturedServices control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptFeaturedServices;
+
+        /// <summary>
         /// rptAnnouncements control.
         /// </summary>
         /// <remarks>

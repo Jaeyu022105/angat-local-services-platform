@@ -276,12 +276,13 @@
                 hfJobDesc.value = card.dataset.desc || '';
 
                 modal.classList.add('open');
-                document.body.style.overflow = 'hidden';
+                document.body.classList.add('modal-open');
+
             }
 
             function closeModal() {
                 modal.classList.remove('open');
-                document.body.style.overflow = '';
+                document.body.classList.remove('modal-open');
             }
 
             document.querySelectorAll('#htListings .listing-card-button').forEach(function (card) {

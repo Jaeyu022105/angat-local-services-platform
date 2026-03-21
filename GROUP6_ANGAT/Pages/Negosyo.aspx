@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Livelihood Directory" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Directory.aspx.cs" Inherits="GROUP6_ANGAT.Pages.Directory" %>
+﻿<%@ Page Title="Livelihood Directory" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Negosyo.aspx.cs" Inherits="GROUP6_ANGAT.Pages.Directory" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-
+    <div class="section section-light" style="padding-top: 40px;">
         <div class="section-header left" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
                 <h3>Ating Mga <span>Tindahan</span></h3>

@@ -8,15 +8,15 @@
             <div class="c3"></div>
         </div>
         <div class="hero-inner">
-            <h2>Hanapin ang Inyong Trabaho o Kabuhayan</h2>
+            <h2>Hanapin ang inyong Trabaho o Kabuhayan!</h2>
             <p class="hero-desc">
-                Ang <strong>ANGAT</strong> — Ating Negosyo, Galing, at Trabaho — ay isang libreng
+                Ang <strong>ANGAT</strong> (Ating Negosyo, Galing, at Trabaho) ay isang libreng
                 plataporma para sa mga kasambahay, karpintero, labandera, at maliliit na
                 negosyante ng ating lungsod. Walang pinipili, lahat tutulungan.
             </p>
             <div class="hero-btns">
-                <a href="/Pages/HanapTrabaho.aspx" class="btn-primary">🔍 Maghanap ng Trabaho</a>
-                <a href="/Pages/HanapGawa.aspx" class="btn-secondary">🛠️ Mag-alok ng Serbisyo</a>
+                <a href="/Pages/HanapTrabaho.aspx" class="btn-primary">Maghanap ng Trabaho</a>
+                <a href="/Pages/HanapGawa.aspx" class="btn-secondary">Mag-alok ng Serbisyo</a>
             </div>
         </div>
         <div class="wave">
@@ -74,37 +74,6 @@
         </ol>
     </div>
 
-    <div class="section section-white">
-        <div class="section-header">
-            <h3>Simulan ang Inyong <span>Paghahanap</span></h3>
-            <p class="section-sub">
-                Pumili ng seksyon para makapagsimula. Mula sa paghahanap ng trabaho hanggang sa pagpapaunlad ng negosyo — nandito ang lahat.
-            </p>
-        </div>
-        <div class="category-grid">
-            <a href="/Pages/HanapTrabaho.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-green">💼</div>
-                <span>Hanap Trabaho</span>
-            </a>
-            <a href="/Pages/HanapGawa.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-teal">🛠️</div>
-                <span>Hanap Gawa</span>
-            </a>
-            <a href="/Pages/Directory.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-amber">🏪</div>
-                <span>Lokal na Negosyo</span>
-            </a>
-            <a href="/Pages/Puhunan.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-blue">💰</div>
-                <span>Puhunan Tips</span>
-            </a>
-            <a href="/Pages/Training.aspx" class="cat-card">
-                <div class="cat-icon-wrap cat-icon-rose">📚</div>
-                <span>Training Calendar</span>
-            </a>
-        </div>
-    </div>
-
     <div class="section section-light">
         <div class="section-header left">
             <h3>Mga Bagong <span>Trabaho</span></h3>
@@ -136,6 +105,40 @@
         <br />
         <div style="text-align:center;">
             <a href="/Pages/HanapTrabaho.aspx" class="btn-green">Tingnan Lahat ng Trabaho →</a>
+        </div>
+    </div>
+
+    <div class="section section-white">
+        <div class="section-header left">
+            <h3>Mga Bagong <span>Serbisyo</span></h3>
+            <p class="section-sub">Pinakabagong mga skilled workers mula sa ating lungsod.</p>
+        </div>
+        <div class="listings-grid">
+            <asp:Repeater ID="rptFeaturedServices" runat="server">
+                <ItemTemplate>
+                    <a href="/Pages/HanapGawa.aspx" class="listing-card">
+                        <div class="listing-top">
+                            <div class="listing-icon" data-category='<%# Eval("Category") %>'>
+                                <i></i>
+                            </div>
+                            <span class='badge <%# GROUP6_ANGAT.DisplayHelper.GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
+                        </div>
+                        <h4><%# Eval("ServiceTitle") %></h4>
+                        <p class="listing-company"><i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan</p>
+                        <div class="listing-tags">
+                            <asp:Literal runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
+                        </div>
+                        <div class="listing-footer">
+                            <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
+                            <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
+                        </div>
+                    </a>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+        <br />
+        <div style="text-align:center;">
+            <a href="/Pages/HanapGawa.aspx" class="btn-green">Tingnan Lahat ng Serbisyo →</a>
         </div>
     </div>
 

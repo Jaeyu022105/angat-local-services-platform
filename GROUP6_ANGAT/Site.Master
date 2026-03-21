@@ -35,7 +35,7 @@
 
         <div id="header">
             <div class="brand">
-                <button type="button" id="menu-toggle" class="menu-btn">
+                <button type="button" id="menu-toggle" class="menu-btn mobile-only">
                     <i class='bx bx-menu'></i>
                 </button>
                 <img src="~/Images/angat_logo.png" alt="ANGAT" class="brand-logo" runat="server" />
@@ -46,6 +46,9 @@
                     <li class="desktop-only"><a runat="server" href="~/">Home</a></li>
                     <li class="desktop-only"><a runat="server" href="~/Pages/HanapTrabaho.aspx">Hanap Trabaho</a></li>
                     <li class="desktop-only"><a runat="server" href="~/Pages/HanapGawa.aspx">Hanap Gawa</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/Negosyo.aspx">Negosyo</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/Puhunan.aspx">Puhunan</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/Training.aspx">Training</a></li>
                     <asp:PlaceHolder ID="phLoggedOut" runat="server">
                         <li class="desktop-only"><a runat="server" href="~/Pages/Login.aspx" class="nav-login">Login</a></li>
                     </asp:PlaceHolder>

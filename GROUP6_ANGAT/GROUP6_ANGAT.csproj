@@ -117,7 +117,7 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Pages\Directory.aspx" />
+    <Content Include="Pages\Negosyo.aspx" />
     <Content Include="Pages\HanapGawa.aspx" />
     <Content Include="Pages\HanapTrabaho.aspx" />
     <Content Include="Pages\Puhunan.aspx" />
@@ -232,12 +232,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Directory.aspx.cs">
-      <DependentUpon>Directory.aspx</DependentUpon>
+    <Compile Include="Pages\Negosyo.aspx.cs">
+      <DependentUpon>Negosyo.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Directory.aspx.designer.cs">
-      <DependentUpon>Directory.aspx</DependentUpon>
+    <Compile Include="Pages\Negosyo.aspx.designer.cs">
+      <DependentUpon>Negosyo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\HanapGawa.aspx.cs">
       <DependentUpon>HanapGawa.aspx</DependentUpon>

@@ -36,6 +36,11 @@ body {
     line-height: 1.6;
 }
 
+body.modal-open {
+    overflow: hidden;
+    padding-right: 15px; /* compensates for scrollbar width */
+}
+
 a {
     text-decoration: none;
 }
@@ -1875,6 +1880,10 @@ button.listing-card {
         display: none !important;
     }
 
+    .mobile-only {
+        display: flex !important;
+    }
+
     #header {
         padding: 0 20px;
     }
@@ -1952,6 +1961,10 @@ button.listing-card {
         margin: 12px auto 18px;
         padding: 0 24px;
     }
+}
+
+.mobile-only {
+    display: none;
 }
 
 @media (max-width: 480px) {
