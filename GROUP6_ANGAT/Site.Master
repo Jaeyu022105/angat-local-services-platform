@@ -42,13 +42,13 @@
             </div>
             
             <div id="nav">
-                <ul>
-                    <li class="desktop-only"><a runat="server" href="~/">Home</a></li>
-                    <li class="desktop-only"><a runat="server" href="~/Pages/HanapTrabaho.aspx">Hanap Trabaho</a></li>
-                    <li class="desktop-only"><a runat="server" href="~/Pages/HanapGawa.aspx">Hanap Gawa</a></li>
-                    <li class="desktop-only"><a runat="server" href="~/Pages/Negosyo.aspx">Negosyo</a></li>
-                    <li class="desktop-only"><a runat="server" href="~/Pages/Puhunan.aspx">Puhunan</a></li>
-                    <li class="desktop-only"><a runat="server" href="~/Pages/Training.aspx">Training</a></li>
+                <ul class="navbar-nav">
+                    <li class="desktop-only"><a runat="server" href="~/" class="nav-link">Home</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/HanapTrabaho.aspx" class="nav-link">Hanap Trabaho</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/HanapGawa.aspx" class="nav-link">Hanap Gawa</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/Negosyo.aspx" class="nav-link">Negosyo</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/Puhunan.aspx" class="nav-link">Puhunan</a></li>
+                    <li class="desktop-only"><a runat="server" href="~/Pages/Training.aspx" class="nav-link">Training</a></li>
                     <asp:PlaceHolder ID="phLoggedOut" runat="server">
                         <li class="desktop-only"><a runat="server" href="~/Pages/Login.aspx" class="nav-login">Login</a></li>
                     </asp:PlaceHolder>
@@ -182,6 +182,23 @@
                 }
             });
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var path = window.location.pathname.toLowerCase();
+            var page = path.split("/").pop();
+
+            if (page === "" || page === "default.aspx") {
+                page = "default.aspx";
+            }
+
+            document.querySelectorAll('#nav a, .side-nav-links a').forEach(function (link) {
+                var href = link.getAttribute('href').toLowerCase();
+
+                if (href.includes(page)) {
+                    link.classList.add('active');
+                }
+            });
+        });
 
         document.querySelectorAll('.js-coming-soon').forEach(function (btn) {
             btn.addEventListener('click', function (event) {

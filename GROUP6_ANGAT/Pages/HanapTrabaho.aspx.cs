@@ -25,9 +25,9 @@ namespace GROUP6_ANGAT.Pages {
                 }
 
                 using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT JobId, JobTitle, JobDescription, Category,
-                           Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt
-                    FROM Jobs
+                    SELECT JobId, JobTitle, JobDescription, Category, Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt, Slots, u.FullName AS PosterName, u.ProfileImagePath AS PosterImage
+                    FROM Jobs 
+                    LEFT JOIN Users u ON PostedByUserId = u.UserId
                     WHERE IsActive = 1
                     ORDER BY PostedAt DESC", conn)) {
                     using (SqlDataReader reader = cmd.ExecuteReader()) {

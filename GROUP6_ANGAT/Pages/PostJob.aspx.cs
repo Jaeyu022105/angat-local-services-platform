@@ -13,6 +13,12 @@ namespace GROUP6_ANGAT {
         }
 
         protected void BtnPostJob_Click(object sender, EventArgs e) {
+
+            int slots = 1;
+            int.TryParse(txtSlots.Text, out slots);
+            if (slots < 1) slots = 1;
+            if (slots > 10) slots = 10;
+
             string title = CleanTitle(txtJobTitle.Text);
             string category = ddlCategory.SelectedValue;
             string barangay = ddlBarangay.SelectedValue;
@@ -50,13 +56,9 @@ namespace GROUP6_ANGAT {
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO Jobs
-                (JobTitle, JobDescription, Category, Barangay,
-                 PayMin, PayMax, PayRate, Tags, Status,
-                 IsActive, PostedAt, PostedByUserId)
+                (JobTitle, JobDescription, Category, Barangay, PayMin, PayMax, PayRate, Tags, Status, Slots, IsActive, PostedAt, PostedByUserId)
                 VALUES
-                (@JobTitle, @JobDescription, @Category, @Barangay,
-                 @PayMin, @PayMax, @PayRate, @Tags, @Status,
-                 1, GETDATE(), @PostedByUserId)", conn)) {
+                (@JobTitle, @JobDescription, @Category, @Barangay, @PayMin, @PayMax, @PayRate, @Tags, @Status, @Slots, 1, GETDATE(), @PostedByUserId)", conn)) {
                 cmd.Parameters.AddWithValue("@JobTitle", title);
                 cmd.Parameters.AddWithValue("@JobDescription", description);
                 cmd.Parameters.AddWithValue("@Category", category);
@@ -66,6 +68,7 @@ namespace GROUP6_ANGAT {
                 cmd.Parameters.AddWithValue("@PayRate", payRate);
                 cmd.Parameters.AddWithValue("@Tags", tags);
                 cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@Slots", slots);
                 cmd.Parameters.AddWithValue("@PostedByUserId", Session["UserId"]);
 
                 conn.Open();
@@ -74,6 +77,7 @@ namespace GROUP6_ANGAT {
 
             ShowMessage("success", "Naipost na ang trabaho! Makikita ito sa Hanap Trabaho.");
             ClearForm();
+            txtSlots.Text = "1";
         }
 
         private string CleanTitle(string input) {

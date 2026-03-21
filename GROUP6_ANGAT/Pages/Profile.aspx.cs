@@ -3,21 +3,17 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Web.UI.WebControls;
 
-namespace GROUP6_ANGAT
-{
-    public partial class Profile : System.Web.UI.Page
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (Session["UserId"] == null)
-            {
+namespace GROUP6_ANGAT {
+    public partial class Profile : System.Web.UI.Page {
+        protected void Page_Load(object sender, EventArgs e) {
+            if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx");
                 return;
             }
 
-            if (!IsPostBack)
-            {
+            if (!IsPostBack) {
                 LoadProfile();
                 LoadApplications();
                 LoadServiceRequests();
@@ -26,26 +22,24 @@ namespace GROUP6_ANGAT
             }
         }
 
-        private void LoadProfile()
-        {
+        // =============================================
+        // LOAD PROFILE
+        // =============================================
+        private void LoadProfile() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT FullName, Email, Phone, AddressLine, Barangay, Role, ProfileImagePath
-                                                     FROM Users
-                                                     WHERE UserId = @UserId", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT FullName, Email, Phone, AddressLine, Barangay, Role, ProfileImagePath
+                FROM Users WHERE UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleRow))
-                {
-                    if (reader.Read())
-                    {
+                using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleRow)) {
+                    if (reader.Read()) {
                         string fullName = reader["FullName"].ToString();
                         string email = reader["Email"].ToString();
 
                         lblProfileName.Text = fullName;
-                        lblProfileEmail.Text = email;
+                        lblProfileEmail.Text = string.IsNullOrWhiteSpace(email) ? "Walang email" : email;
                         lblProfileRole.Text = string.IsNullOrWhiteSpace(reader["Role"].ToString()) ? "User" : reader["Role"].ToString();
 
                         txtFullName.Text = fullName;
@@ -55,274 +49,219 @@ namespace GROUP6_ANGAT
                         txtBarangay.Text = reader["Barangay"].ToString();
 
                         string imagePath = reader["ProfileImagePath"].ToString();
-                        imgProfile.ImageUrl = string.IsNullOrWhiteSpace(imagePath) ? "~/Images/angat_logo.png" : imagePath;
+                        imgProfile.ImageUrl = string.IsNullOrWhiteSpace(imagePath)
+                            ? "~/Images/default-avatar.png"
+                            : imagePath;
                     }
                 }
             }
         }
 
-        private void LoadApplications()
-        {
+        // =============================================
+        // LOAD APPLICATIONS (user applied to jobs)
+        // =============================================
+        private void LoadApplications() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT ApplicationId, JobTitle, JobLocation, JobPay, JobTags, Status, AppliedAt
-                                                     FROM JobApplications
-                                                     WHERE UserId = @UserId
-                                                     ORDER BY AppliedAt DESC", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
+                       j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags, j.Category
+                FROM JobApplications ja
+                LEFT JOIN Jobs j ON ja.JobId = j.JobId
+                WHERE ja.UserId = @UserId
+                ORDER BY ja.AppliedAt DESC", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        rptApplications.DataSource = reader;
-                        rptApplications.DataBind();
-                        pnlNoApplications.Visible = false;
-                    }
-                    else
-                    {
-                        rptApplications.DataSource = null;
-                        rptApplications.DataBind();
-                        pnlNoApplications.Visible = true;
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rptApplications.DataSource = reader;
+                    rptApplications.DataBind();
+                    pnlNoApplications.Visible = !hasRows;
                 }
             }
         }
 
-        private void LoadServiceRequests()
-        {
+        // =============================================
+        // LOAD SERVICE REQUESTS (user requested services)
+        // =============================================
+        private void LoadServiceRequests() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT RequestId, ServiceTitle, ServiceLocation, ServiceRate, ServiceTags, Status, RequestedAt
-                                                     FROM ServiceRequests
-                                                     WHERE UserId = @UserId
-                                                     ORDER BY RequestedAt DESC", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT sr.RequestId, sr.Status, sr.RequestedAt,
+                       s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags, s.Category
+                FROM ServiceRequests sr
+                LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+                WHERE sr.UserId = @UserId
+                ORDER BY sr.RequestedAt DESC", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        rptServiceRequests.DataSource = reader;
-                        rptServiceRequests.DataBind();
-                        pnlNoServiceRequests.Visible = false;
-                    }
-                    else
-                    {
-                        rptServiceRequests.DataSource = null;
-                        rptServiceRequests.DataBind();
-                        pnlNoServiceRequests.Visible = true;
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rptServiceRequests.DataSource = reader;
+                    rptServiceRequests.DataBind();
+                    pnlNoServiceRequests.Visible = !hasRows;
                 }
             }
         }
 
-        private void LoadMyListings()
-        {
+        // =============================================
+        // LOAD MY JOB LISTINGS (user posted jobs)
+        // =============================================
+        private void LoadMyListings() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT JobId, JobTitle, JobLocation, JobPay, JobTags, Status, PostedAt
-                                                     FROM Jobs
-                                                     WHERE PostedByUserId = @UserId
-                                                     ORDER BY PostedAt DESC", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
+                       Tags, Category, Status, PostedAt, Slots
+                FROM Jobs
+                WHERE PostedByUserId = @UserId
+                ORDER BY PostedAt DESC", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        rptMyListings.DataSource = reader;
-                        rptMyListings.DataBind();
-                        pnlNoListings.Visible = false;
-                    }
-                    else
-                    {
-                        rptMyListings.DataSource = null;
-                        rptMyListings.DataBind();
-                        pnlNoListings.Visible = true;
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rptMyListings.DataSource = reader;
+                    rptMyListings.DataBind();
+                    pnlNoListings.Visible = !hasRows;
                 }
             }
         }
 
-        private void LoadMyServiceListings()
-        {
+        // =============================================
+        // LOAD MY SERVICE LISTINGS (user posted services)
+        // =============================================
+        private void LoadMyServiceListings() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT ServiceId, ServiceTitle, ServiceLocation, ServiceRate, ServiceTags, Status, PostedAt
-                                                     FROM Services
-                                                     WHERE PostedByUserId = @UserId
-                                                     ORDER BY PostedAt DESC", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT ServiceId, ServiceTitle, Barangay, RateMin, RateMax, RateType,
+                       Tags, Category, Status, PostedAt
+                FROM Services
+                WHERE PostedByUserId = @UserId
+                ORDER BY PostedAt DESC", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        rptServiceListings.DataSource = reader;
-                        rptServiceListings.DataBind();
-                        pnlNoServiceListings.Visible = false;
-                    }
-                    else
-                    {
-                        rptServiceListings.DataSource = null;
-                        rptServiceListings.DataBind();
-                        pnlNoServiceListings.Visible = true;
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rptServiceListings.DataSource = reader;
+                    rptServiceListings.DataBind();
+                    pnlNoServiceListings.Visible = !hasRows;
                 }
             }
         }
 
-        protected void RptMyListings_ItemDataBound(object sender, System.Web.UI.WebControls.RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType != System.Web.UI.WebControls.ListItemType.Item &&
-                e.Item.ItemType != System.Web.UI.WebControls.ListItemType.AlternatingItem)
-            {
-                return;
-            }
+        // =============================================
+        // ITEM DATA BOUND — load nested applicants
+        // =============================================
+        protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
+            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
 
             var hf = (System.Web.UI.WebControls.HiddenField)e.Item.FindControl("hfListingJobId");
-            var rptApplicants = (System.Web.UI.WebControls.Repeater)e.Item.FindControl("rptApplicants");
+            var rptApplicants = (Repeater)e.Item.FindControl("rptApplicants");
             var pnlNoApplicants = (System.Web.UI.WebControls.Panel)e.Item.FindControl("pnlNoApplicants");
 
             int jobId;
             if (hf != null && int.TryParse(hf.Value, out jobId))
-            {
                 LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
-            }
         }
 
-        protected void RptServiceListings_ItemDataBound(object sender, System.Web.UI.WebControls.RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType != System.Web.UI.WebControls.ListItemType.Item &&
-                e.Item.ItemType != System.Web.UI.WebControls.ListItemType.AlternatingItem)
-            {
-                return;
-            }
+        protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
+            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
 
             var hf = (System.Web.UI.WebControls.HiddenField)e.Item.FindControl("hfListingServiceId");
-            var rptApplicants = (System.Web.UI.WebControls.Repeater)e.Item.FindControl("rptServiceApplicants");
+            var rptApplicants = (Repeater)e.Item.FindControl("rptServiceApplicants");
             var pnlNoApplicants = (System.Web.UI.WebControls.Panel)e.Item.FindControl("pnlNoServiceApplicants");
 
             int serviceId;
             if (hf != null && int.TryParse(hf.Value, out serviceId))
-            {
                 LoadServiceApplicants(serviceId, rptApplicants, pnlNoApplicants);
-            }
         }
 
-        private void LoadApplicants(int jobId, System.Web.UI.WebControls.Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty)
-        {
+        private void LoadApplicants(int jobId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
-                                                            u.FullName, u.Email, u.Phone
-                                                     FROM JobApplications ja
-                                                     INNER JOIN Users u ON ja.UserId = u.UserId
-                                                     WHERE ja.JobId = @JobId
-                                                     ORDER BY ja.AppliedAt DESC", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
+                       u.FullName, u.Email, u.Phone
+                FROM JobApplications ja
+                INNER JOIN Users u ON ja.UserId = u.UserId
+                WHERE ja.JobId = @JobId
+                ORDER BY ja.AppliedAt DESC", conn)) {
                 cmd.Parameters.AddWithValue("@JobId", jobId);
                 conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        rpt.DataSource = reader;
-                        rpt.DataBind();
-                        pnlEmpty.Visible = false;
-                    }
-                    else
-                    {
-                        rpt.DataSource = null;
-                        rpt.DataBind();
-                        pnlEmpty.Visible = true;
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rpt.DataSource = reader;
+                    rpt.DataBind();
+                    pnlEmpty.Visible = !hasRows;
                 }
             }
         }
 
-        private void LoadServiceApplicants(int serviceId, System.Web.UI.WebControls.Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty)
-        {
+        private void LoadServiceApplicants(int serviceId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT sr.RequestId, sr.Status, sr.RequestedAt,
-                                                            u.FullName, u.Email, u.Phone
-                                                     FROM ServiceRequests sr
-                                                     INNER JOIN Users u ON sr.UserId = u.UserId
-                                                     WHERE sr.ServiceId = @ServiceId
-                                                     ORDER BY sr.RequestedAt DESC", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT sr.RequestId, sr.Status, sr.RequestedAt,
+                       u.FullName, u.Email, u.Phone
+                FROM ServiceRequests sr
+                INNER JOIN Users u ON sr.UserId = u.UserId
+                WHERE sr.ServiceId = @ServiceId
+                ORDER BY sr.RequestedAt DESC", conn)) {
                 cmd.Parameters.AddWithValue("@ServiceId", serviceId);
                 conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        rpt.DataSource = reader;
-                        rpt.DataBind();
-                        pnlEmpty.Visible = false;
-                    }
-                    else
-                    {
-                        rpt.DataSource = null;
-                        rpt.DataBind();
-                        pnlEmpty.Visible = true;
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                    bool hasRows = reader.HasRows;
+                    rpt.DataSource = reader;
+                    rpt.DataBind();
+                    pnlEmpty.Visible = !hasRows;
                 }
             }
         }
 
-        protected void RptApplicants_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
-        {
+        // =============================================
+        // APPROVE / REJECT JOB APPLICANTS + SLOTS
+        // =============================================
+        protected void RptApplicants_ItemCommand(object source, RepeaterCommandEventArgs e) {
             string newStatus = null;
-
-            if (e.CommandName == "Approve")
-            {
-                newStatus = "Approved";
-            }
-            else if (e.CommandName == "Reject")
-            {
-                newStatus = "Rejected";
-            }
-            else
-            {
-                return;
-            }
+            if (e.CommandName == "Approve") newStatus = "Approved";
+            else if (e.CommandName == "Reject") newStatus = "Rejected";
+            else return;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             int rows = 0;
-            
 
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"UPDATE JobApplications
-                                 SET Status = @Status
-                                 WHERE ApplicationId = @ApplicationId
-                                   AND JobId IN (SELECT JobId FROM Jobs WHERE PostedByUserId = @UserId)", conn))
-
-            {
-                cmd.Parameters.AddWithValue("@Status", newStatus);
-                cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
 
-                rows = cmd.ExecuteNonQuery();
+                // Update application status
+                using (SqlCommand cmd = new SqlCommand(@"
+                    UPDATE JobApplications SET Status = @Status
+                    WHERE ApplicationId = @ApplicationId
+                    AND JobId IN (SELECT JobId FROM Jobs WHERE PostedByUserId = @UserId)", conn)) {
+                    cmd.Parameters.AddWithValue("@Status", newStatus);
+                    cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    rows = cmd.ExecuteNonQuery();
+                }
+
+                // If approved, decrease slots and auto-close if full
+                if (newStatus == "Approved" && rows > 0) {
+                    using (SqlCommand slotsCmd = new SqlCommand(@"
+                        UPDATE Jobs
+                        SET Slots = Slots - 1,
+                            IsActive = CASE WHEN Slots - 1 <= 0 THEN 0 ELSE 1 END,
+                            Status   = CASE WHEN Slots - 1 <= 0 THEN 'Filled' ELSE Status END
+                        WHERE JobId IN (
+                            SELECT JobId FROM JobApplications WHERE ApplicationId = @ApplicationId
+                        )
+                        AND PostedByUserId = @UserId", conn)) {
+                        slotsCmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
+                        slotsCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                        slotsCmd.ExecuteNonQuery();
+                    }
+                }
             }
 
             pnlApplicationsMessage.Visible = true;
@@ -332,41 +271,28 @@ namespace GROUP6_ANGAT
             LoadMyListings();
         }
 
-
-        protected void RptServiceApplicants_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
-        {
+        // =============================================
+        // APPROVE / REJECT SERVICE REQUESTS
+        // =============================================
+        protected void RptServiceApplicants_ItemCommand(object source, RepeaterCommandEventArgs e) {
             string newStatus = null;
-
-            if (e.CommandName == "ApproveService")
-            {
-                newStatus = "Approved";
-            }
-            else if (e.CommandName == "RejectService")
-            {
-                newStatus = "Rejected";
-            }
-            else
-            {
-                return;
-            }
+            if (e.CommandName == "ApproveService") newStatus = "Approved";
+            else if (e.CommandName == "RejectService") newStatus = "Rejected";
+            else return;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             int rows = 0;
-            
 
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"UPDATE ServiceRequests
-                                             SET Status = @Status
-                                             WHERE RequestId = @RequestId
-                                               AND ServiceId IN (SELECT ServiceId FROM Services WHERE PostedByUserId = @UserId)", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE ServiceRequests SET Status = @Status
+                WHERE RequestId = @RequestId
+                AND ServiceId IN (SELECT ServiceId FROM Services WHERE PostedByUserId = @UserId)", conn)) {
                 cmd.Parameters.AddWithValue("@Status", newStatus);
                 cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-
                 rows = cmd.ExecuteNonQuery();
-
             }
 
             pnlServiceMessage.Visible = true;
@@ -376,84 +302,65 @@ namespace GROUP6_ANGAT
             LoadMyServiceListings();
         }
 
-
-        protected void RptMyListings_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName != "DeleteListing")
-            {
-                return;
-            }
+        // =============================================
+        // DELETE JOB LISTING
+        // =============================================
+        protected void RptMyListings_ItemCommand(object source, RepeaterCommandEventArgs e) {
+            if (e.CommandName != "DeleteListing") return;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE Jobs SET IsActive = 0
+                WHERE JobId = @JobId AND PostedByUserId = @UserId", conn)) {
+                cmd.Parameters.AddWithValue("@JobId", e.CommandArgument);
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
+                int rows = cmd.ExecuteNonQuery();
 
-                using (SqlCommand cmd = new SqlCommand(@"UPDATE Jobs
-                                                         SET IsActive = 0
-                                                         WHERE JobId = @JobId AND PostedByUserId = @UserId", conn))
-                {
-                    cmd.Parameters.AddWithValue("@JobId", e.CommandArgument);
-                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
-                    int rows = cmd.ExecuteNonQuery();
-
-                    pnlApplicationsMessage.Visible = true;
-                    pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                    lblApplicationsMessage.Text = rows > 0 ? "Na-delete ang listing." : "Hindi ma-delete ang listing.";
-                }
+                pnlApplicationsMessage.Visible = true;
+                pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+                lblApplicationsMessage.Text = rows > 0 ? "Na-delete ang listing." : "Hindi ma-delete ang listing.";
             }
 
             LoadMyListings();
         }
 
-        protected void RptServiceListings_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName != "DeleteServiceListing")
-            {
-                return;
-            }
+        // =============================================
+        // DELETE SERVICE LISTING
+        // =============================================
+        protected void RptServiceListings_ItemCommand(object source, RepeaterCommandEventArgs e) {
+            if (e.CommandName != "DeleteServiceListing") return;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE Services SET IsActive = 0
+                WHERE ServiceId = @ServiceId AND PostedByUserId = @UserId", conn)) {
+                cmd.Parameters.AddWithValue("@ServiceId", e.CommandArgument);
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
+                int rows = cmd.ExecuteNonQuery();
 
-                using (SqlCommand cmd = new SqlCommand(@"UPDATE Services
-                                                         SET IsActive = 0
-                                                         WHERE ServiceId = @ServiceId AND PostedByUserId = @UserId", conn))
-                {
-                    cmd.Parameters.AddWithValue("@ServiceId", e.CommandArgument);
-                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
-                    int rows = cmd.ExecuteNonQuery();
-
-                    pnlServiceMessage.Visible = true;
-                    pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                    lblServiceMessage.Text = rows > 0 ? "Na-delete ang service listing." : "Hindi ma-delete ang listing.";
-                }
+                pnlServiceMessage.Visible = true;
+                pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+                lblServiceMessage.Text = rows > 0 ? "Na-delete ang service listing." : "Hindi ma-delete ang listing.";
             }
 
             LoadMyServiceListings();
         }
 
-        protected string FormatTags(object tagsObj)
-        {
-            return tagsObj == null ? "" : tagsObj.ToString().Replace("|", ", ");
-        }
-
-        protected void RptApplications_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName != "Retract")
-            {
-                return;
-            }
+        // =============================================
+        // RETRACT APPLICATION
+        // =============================================
+        protected void RptApplications_ItemCommand(object source, RepeaterCommandEventArgs e) {
+            if (e.CommandName != "Retract") return;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"UPDATE JobApplications
-                                                     SET Status = 'Retracted'
-                                                     WHERE ApplicationId = @ApplicationId AND UserId = @UserId AND Status = 'Pending'", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE JobApplications SET Status = 'Retracted'
+                WHERE ApplicationId = @ApplicationId AND UserId = @UserId AND Status = 'Pending'", conn)) {
                 cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
@@ -461,26 +368,23 @@ namespace GROUP6_ANGAT
 
                 pnlApplicationsMessage.Visible = true;
                 pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                lblApplicationsMessage.Text = rows > 0 ? "Na-retract ang application." : "Hindi ma-retract ang application.";
+                lblApplicationsMessage.Text = rows > 0 ? "Na-retract ang application." : "Hindi ma-retract.";
             }
 
             LoadApplications();
         }
 
-        protected void RptServiceRequests_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName != "RetractService")
-            {
-                return;
-            }
+        // =============================================
+        // RETRACT SERVICE REQUEST
+        // =============================================
+        protected void RptServiceRequests_ItemCommand(object source, RepeaterCommandEventArgs e) {
+            if (e.CommandName != "RetractService") return;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"UPDATE ServiceRequests
-                                                     SET Status = 'Retracted'
-                                                     WHERE RequestId = @RequestId AND UserId = @UserId AND Status = 'Pending'", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE ServiceRequests SET Status = 'Retracted'
+                WHERE RequestId = @RequestId AND UserId = @UserId AND Status = 'Pending'", conn)) {
                 cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
@@ -488,47 +392,44 @@ namespace GROUP6_ANGAT
 
                 pnlServiceMessage.Visible = true;
                 pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                lblServiceMessage.Text = rows > 0 ? "Na-retract ang request." : "Hindi ma-retract ang request.";
+                lblServiceMessage.Text = rows > 0 ? "Na-retract ang request." : "Hindi ma-retract.";
             }
 
             LoadServiceRequests();
         }
 
-        protected void BtnSaveProfile_Click(object sender, EventArgs e)
-        {
+        // =============================================
+        // SAVE PROFILE + PHOTO
+        // =============================================
+        protected void BtnSaveProfile_Click(object sender, EventArgs e) {
             lblProfileMessage.Text = "";
-
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             string newImagePath = null;
 
-            if (fuProfileImage.HasFile)
-            {
+            if (fuProfileImage.HasFile) {
                 string ext = Path.GetExtension(fuProfileImage.FileName).ToLowerInvariant();
-                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
-                {
+                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png") {
                     lblProfileMessage.Text = "JPG o PNG lang ang pwede i-upload.";
                     return;
                 }
 
                 string folder = Server.MapPath("~/Images/Profiles/");
                 Directory.CreateDirectory(folder);
-
                 string fileName = $"user_{Session["UserId"]}_{DateTime.Now.Ticks}{ext}";
-                string savePath = Path.Combine(folder, fileName);
-                fuProfileImage.SaveAs(savePath);
+                fuProfileImage.SaveAs(Path.Combine(folder, fileName));
                 newImagePath = "~/Images/Profiles/" + fileName;
             }
 
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"UPDATE Users
-                                                     SET FullName = @FullName,
-                                                         Email = @Email,
-                                                         Phone = @Phone,
-                                                         AddressLine = @AddressLine,
-                                                         Barangay = @Barangay,
-                                                         ProfileImagePath = COALESCE(@ProfileImagePath, ProfileImagePath)
-                                                     WHERE UserId = @UserId", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE Users SET
+                    FullName = @FullName,
+                    Email    = @Email,
+                    Phone    = @Phone,
+                    AddressLine = @AddressLine,
+                    Barangay    = @Barangay,
+                    ProfileImagePath = COALESCE(@ProfileImagePath, ProfileImagePath)
+                WHERE UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
                 cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim().ToLowerInvariant());
                 cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
@@ -537,73 +438,61 @@ namespace GROUP6_ANGAT
                 cmd.Parameters.AddWithValue("@ProfileImagePath", (object)newImagePath ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
 
-                try
-                {
+                try {
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
-                catch (SqlException ex)
-                {
-                    if (ex.Number == 2627 || ex.Number == 2601)
-                    {
-                        lblProfileMessage.Text = "Email ay ginagamit na. Gumamit ng iba.";
-                    }
-                    else
-                    {
-                        lblProfileMessage.Text = "Hindi na-save ang profile. Subukan ulit.";
-                    }
+                catch (SqlException ex) {
+                    lblProfileMessage.Text = ex.Number == 2627 || ex.Number == 2601
+                        ? "Email ay ginagamit na. Gumamit ng iba."
+                        : "Hindi na-save ang profile. Subukan ulit.";
                     return;
                 }
             }
 
             Session["UserName"] = txtFullName.Text.Trim();
-            Session["UserEmail"] = txtEmail.Text.Trim().ToLowerInvariant();
-            lblProfileMessage.Text = "Na-save ang profile.";
-
+            Session["UserEmail"] = txtEmail.Text.Trim();
+            lblProfileMessage.Text = "Na-save ang profile!";
             LoadProfile();
         }
 
-        protected void BtnChangePassword_Click(object sender, EventArgs e)
-        {
+        // =============================================
+        // CHANGE PASSWORD
+        // =============================================
+        protected void BtnChangePassword_Click(object sender, EventArgs e) {
             lblPasswordMessage.Text = "";
 
             string current = txtCurrentPassword.Text.Trim();
             string next = txtNewPassword.Text.Trim();
             string confirm = txtConfirmPassword.Text.Trim();
 
-            if (string.IsNullOrEmpty(current) || string.IsNullOrEmpty(next))
-            {
-                lblPasswordMessage.Text = "Paki-kumpleto ang password fields.";
-                return;
+            if (string.IsNullOrEmpty(current) || string.IsNullOrEmpty(next)) {
+                lblPasswordMessage.Text = "Paki-kumpleto ang password fields."; return;
             }
-
-            if (!string.Equals(next, confirm, StringComparison.Ordinal))
-            {
-                lblPasswordMessage.Text = "Hindi magkatugma ang bagong password.";
-                return;
+            if (!string.Equals(next, confirm, StringComparison.Ordinal)) {
+                lblPasswordMessage.Text = "Hindi magkatugma ang bagong password."; return;
+            }
+            if (next.Length < 6) {
+                lblPasswordMessage.Text = "Ang password ay dapat hindi bababa sa 6 na karakter."; return;
             }
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            string storedPassword = "";
 
+            string stored = "";
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"SELECT Password FROM Users WHERE UserId = @UserId", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand("SELECT Password FROM Users WHERE UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
                 object result = cmd.ExecuteScalar();
-                storedPassword = result != null ? result.ToString() : "";
+                stored = result != null ? result.ToString() : "";
             }
 
-            if (!string.Equals(current, storedPassword, StringComparison.Ordinal))
-            {
-                lblPasswordMessage.Text = "Mali ang kasalukuyang password.";
-                return;
+            if (!string.Equals(current, stored, StringComparison.Ordinal)) {
+                lblPasswordMessage.Text = "Mali ang kasalukuyang password."; return;
             }
 
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"UPDATE Users SET Password = @Password WHERE UserId = @UserId", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand("UPDATE Users SET Password = @Password WHERE UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@Password", next);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
@@ -613,7 +502,18 @@ namespace GROUP6_ANGAT
             txtCurrentPassword.Text = "";
             txtNewPassword.Text = "";
             txtConfirmPassword.Text = "";
-            lblPasswordMessage.Text = "Na-update ang password.";
+            lblPasswordMessage.Text = "Na-update ang password!";
+        }
+
+        // =============================================
+        // HELPERS
+        // =============================================
+        protected string FormatTags(object tagsObj) {
+            return tagsObj == null ? "" : tagsObj.ToString().Replace("|", " • ");
+        }
+
+        protected string GetPayLabel(object minObj, object maxObj, object rateObj) {
+            return GROUP6_ANGAT.DisplayHelper.GetPayDisplay(minObj, maxObj, rateObj);
         }
     }
 }

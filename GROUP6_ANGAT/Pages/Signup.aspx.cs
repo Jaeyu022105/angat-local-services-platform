@@ -49,9 +49,10 @@ namespace GROUP6_ANGAT {
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO Users 
-                (FullName, Phone, Email, Password, Barangay, AddressLine, CreatedAt, IsActive, Role)
+                (FullName, Phone, Email, Password, Barangay, AddressLine, CreatedAt, IsActive, Role, ProfileImagePath)
                 VALUES 
-                (@FullName, @Phone, @Email, @Password, @Barangay, @AddressLine, GETDATE(), 1, 'User')", conn)) {
+                (@FullName, @Phone, @Email, @Password, @Barangay, @AddressLine, GETDATE(), 1, 'User', '~/Images/default-icon.jpg')", conn))
+                {
                 cmd.Parameters.AddWithValue("@FullName", fullName);
                 cmd.Parameters.AddWithValue("@Phone", phone);
                 cmd.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);

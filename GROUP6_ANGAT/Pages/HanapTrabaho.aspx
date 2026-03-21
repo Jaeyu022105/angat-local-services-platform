@@ -95,7 +95,6 @@
     </div>
 
     <%-- LISTINGS SECTION --%>
-
         <div class="section-header left" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
             <div>
                 <h3>Mga Bakanteng <span>Trabaho</span></h3>
@@ -134,7 +133,11 @@
                         data-tags='<%# Eval("Tags") %>'
                         data-status='<%# Eval("Status") %>'
                         data-date='<%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %>'
-                        data-desc='<%# Eval("JobDescription") %>'>
+                        data-desc='<%# Eval("JobDescription") %>'
+                        data-poster='<%# Eval("PosterName") %>'
+                        data-poster-img='<%# Eval("PosterImage") %>'
+                        data-slots='<%# Eval("Slots") %>'
+                        data-exact-date='<%# Eval("PostedAt") != DBNull.Value ? Convert.ToDateTime(Eval("PostedAt")).ToString("MMMM dd, yyyy") : "" %>'>
                         <div class="listing-top">
                             <div class="listing-icon" data-category='<%# Eval("Category") %>'>
                                 <i></i>
@@ -172,15 +175,50 @@
         <div class="job-modal-backdrop"></div>
         <div class="job-modal-card">
             <button type="button" class="job-modal-close job-modal-close-icon" aria-label="Isara">✕</button>
-            <div class="job-modal-header">
-                <span id="jobStatus" class="badge badge-green"></span>
-                <span id="jobDate" class="job-meta"></span>
+
+            <%-- Poster --%>
+            <div class="modal-poster">
+                <img id="posterImg" src="/Images/default-icon.jpg" alt="Poster" class="modal-poster-img" />
+                <div>
+                    <span class="modal-poster-name" id="posterName"></span>
+                    <span class="modal-poster-date" id="posterDate"></span>
+                </div>
             </div>
+
+            <%-- Title --%>
             <h4 id="jobTitle"></h4>
-            <p id="jobLocation" class="job-location"></p>
-            <div id="jobPay" class="job-pay"></div>
-            <div id="jobTags" class="job-tags"></div>
-            <p id="jobDesc" class="job-desc"></p>
+
+            <%-- Info grid --%>
+            <div class="modal-info-grid">
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Lokasyon</span>
+                    <span class="modal-info-value" id="jobLocation"></span>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Uri ng Trabaho</span>
+                    <div id="jobTags" class="job-tags" style="margin:0;"></div>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Sahod</span>
+                    <span class="modal-info-value" id="jobPay"></span>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Status</span>
+                    <span id="jobStatus" class="badge badge-green"></span>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Slots Natitira</span>
+                    <span class="modal-info-value" id="jobSlots"></span>
+                </div>
+            </div>
+
+            <%-- Description --%>
+            <div class="modal-desc-block">
+                <span class="modal-info-label">Detalye ng Trabaho</span>
+                <p id="jobDesc" class="job-desc" style="margin-top:8px;"></p>
+            </div>
+
+            <%-- Actions --%>
             <div class="job-modal-actions">
                 <asp:PlaceHolder ID="phApplyLoggedIn" runat="server">
                     <asp:Button ID="btnApplyJob" runat="server" Text="Mag-apply" CssClass="btn-green" OnClick="BtnApplyJob_Click" />
@@ -252,32 +290,36 @@
             const hfJobDesc   = document.getElementById('<%= hfJobDesc.ClientID %>');
 
             function openModal(card) {
-                modal.querySelector('#jobTitle').textContent = card.dataset.title || '';
+                modal.querySelector('#jobTitle').textContent  = card.dataset.title  || '';
                 modal.querySelector('#jobStatus').textContent = card.dataset.status || '';
-                modal.querySelector('#jobDate').textContent = card.dataset.date || '';
-                modal.querySelector('#jobDesc').textContent = card.dataset.desc || '';
+                modal.querySelector('#jobDesc').textContent   = card.dataset.desc   || '';
+                modal.querySelector('#jobPay').textContent    = card.dataset.pay    || '';
+                modal.querySelector('#posterName').textContent = card.dataset.poster || 'Hindi nakita';
+                modal.querySelector('#posterDate').textContent = 'Na-post: ' + (card.dataset.exactDate || '');
                 modal.querySelector('#jobLocation').textContent = 'Brgy. ' + (card.dataset.location || '') + ', Biñan';
-                modal.querySelector('#jobPay').textContent = card.dataset.pay || '';
+                modal.querySelector('#jobSlots').textContent = (card.dataset.slots || '1') + ' slot/s';
 
-                // Render tags
-                const tagsEl = modal.querySelector('#jobTags');
+                var img = modal.querySelector('#posterImg');
+                var imgPath = card.dataset.posterImg || '';
+                img.src = imgPath && imgPath !== '' ? imgPath : '/Images/default-icon.jpg';
+
+                // tags
+                var tagsEl = modal.querySelector('#jobTags');
                 tagsEl.innerHTML = '';
-                (card.dataset.tags || '').split('|').filter(Boolean).forEach(function (tag) {
-                    const span = document.createElement('span');
+                (card.dataset.tags || '').split('|').filter(Boolean).forEach(function(tag) {
+                    var span = document.createElement('span');
                     span.className = 'badge badge-teal';
                     span.textContent = tag.trim();
                     tagsEl.appendChild(span);
                 });
 
-                // Set hidden fields
-                hfJobId.value = card.dataset.jobid || '';
+                hfJobId.value    = card.dataset.jobid || '';
                 hfJobTitle.value = card.dataset.title || '';
-                hfJobTags.value = (card.dataset.tags || '').replace(/\|/g, ', ');
-                hfJobDesc.value = card.dataset.desc || '';
+                hfJobTags.value  = (card.dataset.tags || '').replace(/\|/g, ', ');
+                hfJobDesc.value  = card.dataset.desc  || '';
 
                 modal.classList.add('open');
                 document.body.classList.add('modal-open');
-
             }
 
             function closeModal() {

@@ -102,6 +102,7 @@
     <Content Include="Database\ANGAT-DB-SETUP.sql" />
     <Content Include="Images\angat-preview.png" />
     <Content Include="Images\angat_logo.png" />
+    <Content Include="Images\default-icon.jpg" />
     <Content Include="Images\image4.jpg" />
     <Content Include="Images\image5.jpg" />
     <Content Include="Images\image3.jpg" />

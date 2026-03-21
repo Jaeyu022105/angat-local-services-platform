@@ -147,6 +147,12 @@
                 </asp:DropDownList>
             </div>
 
+            <div class="form-group">
+                <label>Bilang ng Kailangan <span class="required">*</span></label>
+                <asp:TextBox ID="txtSlots" runat="server" TextMode="Number" Text="1"></asp:TextBox>
+                <small class="field-hint">Ilang tao ang kailangan mo? (1–10)</small>
+            </div>
+
             <%-- Description --%>
             <div class="form-group">
                 <label>Detalye <span class="required">*</span></label>
@@ -166,6 +172,12 @@
         // Tag pills
         var tagPills = document.querySelectorAll('.tag-pill input');
         var hfTags = document.getElementById('<%= hfTags.ClientID %>');
+
+        var slotsInput = document.getElementById('<%= txtSlots.ClientID %>');
+        if (slotsInput) {
+            slotsInput.setAttribute('min', '1');
+            slotsInput.setAttribute('max', '10');
+        }
 
         function updateTags() {
             var selected = [];

@@ -7,12 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT
-{
+namespace GROUP6_ANGAT {
 
 
-    public partial class Profile
-    {
+    public partial class Profile {
 
         /// <summary>
         /// imgProfile control.
@@ -123,15 +121,6 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.TextBox txtBarangay;
 
         /// <summary>
-        /// txtBio control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBio;
-
-        /// <summary>
         /// btnSaveProfile control.
         /// </summary>
         /// <remarks>
@@ -204,24 +193,6 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.Label lblApplicationsMessage;
 
         /// <summary>
-        /// pnlNoApplications control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlNoApplications;
-
-        /// <summary>
-        /// rptApplications control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptApplications;
-
-        /// <summary>
         /// pnlServiceMessage control.
         /// </summary>
         /// <remarks>
@@ -238,6 +209,24 @@ namespace GROUP6_ANGAT
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblServiceMessage;
+
+        /// <summary>
+        /// pnlNoApplications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlNoApplications;
+
+        /// <summary>
+        /// rptApplications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptApplications;
 
         /// <summary>
         /// pnlNoServiceRequests control.

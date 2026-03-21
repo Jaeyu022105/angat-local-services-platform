@@ -77,7 +77,7 @@
     <div class="section section-light">
         <div class="section-header left">
             <h3>Mga Bagong <span>Trabaho</span></h3>
-            <p class="section-sub">Pinakabagong mga listing mula sa ating lungsod.</p>
+            <p class="section-sub">Tingnan ang pinakabagong mga trabaho dito sa ating lungsod.</p>
         </div>
         <div class="listings-grid">
             <asp:Repeater ID="rptFeaturedJobs" runat="server">
@@ -111,7 +111,7 @@
     <div class="section section-white">
         <div class="section-header left">
             <h3>Mga Bagong <span>Serbisyo</span></h3>
-            <p class="section-sub">Pinakabagong mga skilled workers mula sa ating lungsod.</p>
+            <p class="section-sub">Tuklasin ang mga maaasahang serbisyo mula sa ating lokal na manggagawa.</p>
         </div>
         <div class="listings-grid">
             <asp:Repeater ID="rptFeaturedServices" runat="server">
