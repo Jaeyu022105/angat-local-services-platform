@@ -14,6 +14,26 @@ namespace GROUP6_ANGAT.Pages {
                 LoadJobs();
         }
 
+        protected string GetRelativeTime(object postedAt) {
+            if (postedAt == null || postedAt == DBNull.Value)
+                return "";
+
+            DateTime postDate = Convert.ToDateTime(postedAt);
+            TimeSpan ts = DateTime.Now - postDate;
+
+            if (ts.TotalSeconds < 60)
+                return "just now";
+            if (ts.TotalMinutes < 60)
+                return (int)ts.TotalMinutes + "m";
+            if (ts.TotalHours < 24)
+                return (int)ts.TotalHours + "h";
+            if (ts.TotalDays < 7)
+                return (int)ts.TotalDays + "d";
+
+            // Kung higit sa isang linggo, ipakita na ang date
+            return postDate.ToString("MMM dd");
+        }
+
         private void LoadJobs() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString)) {
@@ -25,11 +45,14 @@ namespace GROUP6_ANGAT.Pages {
                 }
 
                 using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT JobId, JobTitle, JobDescription, Category, Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt, Slots, u.FullName AS PosterName, u.ProfileImagePath AS PosterImage
-                    FROM Jobs 
-                    LEFT JOIN Users u ON PostedByUserId = u.UserId
-                    WHERE IsActive = 1
-                    ORDER BY PostedAt DESC", conn)) {
+                    SELECT j.JobId, j.JobTitle, j.JobDescription, j.Category,
+                           j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags, 
+                           j.Status, j.PostedAt, j.Slots, u.FullName AS PosterName,
+                           u.ProfileImagePath AS PosterImage
+                    FROM Jobs j
+                    LEFT JOIN Users u ON j.PostedByUserId = u.UserId
+                    WHERE j.IsActive = 1
+                    ORDER BY j.PostedAt DESC", conn)) {
                     using (SqlDataReader reader = cmd.ExecuteReader()) {
                         rptJobs.DataSource = reader;
                         rptJobs.DataBind();

@@ -132,7 +132,7 @@
                         data-posted='<%# GROUP6_ANGAT.DisplayHelper.GetPostedValue(Eval("PostedAt")) %>'
                         data-tags='<%# Eval("Tags") %>'
                         data-status='<%# Eval("Status") %>'
-                        data-date='<%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %>'
+                        data-date='<%# GetRelativeTime(Eval("PostedAt")) %>'
                         data-desc='<%# Eval("JobDescription") %>'
                         data-poster='<%# Eval("PosterName") %>'
                         data-poster-img='<%# Eval("PosterImage") %>'
@@ -154,9 +154,8 @@
                         </div>
                         <div class="listing-footer">
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
-                            <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
-                        </div>
-                    </button>
+                            <span><i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %></span>                    
+                        </button>
                 </ItemTemplate>
             </asp:Repeater>
         </div>
@@ -228,7 +227,6 @@
                         Mag-login para mag-apply
                     </a>
                 </asp:PlaceHolder>
-                <button type="button" class="btn-outline job-modal-close">Isara</button>
             </div>
         </div>
     </div>
