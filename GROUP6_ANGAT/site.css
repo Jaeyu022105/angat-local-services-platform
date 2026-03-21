@@ -1785,6 +1785,10 @@ button.listing-card {
     background: #64748b;
 }
 
+.app-status.deleted {
+    background: #64748b;
+}
+
 .app-status.approved {
     background: #16a34a;
 }

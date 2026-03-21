@@ -59,8 +59,8 @@
             <div class="search-field">
                 <span class="s-icon"><i class='bx bx-map'></i></span>
                 <select id="hgLocation">
-                    <option value="All">Kahit Saan (Bi&ntilde;an)</option>
-                    <option value="Biñan">Bi&ntilde;an (Poblacion)</option>
+                    <option value="All">Kahit Saan (Biñan)</option>
+                    <option value="Biñan">Biñan (Poblacion)</option>
                     <option value="Bungahan">Bungahan</option>
                     <option value="Canlalay">Canlalay</option>
                     <option value="Casile">Casile</option>
@@ -75,7 +75,7 @@
                     <option value="Masile">Masile</option>
                     <option value="Maysilo">Maysilo</option>
                     <option value="Munting Ilog">Munting Ilog</option>
-                    <option value="New Biñan">New Bi&ntilde;an</option>
+                    <option value="New Biñan">New Biñan</option>
                     <option value="Platero">Platero</option>
                     <option value="San Antonio">San Antonio</option>
                     <option value="San Francisco">San Francisco</option>

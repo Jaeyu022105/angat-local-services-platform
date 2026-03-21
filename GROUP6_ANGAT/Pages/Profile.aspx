@@ -233,9 +233,7 @@
                                         <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
                                     </p>
                                 </div>
-                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                    <%# Eval("Status") %>
-                                </span>
+                                <asp:Literal ID="litStatus" runat="server" />
                             </div>
                             <div class="app-meta">
                                 <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -310,7 +308,6 @@
                 </asp:Panel>
 
                 <asp:Repeater ID="rptServiceListings" runat="server"
-                    OnItemDataBound="RptServiceListings_ItemDataBound"
                     OnItemCommand="RptServiceListings_ItemCommand">
                     <ItemTemplate>
                         <div class="app-card" data-service-id='<%# Eval("ServiceId") %>'>

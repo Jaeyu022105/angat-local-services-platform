@@ -174,6 +174,7 @@ namespace GROUP6_ANGAT {
                 }
             }
         }
+        // =============================================
         // ITEM DATA BOUND — load nested applicants
         // =============================================
         protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
@@ -184,29 +185,23 @@ namespace GROUP6_ANGAT {
             System.Data.Common.DbDataRecord row =
                 (System.Data.Common.DbDataRecord)e.Item.DataItem;
 
-            LinkButton btnDelete = (LinkButton)e.Item.FindControl("btnDeleteListing");
             bool isActive = Convert.ToBoolean(row["IsActive"]);
+
+            LinkButton btnDelete = (LinkButton)e.Item.FindControl("btnDeleteListing");
             btnDelete.Visible = isActive;
+
+            Literal litStatus = (Literal)e.Item.FindControl("litStatus");
+            if (!isActive)
+                litStatus.Text = "<span class=\"app-status deleted\">Deleted</span>";
+            else
+                litStatus.Text = "<span class=\"app-status " + row["Status"].ToString().ToLower() + "\">" + row["Status"].ToString() + "</span>";
 
             var hf = (HiddenField)e.Item.FindControl("hfListingJobId");
             var rptApplicants = (Repeater)e.Item.FindControl("rptApplicants");
             var pnlNoApplicants = (Panel)e.Item.FindControl("pnlNoApplicants");
-
             int jobId;
             if (hf != null && int.TryParse(hf.Value, out jobId))
                 LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
-        }
-
-        protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e) {
-            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
-
-            var hf = (System.Web.UI.WebControls.HiddenField)e.Item.FindControl("hfListingServiceId");
-            var rptApplicants = (Repeater)e.Item.FindControl("rptServiceApplicants");
-            var pnlNoApplicants = (System.Web.UI.WebControls.Panel)e.Item.FindControl("pnlNoServiceApplicants");
-
-            int serviceId;
-            if (hf != null && int.TryParse(hf.Value, out serviceId))
-                LoadServiceApplicants(serviceId, rptApplicants, pnlNoApplicants);
         }
 
         private void LoadApplicants(int jobId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
