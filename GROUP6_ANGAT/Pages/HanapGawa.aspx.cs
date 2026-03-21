@@ -13,18 +13,21 @@ namespace GROUP6_ANGAT.Pages {
                 LoadServices();
         }
 
-        protected string GetRelativeTime(object postedAt) {
+        protected string GetRelativeTime(object postedAt)
+        {
             if (postedAt == null || postedAt == DBNull.Value)
                 return "";
-
             DateTime postDate = Convert.ToDateTime(postedAt);
-            TimeSpan ts = DateTime.Now - postDate;
-
-            if (ts.TotalSeconds < 60) return "just now";
-            if (ts.TotalMinutes < 60) return (int)ts.TotalMinutes + "m";
-            if (ts.TotalHours < 24) return (int)ts.TotalHours + "h";
-            if (ts.TotalDays < 7) return (int)ts.TotalDays + "d";
-
+            DateTime localNow = DateTime.Now.AddHours(-8);
+            TimeSpan ts = localNow - postDate;
+            if (ts.TotalSeconds < 60)
+                return "just now";
+            if (ts.TotalMinutes < 60)
+                return (int)ts.TotalMinutes + "m";
+            if (ts.TotalHours < 24)
+                return (int)ts.TotalHours + "h";
+            if (ts.TotalDays < 7)
+                return (int)ts.TotalDays + "d";
             return postDate.ToString("MMM dd");
         }
 

@@ -32,12 +32,12 @@
 
         <div style="max-width: 900px; margin: 0 auto;">
             <div class="form-group">
-                <label>Service Title</label>
+                <label>Service Title<span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceTitle" runat="server" placeholder="Hal. Aircon Cleaning &amp; Repair"></asp:TextBox>
             </div>
 
             <div class="form-group">
-                <label>Category</label>
+                <label>Category<span class="required">*</span></label>
                 <asp:DropDownList ID="ddlCategory" runat="server">
                     <asp:ListItem Value="Karpintero">Karpintero (Carpentry)</asp:ListItem>
                     <asp:ListItem Value="Tubero">Tubero (Plumbing)</asp:ListItem>
@@ -49,17 +49,15 @@
             </div>
 
             <div class="form-group">
-                <label>Location (Full)</label>
+                <label>Location (Full)<span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceLocation" runat="server" placeholder="Brgy. Dela Paz, Bi&#241;an"></asp:TextBox>
             </div>
 
             <div class="form-group">
-                <label>Barangay</label>
+                <label>Barangay<span class="required">*</span></label>
                 <asp:TextBox ID="txtBarangay" runat="server" placeholder="Dela Paz"></asp:TextBox>
             </div>
 
-            <div class="form-group">
-                <label>Rate</label>
             <div class="form-group">
                 <label>Sahod <span class="required">*</span></label>
                 <div class="pay-row"> <div class="pay-field">
@@ -82,12 +80,12 @@
             </div>
 
             <div class="form-group">
-                <label>Tags (gamitin ang | para maghiwalay)</label>
+                <label>Tags (gamitin ang | para maghiwalay)<span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceTags" runat="server" placeholder="Home Repair|Cabinet Making"></asp:TextBox>
             </div>
 
             <div class="form-group">
-                <label>Status</label>
+                <label>Status<span class="required">*</span></label>
                 <asp:DropDownList ID="ddlStatus" runat="server">
                     <asp:ListItem Value="Available">Available</asp:ListItem>
                     <asp:ListItem Value="Busy Ngayon">Busy Ngayon</asp:ListItem>
@@ -95,17 +93,16 @@
             </div>
 
             <div class="form-group">
-                <label>Date Label</label>
+                <label>Date Label<span class="required">*</span></label>
                 <asp:TextBox ID="txtDateLabel" runat="server" placeholder="Ngayon"></asp:TextBox>
             </div>
 
             <div class="form-group">
-                <label>Description</label>
+                <label>Description<span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceDescription" runat="server" TextMode="MultiLine" placeholder="Maikling detalye tungkol sa serbisyo."></asp:TextBox>
             </div>
 
             <asp:Button ID="btnPostService" runat="server" Text="I-post ang Serbisyo" CssClass="btn-green" OnClick="BtnPostService_Click" />
         </div>
-    </div>
 </div>
 </asp:Content>

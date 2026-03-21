@@ -14,13 +14,13 @@ namespace GROUP6_ANGAT.Pages {
                 LoadJobs();
         }
 
-        protected string GetRelativeTime(object postedAt) {
+        protected string GetRelativeTime(object postedAt)
+        {
             if (postedAt == null || postedAt == DBNull.Value)
                 return "";
-
             DateTime postDate = Convert.ToDateTime(postedAt);
-            TimeSpan ts = DateTime.Now - postDate;
-
+            DateTime localNow = DateTime.Now.AddHours(-8); // offset fix
+            TimeSpan ts = localNow - postDate;
             if (ts.TotalSeconds < 60)
                 return "just now";
             if (ts.TotalMinutes < 60)
@@ -29,8 +29,6 @@ namespace GROUP6_ANGAT.Pages {
                 return (int)ts.TotalHours + "h";
             if (ts.TotalDays < 7)
                 return (int)ts.TotalDays + "d";
-
-            // Kung higit sa isang linggo, ipakita na ang date
             return postDate.ToString("MMM dd");
         }
 

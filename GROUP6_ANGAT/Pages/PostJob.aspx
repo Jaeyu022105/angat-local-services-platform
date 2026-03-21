@@ -121,7 +121,7 @@
             </div>
             <%-- Tags --%>
             <div class="form-group">
-                <label>Tags</label>
+                <label>Tags<span class="required">*</span></label>
                 <small class="field-hint" style="margin-bottom: 10px; display:block;">Piliin ang lahat ng angkop.</small>
                 <div class="tag-pills">
                     <label class="tag-pill"><input type="checkbox" value="Full-time" /> Full-time</label>
@@ -139,7 +139,7 @@
 
             <%-- Status --%>
             <div class="form-group">
-                <label>Status</label>
+                <label>Status<span class="required">*</span></label>
                 <asp:DropDownList ID="ddlStatus" runat="server">
                     <asp:ListItem Value="Available">Available</asp:ListItem>
                     <asp:ListItem Value="Filled">Filled</asp:ListItem>
