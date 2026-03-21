@@ -74,7 +74,7 @@
                 <li><a runat="server" href="~/Pages/About.aspx"><i class='bx bx-info-circle'></i> Tungkol Sa Amin</a></li>
                 <li><a runat="server" href="~/Pages/HanapTrabaho.aspx"><i class='bx bx-briefcase'></i> Hanap Trabaho</a></li>
                 <li><a runat="server" href="~/Pages/HanapGawa.aspx"><i class='bx bx-wrench'></i> Hanap Gawa</a></li>
-                <li><a runat="server" href="~/Pages/Directory.aspx"><i class='bx bx-store-alt'></i> Livelihood Directory</a></li>
+                <li><a runat="server" href="~/Pages/Negosyo.aspx"><i class='bx bx-store-alt'></i> Livelihood Directory</a></li>
                 <li><a runat="server" href="~/Pages/Puhunan.aspx"><i class='bx bx-money'></i> Puhunan Tips</a></li>
                 <li><a runat="server" href="~/Pages/Training.aspx"><i class='bx bx-book-reader'></i> Training Calendar</a></li>
                 <asp:PlaceHolder ID="phSideLoggedOut" runat="server">
@@ -116,7 +116,7 @@
                 <div class="footer-col">
                     <h5>Tulong</h5>
                     <ul>
-                        <li><a runat="server" href="~/Pages/Directory.aspx">Directory</a></li>
+                        <li><a runat="server" href="~/Pages/Negosyo.aspx">Directory</a></li>
                         <li><a runat="server" href="~/Pages/Puhunan.aspx">Puhunan Tips</a></li>
                         <li><a runat="server" href="~/Pages/Training.aspx">Training Calendar</a></li>
                     </ul>

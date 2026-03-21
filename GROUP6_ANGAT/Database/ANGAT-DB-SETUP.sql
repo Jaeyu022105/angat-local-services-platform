@@ -88,6 +88,28 @@ PRIMARY KEY CLUSTERED ([ServiceId] ASC)
 GO
 
 -- =============================================
+-- TABLE: DirectoryBusinesses
+-- =============================================
+CREATE TABLE [dbo].[DirectoryBusinesses](
+	[DirectoryId] [int] IDENTITY(1,1) NOT NULL,
+	[BusinessName] [nvarchar](200) NOT NULL,
+	[Category] [nvarchar](100) NOT NULL,
+	[Barangay] [nvarchar](100) NOT NULL,
+	[AddressLine] [nvarchar](200) NULL,
+	[OwnerName] [nvarchar](150) NULL,
+	[ContactNumber] [nvarchar](50) NULL,
+	[Hours] [nvarchar](120) NULL,
+	[Tags] [nvarchar](250) NULL,
+	[MapEmbedUrl] [nvarchar](600) NULL,
+	[Status] [nvarchar](50) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+	[UserId] [int] NOT NULL,
+PRIMARY KEY CLUSTERED ([DirectoryId] ASC)
+) ON [PRIMARY]
+GO
+
+-- =============================================
 -- TABLE: JobApplications
 -- =============================================
 CREATE TABLE [dbo].[JobApplications](
@@ -152,6 +174,12 @@ ALTER TABLE [dbo].[Services] ADD CONSTRAINT [DF_Services_IsActive] DEFAULT ((1))
 GO
 ALTER TABLE [dbo].[Services] ADD CONSTRAINT [DF_Services_PostedAt] DEFAULT (getdate()) FOR [PostedAt]
 GO
+ALTER TABLE [dbo].[DirectoryBusinesses] ADD CONSTRAINT [DF_DirectoryBusinesses_IsActive] DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[DirectoryBusinesses] ADD CONSTRAINT [DF_DirectoryBusinesses_CreatedAt] DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[DirectoryBusinesses] ADD CONSTRAINT [DF_DirectoryBusinesses_Status] DEFAULT ('Bukas Ngayon') FOR [Status]
+GO
 ALTER TABLE [dbo].[JobApplications] ADD DEFAULT ('Pending') FOR [Status]
 GO
 ALTER TABLE [dbo].[JobApplications] ADD DEFAULT (getdate()) FOR [AppliedAt]
@@ -173,6 +201,8 @@ GO
 ALTER TABLE [dbo].[Jobs] WITH CHECK ADD CONSTRAINT [FK_Jobs_Users] FOREIGN KEY([PostedByUserId]) REFERENCES [dbo].[Users] ([UserId])
 GO
 ALTER TABLE [dbo].[Services] WITH CHECK ADD CONSTRAINT [FK_Services_Users] FOREIGN KEY([PostedByUserId]) REFERENCES [dbo].[Users] ([UserId])
+GO
+ALTER TABLE [dbo].[DirectoryBusinesses] WITH CHECK ADD CONSTRAINT [FK_DirectoryBusinesses_Users] FOREIGN KEY([UserId]) REFERENCES [dbo].[Users] ([UserId])
 GO
 ALTER TABLE [dbo].[JobApplications] WITH NOCHECK ADD CONSTRAINT [FK_JobApplications_Jobs] FOREIGN KEY([JobId]) REFERENCES [dbo].[Jobs] ([JobId])
 GO
@@ -200,6 +230,16 @@ INSERT [dbo].[Jobs] ([JobId], [JobTitle], [JobLocation], [Barangay], [JobPay], [
 INSERT [dbo].[Jobs] ([JobId], [JobTitle], [JobLocation], [Barangay], [JobPay], [JobTags], [JobDescription], [Status], [DateLabel], [IconClass], [IconBg], [IconColor], [IsActive], [PostedAt], [Category], [PostedByUserId]) VALUES (5, N'Kusinero sa Carinderia', N'Malapit sa Biñan City Hall', N'Biñan', N'₱450–₱600 / araw', N'Full-time|May Karanasan', N'Magluto ng ulam, maghanda ng pagkain, at tiyakin ang quality.', N'Bukas', N'4 araw na ang nakakaraan', N'bx bx-restaurant', N'#fef3c7', N'#b45309', 1, CAST(N'2026-03-17T20:09:28.773' AS DateTime), N'Food', 1)
 INSERT [dbo].[Jobs] ([JobId], [JobTitle], [JobLocation], [Barangay], [JobPay], [JobTags], [JobDescription], [Status], [DateLabel], [IconClass], [IconBg], [IconColor], [IsActive], [PostedAt], [Category], [PostedByUserId]) VALUES (6, N'Bodegero / Helper', N'Brgy. Tubigan, Biñan', N'Tubigan', N'₱400 / araw', N'Full-time|Pisikal na Trabaho', N'Tumutulong sa pagbubuhat, pag-aayos ng goods, at inventory.', N'Bukas', N'1 linggo na ang nakakaraan', N'bx bx-package', N'#dbeafe', N'#1d4ed8', 1, CAST(N'2026-03-17T20:09:28.773' AS DateTime), N'Warehouse', 1)
 SET IDENTITY_INSERT [dbo].[Jobs] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[DirectoryBusinesses] ON
+INSERT [dbo].[DirectoryBusinesses] ([DirectoryId], [BusinessName], [Category], [Barangay], [AddressLine], [OwnerName], [ContactNumber], [Hours], [Tags], [MapEmbedUrl], [Status], [IsActive], [CreatedAt], [UserId])
+VALUES (1, N'Aling Nena''s Sari-Sari Store', N'Sari-Sari Store', N'Dela Paz', N'Brgy. Dela Paz, BiÃ±an', N'Aling Nena', N'09123456789', N'6AM - 10PM', N'Gcash Accepted|Retail', NULL, N'Bukas Ngayon', 1, CAST(N'2026-03-17T21:10:00.000' AS DateTime), 1)
+INSERT [dbo].[DirectoryBusinesses] ([DirectoryId], [BusinessName], [Category], [Barangay], [AddressLine], [OwnerName], [ContactNumber], [Hours], [Tags], [MapEmbedUrl], [Status], [IsActive], [CreatedAt], [UserId])
+VALUES (2, N'Mang Berto''s Lomi House', N'Carinderia', N'San Antonio', N'Brgy. San Antonio, BiÃ±an', N'Mang Berto', N'09987654321', N'7AM - 8PM', N'Dine-in|Takeout', NULL, N'Bukas Ngayon', 1, CAST(N'2026-03-17T21:12:00.000' AS DateTime), 1)
+INSERT [dbo].[DirectoryBusinesses] ([DirectoryId], [BusinessName], [Category], [Barangay], [AddressLine], [OwnerName], [ContactNumber], [Hours], [Tags], [MapEmbedUrl], [Status], [IsActive], [CreatedAt], [UserId])
+VALUES (3, N'Ukay-Ukay ni Jane', N'Ukay-Ukay', N'Platero', N'Brgy. Platero, BiÃ±an', N'Jane Cruz', N'09223334444', N'9AM - 6PM', N'Bagsak Presyo|Ukay', NULL, N'Sarado', 1, CAST(N'2026-03-17T21:15:00.000' AS DateTime), 1)
+SET IDENTITY_INSERT [dbo].[DirectoryBusinesses] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[Services] ON

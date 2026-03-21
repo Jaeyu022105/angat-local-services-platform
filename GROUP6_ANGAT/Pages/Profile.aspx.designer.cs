@@ -211,6 +211,24 @@ namespace GROUP6_ANGAT {
         protected global::System.Web.UI.WebControls.Label lblServiceMessage;
 
         /// <summary>
+        /// pnlBusinessMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlBusinessMessage;
+
+        /// <summary>
+        /// lblBusinessMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblBusinessMessage;
+
+        /// <summary>
         /// pnlNoApplications control.
         /// </summary>
         /// <remarks>
@@ -281,5 +299,23 @@ namespace GROUP6_ANGAT {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptServiceListings;
+
+        /// <summary>
+        /// pnlNoBusinessListings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlNoBusinessListings;
+
+        /// <summary>
+        /// rptBusinessListings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptBusinessListings;
     }
 }
