@@ -27,7 +27,7 @@
 
                 <div class="form-group">
                     <label>Mobile Number o Email</label>
-                    <asp:TextBox ID="txtLoginIdentifier" runat="server" placeholder="09XXXXXXXXX o email@email.com"></asp:TextBox>
+                    <asp:TextBox ID="txtLoginIdentifier" runat="server" placeholder="09123456789 o email@email.com"></asp:TextBox>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>

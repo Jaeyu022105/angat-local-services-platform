@@ -106,7 +106,7 @@
                         <i class='bx bx-plus'></i> I-post ang Trabaho
                     </a>
                 </asp:PlaceHolder>
-                <select id="htSort" style="padding:8px 16px; border-radius:8px; border:1px solid var(--border); outline:none; font-family:inherit; font-size:0.88rem;">
+                <select id="htSort" style="padding:12px 16px; border-radius:8px; border:1px solid var(--border); outline:none; font-family:inherit; font-size:0.88rem;">
                     <option value="newest">Pinakabago</option>
                     <option value="pay">Pinakamataas na Sahod</option>
                 </select>

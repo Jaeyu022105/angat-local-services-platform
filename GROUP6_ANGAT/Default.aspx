@@ -82,7 +82,7 @@
         <div class="listings-grid">
             <asp:Repeater ID="rptFeaturedJobs" runat="server">
                 <ItemTemplate>
-                    <a href="/Pages/HanapTrabaho.aspx" class="listing-card">
+                    <div class="listing-card">
                         <div class="listing-top">
                             <div class="listing-icon" data-category='<%# Eval("Category") %>'>
                                 <i></i>
@@ -98,7 +98,7 @@
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
                             <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
                         </div>
-                    </a>
+                    </div>
                 </ItemTemplate>
             </asp:Repeater>
         </div>
@@ -116,7 +116,7 @@
         <div class="listings-grid">
             <asp:Repeater ID="rptFeaturedServices" runat="server">
                 <ItemTemplate>
-                    <a href="/Pages/HanapGawa.aspx" class="listing-card">
+                    <div class="listing-card">
                         <div class="listing-top">
                             <div class="listing-icon" data-category='<%# Eval("Category") %>'>
                                 <i></i>
@@ -132,7 +132,7 @@
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
                             <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
                         </div>
-                    </a>
+                    </div>
                 </ItemTemplate>
             </asp:Repeater>
         </div>

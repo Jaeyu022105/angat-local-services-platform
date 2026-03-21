@@ -13,7 +13,7 @@
             <h2>Hanap <strong>Gawa</strong></h2>
             <p class="hero-desc">
                 Kailangan mo ba ng tubero, karpintero, o electrician? 
-                Dito direktang nag-uugnay ang mga manggagawa at kustomer sa Biñan.Q
+                Dito direktang nag-uugnay ang mga manggagawa at kustomer sa Biñan.
             </p>
         </div>
         <div class="wave">
@@ -27,24 +27,24 @@
     <div class="section section-light" style="padding-top: 40px;">
     <div class="page-quick">
         <div class="quick-card">
-            <div class="quick-icon"><i class='bx bx-check-shield'></i></div>
+            <div class="quick-icon"><i class='bx bx-wrench'></i></div>
             <div>
-                <h5>Skilled Workers</h5>
-                <p>Mga manggagawa na may karanasan.</p>
+                <h5><asp:Label ID="lblServiceCount" runat="server" Text="0" /> Serbisyo</h5>
+                <p>Available na ngayon sa Biñan.</p>
             </div>
         </div>
         <div class="quick-card">
-            <div class="quick-icon"><i class='bx bx-timer'></i></div>
+            <div class="quick-icon"><i class='bx bx-check-circle'></i></div>
             <div>
-                <h5>Mabilis Makahanap</h5>
-                <p>Direktang contact para sa agarang serbisyo.</p>
+                <h5>Madaling Mag-request</h5>
+                <p>Isang click lang para mag-request.</p>
             </div>
         </div>
         <div class="quick-card">
-            <div class="quick-icon"><i class='bx bx-money'></i></div>
+            <div class="quick-icon"><i class='bx bx-refresh'></i></div>
             <div>
-                <h5>Presyong Klaro</h5>
-                <p>Transparent na rate at kondisyon ng trabaho.</p>
+                <h5>Regular Updates</h5>
+                <p>Bagong listings araw-araw.</p>
             </div>
         </div>
     </div>
@@ -57,18 +57,40 @@
                 <input id="hgSearch" type="text" placeholder="Anong serbisyo ang kailangan mo?" />
             </div>
             <div class="search-field">
-                <span class="s-icon"><i class='bx bx-wrench'></i></span>
-                <select id="hgCategory">
-                    <option value="All">Lahat ng Kasanayan</option>
-                    <option value="Karpintero">Karpintero</option>
-                    <option value="Tubero">Tubero</option>
-                    <option value="Electrician">Electrician</option>
-                    <option value="Aircon Repair">Aircon Repair</option>
-                    <option value="Mananahi">Mananahi</option>
-                    <option value="Iba Pa">Iba Pa</option>
+                <span class="s-icon"><i class='bx bx-map'></i></span>
+                <select id="hgLocation">
+                    <option value="All">Kahit Saan (Biñan)</option>
+                    <option value="Biñan">Biñan (Poblacion)</option>
+                    <option value="Bungahan">Bungahan</option>
+                    <option value="Canlalay">Canlalay</option>
+                    <option value="Casile">Casile</option>
+                    <option value="De La Paz">De La Paz</option>
+                    <option value="Ganado">Ganado</option>
+                    <option value="Langkiwa">Langkiwa</option>
+                    <option value="Loma">Loma</option>
+                    <option value="Malaban">Malaban</option>
+                    <option value="Malamig">Malamig</option>
+                    <option value="Mampalasan">Mampalasan</option>
+                    <option value="Mapagong">Mapagong</option>
+                    <option value="Masile">Masile</option>
+                    <option value="Maysilo">Maysilo</option>
+                    <option value="Munting Ilog">Munting Ilog</option>
+                    <option value="New Biñan">New Biñan</option>
+                    <option value="Platero">Platero</option>
+                    <option value="San Antonio">San Antonio</option>
+                    <option value="San Francisco">San Francisco</option>
+                    <option value="San Jose">San Jose</option>
+                    <option value="San Vicente">San Vicente</option>
+                    <option value="Santo Domingo">Santo Domingo</option>
+                    <option value="Santo Tomas">Santo Tomas</option>
+                    <option value="Soro-soro Ibaba">Soro-soro Ibaba</option>
+                    <option value="Soro-soro Ilaya">Soro-soro Ilaya</option>
+                    <option value="Timbao">Timbao</option>
+                    <option value="Tubigan">Tubigan</option>
+                    <option value="Zapote">Zapote</option>
                 </select>
             </div>
-            <button id="hgFilterBtn" class="search-btn" type="button">Hanapin</button>
+            <button id="hgFilterBtn" class="search-btn" type="button">Maghanap</button>
         </div>
     </div>
 
@@ -79,10 +101,12 @@
                 <p class="section-sub">Direktang makipag-ugnayan sa mga skilled workers ng Biñan.</p>
             </div>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                <a runat="server" href="~/Pages/PostService.aspx" class="btn-outline" style="padding:8px 16px;">
-                    <i class='bx bx-plus'></i> I-post ang Serbisyo
-                </a>
-                <select id="hgSort" style="padding:8px 16px; border-radius:8px; border:1px solid var(--border); outline:none; font-family:inherit; font-size:0.88rem;">
+                <asp:PlaceHolder ID="phPostServiceBtn" runat="server">
+                    <a runat="server" href="~/Pages/PostService.aspx" class="btn-outline" style="padding:8px 16px;">
+                        <i class='bx bx-plus'></i> I-post ang Serbisyo
+                    </a>
+                </asp:PlaceHolder>
+                <select id="hgSort" style="padding:12px 16px; border-radius:8px; border:1px solid var(--border); outline:none; font-family:inherit; font-size:0.88rem;">
                     <option value="newest">Pinakabago</option>
                     <option value="rate">Pinakamataas na Rate</option>
                 </select>
@@ -100,7 +124,7 @@
                 <ItemTemplate>
                     <button type="button" class="listing-card listing-card-button"
                         data-serviceid='<%# Eval("ServiceId") %>'
-                        data-category='<%# Eval("Category") %>'
+                        data-location='<%# Eval("Barangay") %>'
                         data-search='<%# GROUP6_ANGAT.DisplayHelper.GetSearchText(Eval("ServiceTitle"), Eval("Tags"), Eval("Barangay"), Eval("Category")) %>'
                         data-title='<%# Eval("ServiceTitle") %>'
                         data-rate='<%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %>'
@@ -108,8 +132,11 @@
                         data-posted='<%# GROUP6_ANGAT.DisplayHelper.GetPostedValue(Eval("PostedAt")) %>'
                         data-tags='<%# Eval("Tags") %>'
                         data-status='<%# Eval("Status") %>'
-                        data-date='<%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %>'
-                        data-desc='<%# Eval("ServiceDescription") %>'>
+                        data-date='<%# GetRelativeTime(Eval("PostedAt")) %>'
+                        data-desc='<%# Eval("ServiceDescription") %>'
+                        data-poster='<%# Eval("PosterName") %>'
+                        data-poster-img='<%# Eval("PosterImage") %>'
+                        data-exact-date='<%# Eval("PostedAt") != DBNull.Value ? Convert.ToDateTime(Eval("PostedAt")).ToString("MMMM dd, yyyy") : "" %>'>
                         <div class="listing-top">
                             <div class="listing-icon" data-category='<%# Eval("Category") %>'>
                                 <i></i>
@@ -126,7 +153,7 @@
                         </div>
                         <div class="listing-footer">
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
-                            <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
+                            <span><i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %></span>
                         </div>
                     </button>
                 </ItemTemplate>
@@ -147,15 +174,46 @@
         <div class="job-modal-backdrop"></div>
         <div class="job-modal-card">
             <button type="button" class="job-modal-close job-modal-close-icon" aria-label="Isara">✕</button>
-            <div class="job-modal-header">
-                <span id="serviceStatus" class="badge badge-green"></span>
-                <span id="serviceDate" class="job-meta"></span>
+
+            <%-- Poster --%>
+            <div class="modal-poster">
+                <img id="posterImg" src="/Images/default-icon.jpg" alt="Poster" class="modal-poster-img" />
+                <div>
+                    <span class="modal-poster-name" id="posterName"></span>
+                    <span class="modal-poster-date" id="posterDate"></span>
+                </div>
             </div>
+
+            <%-- Title --%>
             <h4 id="serviceTitle"></h4>
-            <p id="serviceLocation" class="job-location"></p>
-            <div id="serviceRate" class="job-pay"></div>
-            <div id="serviceTags" class="job-tags"></div>
-            <p id="serviceDesc" class="job-desc"></p>
+
+            <%-- Info grid --%>
+            <div class="modal-info-grid">
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Lokasyon</span>
+                    <span class="modal-info-value" id="serviceLocation"></span>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Uri ng Serbisyo</span>
+                    <div id="serviceTags" class="job-tags" style="margin:0;"></div>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Rate</span>
+                    <span class="modal-info-value" id="serviceRate"></span>
+                </div>
+                <div class="modal-info-item">
+                    <span class="modal-info-label">Status</span>
+                    <span id="serviceStatus" class="badge badge-green"></span>
+                </div>
+            </div>
+
+            <%-- Description --%>
+            <div class="modal-desc-block">
+                <span class="modal-info-label">Detalye ng Serbisyo</span>
+                <p id="serviceDesc" class="job-desc" style="margin-top:8px;"></p>
+            </div>
+
+            <%-- Actions --%>
             <div class="job-modal-actions">
                 <asp:PlaceHolder ID="phServiceLoggedIn" runat="server">
                     <asp:Button ID="btnRequestService" runat="server" Text="Mag-request" CssClass="btn-green" OnClick="BtnRequestService_Click" />
@@ -178,29 +236,29 @@
     <script>
         // ── FILTER & SORT ──
         (function () {
-            var searchInput    = document.getElementById('hgSearch');
-            var categorySelect = document.getElementById('hgCategory');
-            var filterBtn      = document.getElementById('hgFilterBtn');
-            var sortSelect     = document.getElementById('hgSort');
-            var listingWrap    = document.getElementById('hgListings');
-            var cards          = Array.from(listingWrap.querySelectorAll('.listing-card'));
+            const searchInput    = document.getElementById('hgSearch');
+            const locationSelect = document.getElementById('hgLocation');
+            const filterBtn      = document.getElementById('hgFilterBtn');
+            const sortSelect     = document.getElementById('hgSort');
+            const listingWrap    = document.getElementById('hgListings');
+            const cards          = Array.from(listingWrap.querySelectorAll('.listing-card'));
 
             function applyFilter() {
-                var q   = searchInput.value.toLowerCase().trim();
-                var cat = categorySelect.value;
+                const q   = searchInput.value.toLowerCase().trim();
+                const loc = locationSelect.value;
 
                 cards.forEach(function (card) {
-                    var text     = (card.dataset.search || '').toLowerCase();
-                    var category = card.dataset.category || '';
-                    var matchQ   = !q || text.includes(q);
-                    var matchCat = cat === 'All' || category === cat;
-                    card.style.display = (matchQ && matchCat) ? '' : 'none';
+                    const text     = (card.dataset.search || '').toLowerCase();
+                    const barangay = card.dataset.location || '';
+                    const matchQ   = !q || text.includes(q);
+                    const matchLoc = loc === 'All' || barangay === loc;
+                    card.style.display = (matchQ && matchLoc) ? '' : 'none';
                 });
             }
 
             function applySort() {
-                var mode   = sortSelect.value;
-                var sorted = cards.slice().sort(function (a, b) {
+                const mode   = sortSelect.value;
+                const sorted = cards.slice().sort(function (a, b) {
                     if (mode === 'rate') {
                         return parseFloat(b.dataset.rateAmount || 0) - parseFloat(a.dataset.rateAmount || 0);
                     }
@@ -211,27 +269,33 @@
 
             filterBtn.addEventListener('click', applyFilter);
             searchInput.addEventListener('keyup', applyFilter);
-            categorySelect.addEventListener('change', applyFilter);
+            locationSelect.addEventListener('change', applyFilter);
             sortSelect.addEventListener('change', function () { applySort(); applyFilter(); });
         })();
 
         // ── MODAL ──
         (function () {
-            var modal         = document.getElementById('serviceModal');
-            var backdrop      = modal.querySelector('.job-modal-backdrop');
-            var closeBtns     = modal.querySelectorAll('.job-modal-close');
-            var hfServiceId   = document.getElementById('<%= hfServiceId.ClientID %>');
-            var hfServiceTitle = document.getElementById('<%= hfServiceTitle.ClientID %>');
-            var hfServiceDesc = document.getElementById('<%= hfServiceDesc.ClientID %>');
+            const modal          = document.getElementById('serviceModal');
+            const backdrop       = modal.querySelector('.job-modal-backdrop');
+            const closeBtns      = modal.querySelectorAll('.job-modal-close');
+            const hfServiceId    = document.getElementById('<%= hfServiceId.ClientID %>');
+            const hfServiceTitle = document.getElementById('<%= hfServiceTitle.ClientID %>');
+            const hfServiceDesc  = document.getElementById('<%= hfServiceDesc.ClientID %>');
 
             function openModal(card) {
                 modal.querySelector('#serviceTitle').textContent = card.dataset.title || '';
                 modal.querySelector('#serviceStatus').textContent = card.dataset.status || '';
-                modal.querySelector('#serviceDate').textContent = card.dataset.date || '';
                 modal.querySelector('#serviceDesc').textContent = card.dataset.desc || '';
-                modal.querySelector('#serviceLocation').textContent = 'Brgy. ' + (card.dataset.location || '') + ', Biñan';
                 modal.querySelector('#serviceRate').textContent = card.dataset.rate || '';
+                modal.querySelector('#posterName').textContent = card.dataset.poster || 'Hindi nakita';
+                modal.querySelector('#posterDate').textContent = 'Na-post: ' + (card.dataset.exactDate || '');
+                modal.querySelector('#serviceLocation').textContent = 'Brgy. ' + (card.dataset.location || '') + ', Biñan';
 
+                var img = modal.querySelector('#posterImg');
+                var imgPath = card.dataset.posterImg || '';
+                img.src = imgPath && imgPath !== '' ? imgPath : '/Images/default-icon.jpg';
+
+                // tags
                 var tagsEl = modal.querySelector('#serviceTags');
                 tagsEl.innerHTML = '';
                 (card.dataset.tags || '').split('|').filter(Boolean).forEach(function (tag) {
@@ -246,12 +310,12 @@
                 hfServiceDesc.value = card.dataset.desc || '';
 
                 modal.classList.add('open');
-                document.body.style.overflow = 'hidden';
+                document.body.classList.add('modal-open');
             }
 
             function closeModal() {
                 modal.classList.remove('open');
-                document.body.style.overflow = '';
+                document.body.classList.remove('modal-open');
             }
 
             document.querySelectorAll('#hgListings .listing-card-button').forEach(function (card) {

@@ -13,21 +13,50 @@ namespace GROUP6_ANGAT.Pages {
                 LoadServices();
         }
 
+        protected string GetRelativeTime(object postedAt) {
+            if (postedAt == null || postedAt == DBNull.Value)
+                return "";
+
+            DateTime postDate = Convert.ToDateTime(postedAt);
+            TimeSpan ts = DateTime.Now - postDate;
+
+            if (ts.TotalSeconds < 60) return "just now";
+            if (ts.TotalMinutes < 60) return (int)ts.TotalMinutes + "m";
+            if (ts.TotalHours < 24) return (int)ts.TotalHours + "h";
+            if (ts.TotalDays < 7) return (int)ts.TotalDays + "d";
+
+            return postDate.ToString("MMM dd");
+        }
+
         private void LoadServices() {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-        SELECT ServiceId, ServiceTitle, ServiceDescription, Category, Barangay, RateMin, RateMax, RateType, Tags, Status, PostedAt
-        FROM Services
-        WHERE IsActive = 1
-        ORDER BY PostedAt DESC", conn)) {
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
-                    rptServices.DataSource = reader;
-                    rptServices.DataBind();
+
+                // Service count label
+                using (SqlCommand countCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Services WHERE IsActive = 1", conn)) {
+                    lblServiceCount.Text = countCmd.ExecuteScalar().ToString();
+                }
+
+                // Load services with poster info (same JOIN pattern as HanapTrabaho)
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT s.ServiceId, s.ServiceTitle, s.ServiceDescription, s.Category,
+                           s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags,
+                           s.Status, s.PostedAt, u.FullName AS PosterName,
+                           u.ProfileImagePath AS PosterImage
+                    FROM Services s
+                    LEFT JOIN Users u ON s.PostedByUserId = u.UserId
+                    WHERE s.IsActive = 1
+                    ORDER BY s.PostedAt DESC", conn)) {
+                    using (SqlDataReader reader = cmd.ExecuteReader()) {
+                        rptServices.DataSource = reader;
+                        rptServices.DataBind();
+                    }
                 }
             }
+
+            pnlEmpty.Visible = rptServices.Items.Count == 0;
         }
 
         protected void BtnRequestService_Click(object sender, EventArgs e) {

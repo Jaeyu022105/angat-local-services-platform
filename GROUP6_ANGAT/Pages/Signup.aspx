@@ -33,8 +33,8 @@
 
                 <div class="form-group">
                     <label>Mobile Number <span class="required">*</span></label>
-                    <asp:TextBox ID="txtPhone" runat="server" placeholder="09XXXXXXXXX"></asp:TextBox>
-                    <small class="field-hint">Format: 09XXXXXXXXX o +639XXXXXXXXX</small>
+                    <asp:TextBox ID="txtPhone" runat="server" placeholder="09123456789"></asp:TextBox>
+                    <small class="field-hint">Format: 09123456789" o +639123456789"</small>
                 </div>
 
                 <div class="form-group">

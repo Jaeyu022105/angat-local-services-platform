@@ -13,6 +13,24 @@ namespace GROUP6_ANGAT.Pages {
     public partial class HanapGawa {
 
         /// <summary>
+        /// lblServiceCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblServiceCount;
+
+        /// <summary>
+        /// phPostServiceBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder phPostServiceBtn;
+
+        /// <summary>
         /// pnlServiceApplyMessage control.
         /// </summary>
         /// <remarks>
