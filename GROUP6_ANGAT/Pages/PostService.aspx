@@ -64,14 +64,14 @@
                 <label>Sahod <span class="required">*</span></label>
                 <div class="pay-row"> <div class="pay-field">
                         <span class="pay-currency">&#8369;</span>
-                        <asp:TextBox ID="txtPayMin" runat="server" placeholder="Min"></asp:TextBox>
+                        <asp:TextBox ID="txtRateMin" runat="server" placeholder="Min"></asp:TextBox>
                     </div>
 
                     <span class="pay-sep">&ndash;</span> 
 
                     <div class="pay-field">
                         <span class="pay-currency">&#8369;</span>
-                        <asp:TextBox ID="txtPayMax" runat="server" placeholder="Max"></asp:TextBox>
+                        <asp:TextBox ID="txtRateMax" runat="server" placeholder="Max"></asp:TextBox>
                     </div>
                     <asp:DropDownList ID="ddlRateUnit" runat="server" CssClass="pay-unit">
                         <asp:ListItem Value="/ araw">/ araw</asp:ListItem>
@@ -107,4 +107,5 @@
             <asp:Button ID="btnPostService" runat="server" Text="I-post ang Serbisyo" CssClass="btn-green" OnClick="BtnPostService_Click" />
         </div>
     </div>
+</div>
 </asp:Content>
