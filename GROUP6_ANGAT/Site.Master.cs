@@ -18,6 +18,7 @@ namespace GROUP6_ANGAT
 
             if (isLoggedIn)
             {
+                MarkNotificationAsReadFromQuery();
                 LoadNotifications();
             }
         }
@@ -27,6 +28,37 @@ namespace GROUP6_ANGAT
             Session.Clear();
             Response.Redirect("~/");
         }
+
+        private void MarkNotificationAsReadFromQuery()
+        {
+            if (Session["UserId"] == null)
+            {
+                return;
+            }
+
+            int notificationId;
+            if (!int.TryParse(Request.QueryString["notifId"], out notificationId))
+            {
+                return;
+            }
+
+            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                    UPDATE Notifications
+                    SET IsRead = 1
+                    WHERE NotificationId = @NotificationId
+                    AND UserId = @UserId
+                    AND IsRead = 0", conn))
+            {
+                cmd.Parameters.AddWithValue("@NotificationId", notificationId);
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
 
         protected void BtnMarkAllNotifRead_Click(object sender, EventArgs e)
         {
@@ -51,17 +83,25 @@ namespace GROUP6_ANGAT
             LoadNotifications();
         }
 
-        protected string ResolveNotificationUrl(object targetUrlObj)
+        protected string ResolveNotificationUrl(object notificationIdObj, object targetUrlObj)
         {
             string targetUrl = targetUrlObj == null ? "" : targetUrlObj.ToString().Trim();
 
             if (string.IsNullOrWhiteSpace(targetUrl))
             {
-                return ResolveUrl("~/Pages/Profile.aspx");
+                targetUrl = "~/Pages/Profile.aspx";
+            }
+
+            int notificationId;
+            if (notificationIdObj != null && int.TryParse(notificationIdObj.ToString(), out notificationId))
+            {
+                string separator = targetUrl.Contains("?") ? "&" : "?";
+                targetUrl = targetUrl + separator + "notifId=" + notificationId;
             }
 
             return ResolveUrl(targetUrl);
         }
+
 
 
         protected string GetNotificationItemClass(object isReadObj)

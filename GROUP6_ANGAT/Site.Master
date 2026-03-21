@@ -55,7 +55,9 @@
                     <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
                             <li class="desktop-only notification-shell">
                                 <button type="button" id="notification-toggle" class="notification-btn" aria-label="Notifications">
-                                    <i class='bx bx-bell'></i>
+                                    <i class='bx bxs-bell'></i>
+
+
                                     <asp:PlaceHolder ID="phUnreadBadge" runat="server" Visible="false">
                                         <span class="notification-count">
                                             <asp:Label ID="lblUnread" runat="server" />
@@ -85,7 +87,8 @@
                                         <asp:Repeater ID="rptNotifications" runat="server">
                                             <ItemTemplate>
                                                 <a class='notification-item <%# GetNotificationItemClass(Eval("IsRead")) %>'
-                                                   href='<%# ResolveNotificationUrl(Eval("TargetUrl")) %>'>
+                                                   href='<%# ResolveNotificationUrl(Eval("NotificationId"), Eval("TargetUrl")) %>'>
+
                                                     <div class="notification-copy">
                                                         <strong><%#: Eval("Title") %></strong>
                                                         <p><%#: Eval("Message") %></p>
