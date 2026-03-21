@@ -74,7 +74,7 @@
 
         <div id="side-menu" class="side-menu">
             <div class="side-menu-header">
-                <h2>🤝 ANGAT Menu</h2>
+                <h2>ANGAT Menu</h2>
                 <button type="button" id="close-menu" class="close-btn"><i class='bx bx-x'></i></button>
             </div>
             <ul class="side-nav-links">
@@ -109,7 +109,7 @@
         <div id="footer">
             <div class="footer-inner">
                 <div class="footer-brand">
-                    <h4>🤝 ANGAT</h4>
+                    <h4>ANGAT</h4>
                     <p>Ating Negosyo, Galing, at Trabaho — Isang libreng serbisyo para sa mga manggagawa at negosyante ng Biñan, Laguna.</p>
                 </div>
                 <div class="footer-col">
@@ -237,10 +237,10 @@
         // ── SET LISTING ICONS FROM CATEGORY ──
         document.querySelectorAll('.listing-icon[data-category]').forEach(function (el) {
             var map = {
-                'kasambahay': 'bx bx-brush',
+                'kasambahay': 'bx bx-home',
                 'driver': 'bx bx-car',
                 'labandera': 'bx bx-basket',
-                'karpintero': 'bx bx-hammer',
+                'karpintero': 'bx bx-wrench',
                 'electrician': 'bx bx-bolt-circle',
                 'tubero': 'bx bx-droplet',
                 'mananahi': 'bx bx-cut',

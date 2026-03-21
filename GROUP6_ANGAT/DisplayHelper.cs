@@ -4,23 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace GROUP6_ANGAT
-{
-    public static class DisplayHelper
-    {
+namespace GROUP6_ANGAT {
+    public static class DisplayHelper {
         // ── Tags & Badges ──
-        public static string GetTagsHtml(object tagsObj, object categoryObj = null)
-        {
+        public static string GetTagsHtml(object tagsObj, object categoryObj = null) {
             string tagsRaw = tagsObj == null ? string.Empty : tagsObj.ToString();
             if (string.IsNullOrWhiteSpace(tagsRaw)) return string.Empty;
 
             string[] tags = tagsRaw.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
 
-            foreach (string tag in tags)
-            {
+            foreach (string tag in tags) {
                 string t = tag.Trim();
-                if (string.IsNullOrEmpty(t)) continue;  
+                if (string.IsNullOrEmpty(t)) continue;
 
                 string css = GetTagCss(t, categoryObj?.ToString());
                 sb.AppendFormat("<span class=\"badge {0}\">{1}</span> ", css, HttpUtility.HtmlEncode(t));
@@ -28,38 +24,40 @@ namespace GROUP6_ANGAT
             return sb.ToString();
         }
 
-        public static string GetTagCss(string tag, string category = null)
-        {
+        public static string GetTagCss(string tag, string category = null) {
             string t = (tag ?? "").ToLowerInvariant();
             string cat = (category ?? "").ToLowerInvariant();
 
-            // Priority tags
+            // ── EXPLICIT TAG MATCHES (highest priority) ──
             if (t.Contains("urgent")) return "tag-rose";
             if (t.Contains("full-time")) return "tag-fulltime";
             if (t.Contains("part-time")) return "tag-parttime";
             if (t.Contains("pisikal")) return "tag-physical";
-            if (t.Contains("may karanasan")) return "tag-experience";
+            if (t.Contains("may karanasan") ||
+                t.Contains("licensed") ||
+                t.Contains("experienced")) return "tag-experience";
             if (t.Contains("live-in")) return "tag-housing";
             if (t.Contains("repair")) return "tag-blue";
             if (t.Contains("install") || t.Contains("wiring")) return "tag-teal";
+            if (t.Contains("flexible")) return "tag-teal";
+            if (t.Contains("weekday") || t.Contains("weekdays")) return "tag-blue";
+            if (t.Contains("weekend") || t.Contains("weekends")) return "tag-violet";
+            if (t.Contains("anytime") || t.Contains("available")) return "tag-mint";
 
-            // Category-based fallback
+            // ── CATEGORY-BASED FALLBACK ──
             if (cat.Contains("karpintero")) return "tag-amber";
             if (cat.Contains("tubero")) return "tag-blue";
             if (cat.Contains("electric")) return "tag-teal";
             if (cat.Contains("aircon") || cat.Contains("appliance")) return "tag-mint";
             if (cat.Contains("mananahi")) return "tag-rose";
-
-            // General fallbacks
-            if (t.Contains("flexible")) return "tag-teal";
-            if (t.Contains("weekdays")) return "tag-blue";
-            if (t.Contains("weekends")) return "tag-violet";
+            if (cat.Contains("kasambahay") || cat.Contains("labandera")) return "tag-violet";
+            if (cat.Contains("driver")) return "tag-blue";
+            if (cat.Contains("carinderia") || cat.Contains("sari-sari")) return "tag-amber";
 
             return "tag-teal";
         }
 
-        public static string GetStatusClass(object statusObj)
-        {
+        public static string GetStatusClass(object statusObj) {
             string status = (statusObj ?? "").ToString().ToLowerInvariant();
             if (status.Contains("filled") || status.Contains("busy")) return "badge-rose";
             if (status.Contains("paused")) return "badge-amber";
@@ -68,8 +66,7 @@ namespace GROUP6_ANGAT
         }
 
         // ── Pay & Rates ──
-        public static string GetPayDisplay(object minObj, object maxObj, object rateObj)
-        {
+        public static string GetPayDisplay(object minObj, object maxObj, object rateObj) {
             if (minObj == DBNull.Value || minObj == null) return string.Empty;
 
             string rate = (rateObj ?? "").ToString()
@@ -85,39 +82,8 @@ namespace GROUP6_ANGAT
             return $"{formatted} / {rate}";
         }
 
-        public static string GetServicePayDisplay(object rateObj)
-        {
-            string rate = (rateObj ?? "").ToString();
-            if (string.IsNullOrWhiteSpace(rate)) return string.Empty;
-
-            // Handle encoding issues
-            rate = rate.Replace("?", "₱").Replace("\u00E2\u201A\u00B1", "₱").Replace("\u20B1", "₱");
-
-            if (!rate.Contains("₱") && !rate.StartsWith("PHP", StringComparison.OrdinalIgnoreCase))
-            {
-                rate = "₱" + rate.TrimStart();
-            }
-
-            return HttpUtility.HtmlEncode(rate);
-        }
-
-        public static string GetRateSortValue(object rateObj)
-        {
-            string rate = (rateObj ?? "").ToString();
-            if (string.IsNullOrWhiteSpace(rate)) return "0";
-
-            string cleaned = "";
-            foreach (char c in rate)
-            {
-                if (char.IsDigit(c) || c == '.') cleaned += c;
-            }
-            
-            return decimal.TryParse(cleaned, out decimal val) ? val.ToString() : "0";
-        }
-
         // ── Dates & Sorting ──
-        public static string GetDateLabel(object postedObj)
-        {
+        public static string GetDateLabel(object postedObj) {
             if (postedObj == null || postedObj == DBNull.Value) return string.Empty;
             if (!DateTime.TryParse(postedObj.ToString(), out DateTime posted)) return string.Empty;
 
@@ -135,17 +101,15 @@ namespace GROUP6_ANGAT
             return $"{(int)(diff.TotalDays / 7)} linggo na ang nakalipas";
         }
 
-        public static string GetPostedValue(object postedObj)
-        {
+        public static string GetPostedValue(object postedObj) {
             if (postedObj == null || postedObj == DBNull.Value) return "0";
-            return DateTime.TryParse(postedObj.ToString(), out DateTime posted) 
-                ? posted.ToFileTimeUtc().ToString() 
+            return DateTime.TryParse(postedObj.ToString(), out DateTime posted)
+                ? posted.ToFileTimeUtc().ToString()
                 : "0";
         }
 
         // ── Search & Meta ──
-        public static string GetSearchText(object title, object tags, object barangay, object category, object location = null)
-        {
+        public static string GetSearchText(object title, object tags, object barangay, object category, object location = null) {
             string t = (title ?? "").ToString();
             string tg = (tags ?? "").ToString().Replace("|", " ");
             string br = (barangay ?? "").ToString();

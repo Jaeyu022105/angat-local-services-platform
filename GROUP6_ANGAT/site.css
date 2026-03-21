@@ -723,6 +723,113 @@ i {
             margin: 0;
         }
 
+/* ── RESOURCE LINKS ── */
+.resource-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 8px;
+    align-items: start;
+}
+
+.resource-group {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.resource-group-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--light);
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+}
+
+.resource-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--border);
+}
+
+    .resource-link:last-child {
+        border-bottom: none;
+    }
+
+a.resource-link:hover {
+    background: var(--light);
+    color: var(--primary);
+}
+
+    a.resource-link:hover .resource-link-arrow {
+        color: var(--primary);
+    }
+
+div.resource-link {
+    cursor: default;
+}
+
+.resource-link-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    border-radius: 8px;
+    background: var(--light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--primary);
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.resource-link > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.resource-link strong {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.resource-link span {
+    font-size: 0.78rem;
+    color: var(--text-light);
+}
+
+.resource-link-desc {
+    font-size: 0.73rem !important;
+    color: var(--text-light);
+    margin-top: 1px;
+}
+
+.resource-link-arrow {
+    font-size: 1rem;
+    color: var(--text-light);
+    flex-shrink: 0;
+}
 /* ==========================================
    BUTTONS
    ========================================== */
@@ -820,7 +927,7 @@ i {
 }
 
 .badge-green {
-    background: #166534;
+    background: #00C785;
     color: #ffffff;
 }
 
@@ -970,57 +1077,54 @@ button.listing-card {
         justify-content: center;
         font-size: 1.4rem;
         flex-shrink: 0;
-        border: 1.5px solid var(--primary-mid);
     }
 
-    /* Category background colors via data-category */
-    .listing-icon[data-category*="kasambahay" i] {
-        background: #bbf7d0;
-    }
+/* Mint Green (Pandan Pastel) - Kasambahay/Labandera */
+.listing-icon[data-category*="kasambahay" i],
+.listing-icon[data-category*="labandera" i] {
+    background-color: #E2F5E9;
+    color: #62A37B;
+}
 
-    .listing-icon[data-category*="driver" i] {
-        background: #99f6e4;
-    }
+/* Baby Blue (Cloud Pastel) - Tubero/Aircon */
+.listing-icon[data-category*="tubero" i],
+.listing-icon[data-category*="aircon" i] {
+    background-color: #E3F2FD;
+    color: #5D8EB4;
+}
 
-    .listing-icon[data-category*="labandera" i] {
-        background: #fecdd3;
-    }
+/* Soft Butter (Lemon Cream) - Karpintero/Electrician */
+.listing-icon[data-category*="karpintero" i],
+.listing-icon[data-category*="electrician" i] {
+    background-color: #FFF9E1;
+    color: #B59410;
+}
 
-    .listing-icon[data-category*="karpintero" i] {
-        background: #fde68a;
-    }
+/* Cotton Candy (Peach/Pink) - Carinderia/Mananahi */
+.listing-icon[data-category*="carinderia" i],
+.listing-icon[data-category*="mananahi" i] {
+    background-color: #FFE9EC;
+    color: #C17B86;
+}
 
-    .listing-icon[data-category*="electrician" i] {
-        background: #bfdbfe;
-    }
+/* Lavender Mist (Ube Macapuno) - Sari-sari */
+.listing-icon[data-category*="sari-sari" i] {
+    background-color: #F3E8FF;
+    color: #906DC0;
+}
 
-    .listing-icon[data-category*="tubero" i] {
-        background: #bfdbfe;
-    }
+/* Creamsicle (Soft Orange) - Driver/Bodega */
+.listing-icon[data-category*="driver" i],
+.listing-icon[data-category*="bodega" i] {
+    background-color: #FFF0E0;
+    color: #C8864E;
+}
 
-    .listing-icon[data-category*="mananahi" i] {
-        background: #fecdd3;
-    }
-
-    .listing-icon[data-category*="carinderia" i] {
-        background: #fde68a;
-    }
-
-    .listing-icon[data-category*="sari-sari" i] {
-        background: #ddd6fe;
-    }
-
-    .listing-icon[data-category*="bodega" i] {
-        background: #bfdbfe;
-    }
-
-    .listing-icon[data-category*="aircon" i] {
-        background: #e0f2fe;
-    }
-
-    .listing-icon[data-category*="iba" i] {
-        background: var(--primary-light);
-    }
+/* Neutral Linen - Iba pa */
+.listing-icon[data-category*="iba" i] {
+    background-color: #F6EFE2;
+    color: #A69277;
+}
 
     .listing-card h4 {
         font-weight: 700;
@@ -1756,75 +1860,62 @@ button.listing-card {
     flex-wrap: wrap;
 }
 
-/* Tag colors by category (Hanap Trabaho) */
-.tag-mint {
-    background: #0f766e;
-    color: #ffffff;
+/* ── PASTEL TAG COLORS ── */
+/* Only classes actually used by DisplayHelper.GetTagCss() */
+
+.tag-teal {
+    background: #A7E3E3;
+    color: #1A3D3D;
 }
 
 .tag-blue {
-    background: #1d4ed8;
-    color: #ffffff;
-}
-
-.tag-rose {
-    background: #9f1239;
-    color: #ffffff;
-}
-
-.tag-amber {
-    background: #92400e;
-    color: #ffffff;
+    background: #AFCBFF;
+    color: #1A2C5B;
 }
 
 .tag-violet {
-    background: #6d28d9;
-    color: #ffffff;
+    background: #CBB2FF;
+    color: #3A1A5A;
 }
 
-.tag-teal {
-    background: #0f766e;
-    color: #ffffff;
+.tag-rose {
+    background: #F7A1B3; /* used for: urgent */
+    color: #5A1A2C;
+}
+
+.tag-amber {
+    background: #FFD59E; /* used for: karpintero, carinderia, sari-sari */
+    color: #5A3A1A;
+}
+
+.tag-mint {
+    background: #A7E3D8; /* used for: anytime, available, aircon, flexible */
+    color: #1A3D36;
 }
 
 .tag-fulltime {
-    background: #0f766e;
+    background: #688FE5;
     color: #ffffff;
 }
 
 .tag-parttime {
-    background: #1d4ed8;
-    color: #ffffff;
-}
-
-.tag-urgent {
-    background: #9f1239;
-    color: #ffffff;
+    background: #9EB6F7;
+    color: #1A2C5B;
 }
 
 .tag-housing {
-    background: #0f766e;
-    color: #ffffff;
-}
-
-.tag-license {
-    background: #1d4ed8;
-    color: #ffffff;
-}
-
-.tag-daily {
-    background: #9f1239;
-    color: #ffffff;
+    background: #F7CACA; /* used for: live-in */
+    color: #5A2A2A;
 }
 
 .tag-physical {
-    background: #1d4ed8;
-    color: #ffffff;
+    background: #F7B58C; /* used for: pisikal na trabaho */
+    color: #5A2C1A;
 }
 
 .tag-experience {
-    background: #92400e;
-    color: #ffffff;
+    background: #F7B58C; /* used for: may karanasan, licensed, experienced */
+    color: #5A2C1A;
 }
 
 .login-spotlight {

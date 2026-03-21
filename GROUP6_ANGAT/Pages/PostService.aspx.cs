@@ -1,173 +1,105 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
 
-namespace GROUP6_ANGAT
-{
-    public partial class PostService : System.Web.UI.Page
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (Session["UserId"] == null)
-            {
+namespace GROUP6_ANGAT {
+    public partial class PostService : System.Web.UI.Page {
+        protected void Page_Load(object sender, EventArgs e) {
+            if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/PostService.aspx");
                 return;
             }
         }
 
-        protected void BtnPostService_Click(object sender, EventArgs e)
-        {
-            string title = txtServiceTitle.Text.Trim();
-            string category = ddlCategory.SelectedValue;
-            string location = txtServiceLocation.Text.Trim();
-            string barangay = txtBarangay.Text.Trim();
-            string minRate = txtRateMin.Text.Trim();
-            string maxRate = txtRateMax.Text.Trim();
-            string rateUnit = ddlRateUnit.SelectedValue;
-            string rate = BuildRate(minRate, maxRate, rateUnit);
-            string tags = txtServiceTags.Text.Trim();
-            string status = ddlStatus.SelectedValue;
-            string dateLabel = string.IsNullOrWhiteSpace(txtDateLabel.Text) ? "Ngayon" : txtDateLabel.Text.Trim();
-            string description = txtServiceDescription.Text.Trim();
+        protected void BtnPostService_Click(object sender, EventArgs e) {
+            // ── SANITIZE INPUTS ──
+            string title = SanitizeText(txtServiceTitle.Text, maxLength: 150);
+            string category = SanitizeText(ddlCategory.SelectedValue, maxLength: 60);
+            string barangay = SanitizeText(ddlBarangay.SelectedValue, maxLength: 60);
+            string minRaw = SanitizeText(txtRateMin.Text, maxLength: 15);
+            string maxRaw = SanitizeText(txtRateMax.Text, maxLength: 15);
+            string rateUnit = SanitizeText(ddlRateUnit.SelectedValue, maxLength: 30);
+            string tags = SanitizeText(hfTags.Value, maxLength: 300);
+            string description = SanitizeText(txtServiceDescription.Text, maxLength: 500);
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(location) || string.IsNullOrEmpty(barangay))
-            {
-                pnlPostMessage.Visible = true;
-                pnlPostMessage.CssClass = "form-alert error";
-                lblPostMessage.Text = "Paki-kumpleto ang Service Title, Location, at Barangay.";
-                return;
+            // ── VALIDATION ──
+            if (string.IsNullOrEmpty(title)) {
+                ShowMessage("error", "Pakiusap ilagay ang Service Title."); return;
             }
-            if (string.IsNullOrEmpty(rate))
-            {
-                pnlPostMessage.Visible = true;
-                pnlPostMessage.CssClass = "form-alert error";
-                lblPostMessage.Text = "Paki-kumpleto ang Rate range.";
-                return;
+            if (title.Length < 3) {
+                ShowMessage("error", "Ang Service Title ay dapat hindi bababa sa 3 karakter."); return;
+            }
+            if (string.IsNullOrEmpty(category)) {
+                ShowMessage("error", "Pakiusap piliin ang kategorya."); return;
+            }
+            if (string.IsNullOrEmpty(barangay) || barangay == "0") {
+                ShowMessage("error", "Pakiusap piliin ang barangay."); return;
+            }
+            if (!decimal.TryParse(minRaw, out decimal rateMin) || rateMin <= 0) {
+                ShowMessage("error", "Pakiusap ilagay ang tamang minimum na rate."); return;
+            }
+            if (!decimal.TryParse(maxRaw, out decimal rateMax) || rateMax <= 0) {
+                ShowMessage("error", "Pakiusap ilagay ang tamang maximum na rate."); return;
+            }
+            if (rateMin > rateMax) {
+                ShowMessage("error", "Ang minimum rate ay hindi dapat mas mataas sa maximum."); return;
+            }
+            if (string.IsNullOrEmpty(tags)) {
+                ShowMessage("error", "Pakiusap pumili ng kahit isang tag."); return;
+            }
+            if (string.IsNullOrEmpty(description)) {
+                ShowMessage("error", "Pakiusap ilagay ang detalye ng serbisyo."); return;
+            }
+            if (description.Length < 10) {
+                ShowMessage("error", "Ang detalye ay dapat hindi bababa sa 10 karakter."); return;
             }
 
-            string iconClass;
-            string iconBg;
-            string iconColor;
-            GetCategoryIcon(category, out iconClass, out iconBg, out iconColor);
-
+            // ── INSERT TO DATABASE (parameterized — SQL injection safe) ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"INSERT INTO Services
-                                                     (ServiceTitle, ServiceLocation, Barangay, ServiceRate, ServiceTags, ServiceDescription, Status, DateLabel,
-                                                      IconClass, IconBg, IconColor, Category, PostedByUserId, IsActive, PostedAt)
-                                                     VALUES (@ServiceTitle, @ServiceLocation, @Barangay, @ServiceRate, @ServiceTags, @ServiceDescription, @Status, @DateLabel,
-                                                             @IconClass, @IconBg, @IconColor, @Category, @PostedByUserId, 1, GETDATE())", conn))
-            {
-                cmd.Parameters.AddWithValue("@ServiceTitle", title);
-                cmd.Parameters.AddWithValue("@ServiceLocation", location);
-                cmd.Parameters.AddWithValue("@Barangay", barangay);
-                cmd.Parameters.AddWithValue("@ServiceRate", rate);
-                cmd.Parameters.AddWithValue("@ServiceTags", tags);
-                cmd.Parameters.AddWithValue("@ServiceDescription", description);
-                cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@DateLabel", dateLabel);
-                cmd.Parameters.AddWithValue("@IconClass", iconClass);
-                cmd.Parameters.AddWithValue("@IconBg", iconBg);
-                cmd.Parameters.AddWithValue("@IconColor", iconColor);
-                cmd.Parameters.AddWithValue("@Category", category);
-                cmd.Parameters.AddWithValue("@PostedByUserId", Session["UserId"]);
+            using (SqlCommand cmd = new SqlCommand(@"
+                INSERT INTO Services
+                    (ServiceTitle, Category, Barangay, RateMin, RateMax, RateType,
+                     Tags, Status, ServiceDescription, PostedByUserId, IsActive, PostedAt)
+                VALUES
+                    (@ServiceTitle, @Category, @Barangay, @RateMin, @RateMax, @RateType,
+                     @Tags, 'Available', @ServiceDescription, @PostedByUserId, 1, GETDATE())", conn)) {
+                cmd.Parameters.Add("@ServiceTitle", System.Data.SqlDbType.NVarChar, 150).Value = title;
+                cmd.Parameters.Add("@Category", System.Data.SqlDbType.NVarChar, 60).Value = category;
+                cmd.Parameters.Add("@Barangay", System.Data.SqlDbType.NVarChar, 60).Value = barangay;
+                cmd.Parameters.Add("@RateMin", System.Data.SqlDbType.Decimal).Value = rateMin;
+                cmd.Parameters.Add("@RateMax", System.Data.SqlDbType.Decimal).Value = rateMax;
+                cmd.Parameters.Add("@RateType", System.Data.SqlDbType.NVarChar, 30).Value = rateUnit;
+                cmd.Parameters.Add("@Tags", System.Data.SqlDbType.NVarChar, 300).Value = tags;
+                cmd.Parameters.Add("@ServiceDescription", System.Data.SqlDbType.NVarChar, 500).Value = description;
+                cmd.Parameters.Add("@PostedByUserId", System.Data.SqlDbType.Int).Value = Session["UserId"];
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-
-            pnlPostMessage.Visible = true;
-            pnlPostMessage.CssClass = "form-alert success";
-            lblPostMessage.Text = "Naipost na ang serbisyo! Makikita ito sa Hanap Gawa.";
-
-            txtServiceTitle.Text = "";
-            txtServiceLocation.Text = "";
-            txtBarangay.Text = "";
-            txtRateMin.Text = "";
-            txtRateMax.Text = "";
-            txtServiceTags.Text = "";
-            txtDateLabel.Text = "";
-            txtServiceDescription.Text = "";
-        }
-
-        private string BuildRate(string min, string max, string unit)
-        {
-            string cleanMin = CleanNumber(min);
-            string cleanMax = CleanNumber(max);
-            if (string.IsNullOrEmpty(cleanMin) || string.IsNullOrEmpty(cleanMax))
-            {
-                return "";
-            }
-
-            return "\u20B1" + cleanMin + "-" + "\u20B1" + cleanMax + " " + unit;
-        }
-
-        private string CleanNumber(string raw)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return "";
-            }
-
-            var chars = raw.ToCharArray();
-            var digits = new System.Text.StringBuilder();
-            for (int i = 0; i < chars.Length; i++)
-            {
-                if (char.IsDigit(chars[i]))
-                {
-                    digits.Append(chars[i]);
+                try {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException) {
+                    ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit.");
+                    return;
                 }
             }
 
-            if (digits.Length == 0)
-            {
-                return "";
-            }
-
-            if (long.TryParse(digits.ToString(), out long value))
-            {
-                return value.ToString("N0");
-            }
-
-            return digits.ToString();
+            // ── REDIRECT TO HANAPGAWA after successful post ──
+            Response.Redirect("~/Pages/HanapGawa.aspx?posted=success");
         }
 
-        private void GetCategoryIcon(string category, out string iconClass, out string iconBg, out string iconColor)
-        {
-            switch ((category ?? "").ToLowerInvariant())
-            {
-                case "karpintero":
-                    iconClass = "bx bx-hammer";
-                    iconBg = "#fef3c7";
-                    iconColor = "#b45309";
-                    break;
-                case "tubero":
-                    iconClass = "bx bx-wrench";
-                    iconBg = "#dbeafe";
-                    iconColor = "#1d4ed8";
-                    break;
-                case "electrician":
-                    iconClass = "bx bx-bolt";
-                    iconBg = "#e0f2fe";
-                    iconColor = "#0284c7";
-                    break;
-                case "aircon":
-                    iconClass = "bx bx-wind";
-                    iconBg = "#ccfbf1";
-                    iconColor = "#14b8a6";
-                    break;
-                case "mananahi":
-                    iconClass = "bx bx-scissors";
-                    iconBg = "#ffe4e6";
-                    iconColor = "#be123c";
-                    break;
-                default:
-                    iconClass = "bx bx-briefcase";
-                    iconBg = "#e6f7f1";
-                    iconColor = "#0d9e6e";
-                    break;
-            }
+        // ── HELPERS ──
+        private string SanitizeText(string input, int maxLength) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            if (input.Length > maxLength) input = input.Substring(0, maxLength);
+            return input;
+        }
+
+        private void ShowMessage(string type, string message) {
+            pnlPostMessage.Visible = true;
+            pnlPostMessage.CssClass = $"form-alert {type}";
+            lblPostMessage.Text = message;
         }
     }
 }

@@ -7,12 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT
-{
+namespace GROUP6_ANGAT {
 
 
-    public partial class PostService
-    {
+    public partial class PostService {
 
         /// <summary>
         /// pnlPostMessage control.
@@ -51,22 +49,13 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.DropDownList ddlCategory;
 
         /// <summary>
-        /// txtServiceLocation control.
+        /// ddlBarangay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtServiceLocation;
-
-        /// <summary>
-        /// txtBarangay control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBarangay;
+        protected global::System.Web.UI.WebControls.DropDownList ddlBarangay;
 
         /// <summary>
         /// txtRateMin control.
@@ -96,31 +85,13 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.DropDownList ddlRateUnit;
 
         /// <summary>
-        /// txtServiceTags control.
+        /// hfTags control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtServiceTags;
-
-        /// <summary>
-        /// ddlStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
-
-        /// <summary>
-        /// txtDateLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateLabel;
+        protected global::System.Web.UI.WebControls.HiddenField hfTags;
 
         /// <summary>
         /// txtServiceDescription control.

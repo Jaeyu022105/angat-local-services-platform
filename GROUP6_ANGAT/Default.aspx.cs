@@ -10,25 +10,6 @@ namespace GROUP6_ANGAT {
             if (!IsPostBack) {
                 LoadFeaturedJobs();
                 LoadFeaturedServices();
-                LoadAnnouncements();
-            }
-        }
-
-        private void LoadAnnouncements() {
-            string connStr = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connStr)) {
-                conn.Open();
-                string query = @"SELECT TOP 5 Title, Body, MonthLabel, DayLabel 
-                         FROM Announcements 
-                         WHERE IsActive = 1 
-                         ORDER BY PostedAt DESC";
-                using (SqlCommand cmd = new SqlCommand(query, conn)) {
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    rptAnnouncements.DataSource = dt;
-                    rptAnnouncements.DataBind();
-                }
             }
         }
 

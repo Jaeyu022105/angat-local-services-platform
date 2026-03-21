@@ -141,25 +141,109 @@
         </div>
     </div>
 
+    <%-- RESOURCES AT HOTLINES --%>
     <div class="section section-light">
         <div class="section-header left">
-            <h3>Mga <span>Anunsyo</span></h3>
-            <p class="section-sub">
-                Pinakabagong balita mula sa PESO Office at LGU Biñan.
-            </p>
+            <h3>Mga <span>Resources</span> at <span>Hotline</span></h3>
+            <p class="section-sub">Opisyal na mga website at contact numbers para sa mga manggagawa at negosyante ng Biñan.</p>
         </div>
-        <ul class="announcement-list">
-            <asp:Repeater ID="rptAnnouncements" runat="server">
-                <ItemTemplate>
-                    <li>
-                        <div class="ann-date"><%# Eval("MonthLabel") %><br /><%# Eval("DayLabel") %></div>
-                        <div class="ann-body">
-                            <h5><%# Eval("Title") %></h5>
-                            <p><%# Eval("Body") %></p>
-                        </div>
-                    </li>
-                </ItemTemplate>
-            </asp:Repeater>
-        </ul>
+        <div class="resource-links-grid">
+
+            <%-- LGU / GOVERNMENT --%>
+            <div class="resource-group">
+                <h5 class="resource-group-title"><i class='bx bx-buildings'></i> LGU / Gobyerno</h5>
+                <a href="https://www.binan.gov.ph" target="_blank" class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-home-alt'></i></div>
+                    <div>
+                        <strong>Biñan City Official Website</strong>
+                        <span>binan.gov.ph</span>
+                    </div>
+                    <i class='bx bx-link-external resource-link-arrow'></i>
+                </a>
+                <a href="https://www.binan.gov.ph/departments-and-offices/" target="_blank" class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-building'></i></div>
+                    <div>
+                        <strong>Mga Tanggapan ng LGU</strong>
+                        <span>Departments & Offices</span>
+                    </div>
+                    <i class='bx bx-link-external resource-link-arrow'></i>
+                </a>
+                <a href="https://experiencebinan.com" target="_blank" class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-map-alt'></i></div>
+                    <div>
+                        <strong>Experience Biñan</strong>
+                        <span>experiencebinan.com</span>
+                    </div>
+                    <i class='bx bx-link-external resource-link-arrow'></i>
+                </a>
+            </div>
+
+            <%-- PESO / JOBS --%>
+            <div class="resource-group">
+                <h5 class="resource-group-title"><i class='bx bx-briefcase'></i> PESO / Trabaho</h5>
+                <a href="https://www.facebook.com/pesobinan/" target="_blank" class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bxl-facebook'></i></div>
+                    <div>
+                        <strong>PESO Biñan Facebook</strong>
+                        <span>Pinakabagong job fair at anunsyo</span>
+                    </div>
+                    <i class='bx bx-link-external resource-link-arrow'></i>
+                </a>
+                <a href="https://www.philjobnet.gov.ph" target="_blank" class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-search-alt'></i></div>
+                    <div>
+                        <strong>PhilJobNet</strong>
+                        <span>DOLE job matching portal</span>
+                    </div>
+                    <i class='bx bx-link-external resource-link-arrow'></i>
+                </a>
+                <a href="https://www.dole.gov.ph" target="_blank" class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-badge-check'></i></div>
+                    <div>
+                        <strong>DOLE Official Website</strong>
+                        <span>dole.gov.ph</span>
+                    </div>
+                    <i class='bx bx-link-external resource-link-arrow'></i>
+                </a>
+            </div>
+
+            <%-- HOTLINES --%>
+            <div class="resource-group">
+                <h5 class="resource-group-title"><i class='bx bx-phone-call'></i> Mga Hotline</h5>
+                <div class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-store'></i></div>
+                    <div>
+                        <strong>Negosyo Center</strong>
+                        <span>513-5104 / 523-5104</span>
+                        <span class="resource-link-desc">MSMEs, business registration, payo</span>
+                    </div>
+                </div>
+                <div class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-file'></i></div>
+                    <div>
+                        <strong>BPLO</strong>
+                        <span>513-5084 / 523-5481</span>
+                        <span class="resource-link-desc">Business permits at licensing</span>
+                    </div>
+                </div>
+                <div class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-pen'></i></div>
+                    <div>
+                        <strong>City Information Office</strong>
+                        <span>513-5028 / 523-5400</span>
+                        <span class="resource-link-desc">Job fairs at city announcements</span>
+                    </div>
+                </div>
+                <div class="resource-link">
+                    <div class="resource-link-icon"><i class='bx bx-heart'></i></div>
+                    <div>
+                        <strong>DSWD</strong>
+                        <span>513-5041 / 523-5415</span>
+                        <span class="resource-link-desc">Livelihood programs, cash-for-work</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </asp:Content>
