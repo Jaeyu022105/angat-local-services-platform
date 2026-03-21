@@ -11,7 +11,7 @@
             <span class="hero-badge"><i class='bx bx-wrench'></i> Service Provider</span>
             <h2>I-post ang <strong>Serbisyo</strong></h2>
             <p class="hero-desc">
-                Magdagdag ng bagong serbisyo para makita ng mga kustomer sa Biñan.
+                Magdagdag ng bagong serbisyo para makita ng mga kustomer sa Bi&#241;an.
             </p>
         </div>
         <div class="wave">
@@ -37,21 +37,21 @@
             <div class="form-group">
                 <label>Service Title <span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceTitle" runat="server"
-                    placeholder="Halimbawa: Aircon Cleaning at Repair, Tubero para sa Biñan Area"></asp:TextBox>
-                <small class="field-hint">Iwasan ang emoji at espesyal na karakter.</small>
+                    placeholder="Halimbawa: Aircon Cleaning at Repair, Tubero para sa Bi&#241;an Area"></asp:TextBox>
+                <small class="field-hint">Iwasan ang emoji at espesyal na karakter. Awtomatikong iko-convert sa Title Case.</small>
             </div>
 
-            <%-- Category --%>
+            <%-- Category — Tagalog only --%>
             <div class="form-group">
                 <label>Kategorya <span class="required">*</span></label>
                 <asp:DropDownList ID="ddlCategory" runat="server">
                     <asp:ListItem Value="">-- Pumili ng Kategorya --</asp:ListItem>
-                    <asp:ListItem Value="Karpintero">Karpintero (Carpentry)</asp:ListItem>
-                    <asp:ListItem Value="Tubero">Tubero (Plumbing)</asp:ListItem>
+                    <asp:ListItem Value="Karpintero">Karpintero</asp:ListItem>
+                    <asp:ListItem Value="Tubero">Tubero</asp:ListItem>
                     <asp:ListItem Value="Electrician">Electrician</asp:ListItem>
-                    <asp:ListItem Value="Aircon">Appliance Repair</asp:ListItem>
-                    <asp:ListItem Value="Mananahi">Pananahi / Tailoring</asp:ListItem>
-                    <asp:ListItem Value="General">General / Iba Pa</asp:ListItem>
+                    <asp:ListItem Value="Aircon">Ayos ng Appliance</asp:ListItem>
+                    <asp:ListItem Value="Mananahi">Mananahi</asp:ListItem>
+                    <asp:ListItem Value="General">Iba Pa</asp:ListItem>
                 </asp:DropDownList>
             </div>
 
@@ -60,7 +60,7 @@
                 <label>Barangay <span class="required">*</span></label>
                 <asp:DropDownList ID="ddlBarangay" runat="server">
                     <asp:ListItem Value="">-- Pumili ng Barangay --</asp:ListItem>
-                    <asp:ListItem Value="Biñan">Biñan (Poblacion)</asp:ListItem>
+                    <asp:ListItem Value="Bi&#241;an">Bi&#241;an (Poblacion)</asp:ListItem>
                     <asp:ListItem Value="Bungahan">Bungahan</asp:ListItem>
                     <asp:ListItem Value="Canlalay">Canlalay</asp:ListItem>
                     <asp:ListItem Value="Casile">Casile</asp:ListItem>
@@ -75,7 +75,7 @@
                     <asp:ListItem Value="Masile">Masile</asp:ListItem>
                     <asp:ListItem Value="Maysilo">Maysilo</asp:ListItem>
                     <asp:ListItem Value="Munting Ilog">Munting Ilog</asp:ListItem>
-                    <asp:ListItem Value="New Biñan">New Biñan</asp:ListItem>
+                    <asp:ListItem Value="New Bi&#241;an">New Bi&#241;an</asp:ListItem>
                     <asp:ListItem Value="Platero">Platero</asp:ListItem>
                     <asp:ListItem Value="San Antonio">San Antonio</asp:ListItem>
                     <asp:ListItem Value="San Francisco">San Francisco</asp:ListItem>
@@ -137,7 +137,7 @@
             <div class="form-group">
                 <label>Detalye <span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceDescription" runat="server" TextMode="MultiLine"
-                    placeholder="Halimbawa: Nag-aalok ako ng aircon cleaning at repair serbisyo sa Biñan at mga karatig barangay. May 5 taon na karanasan, may sariling kagamitan. Tumawag o mag-message para sa appointment."
+                    placeholder="Halimbawa: Nag-aalok ako ng aircon cleaning at repair serbisyo sa Bi&#241;an at mga karatig barangay. May 5 taon na karanasan, may sariling kagamitan. Tumawag o mag-message para sa appointment."
                     MaxLength="500"></asp:TextBox>
                 <small class="field-hint"><span id="descCount">0</span> / 500 characters</small>
             </div>
@@ -151,7 +151,7 @@
     <script>
         // ── TAG PILLS ──
         var tagPills = document.querySelectorAll('.tag-pill input');
-        var hfTags = document.getElementById('<%= hfTags.ClientID %>');
+        var hfTags   = document.getElementById('<%= hfTags.ClientID %>');
 
         function updateTags() {
             var selected = [];

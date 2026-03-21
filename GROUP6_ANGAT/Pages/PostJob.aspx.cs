@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -14,22 +14,25 @@ namespace GROUP6_ANGAT {
 
         protected void BtnPostJob_Click(object sender, EventArgs e) {
 
+            // ── SANITIZE INPUTS ──
+            string title = CleanTitle(txtJobTitle.Text);
+            string category = SanitizeText(ddlCategory.SelectedValue, maxLength: 60);
+            string barangay = SanitizeText(ddlBarangay.SelectedValue, maxLength: 60);
+            string payRate = SanitizeText(ddlPayRate.SelectedValue, maxLength: 30);
+            string tags = SanitizeText(hfTags.Value, maxLength: 300);
+            string description = CleanDescription(txtJobDescription.Text);
+
             int slots = 1;
             int.TryParse(txtSlots.Text, out slots);
             if (slots < 1) slots = 1;
             if (slots > 10) slots = 10;
 
-            string title = CleanTitle(txtJobTitle.Text);
-            string category = ddlCategory.SelectedValue;
-            string barangay = ddlBarangay.SelectedValue;
-            string payRate = ddlPayRate.SelectedValue;
-            string tags = hfTags.Value;
-            string status = ddlStatus.SelectedValue;
-            string description = CleanDescription(txtJobDescription.Text);
-
-            // Validation
+            // ── VALIDATION ──
             if (string.IsNullOrEmpty(title)) {
                 ShowMessage("error", "Pakiusap ilagay ang Job Title."); return;
+            }
+            if (title.Length < 3) {
+                ShowMessage("error", "Ang Job Title ay dapat hindi bababa sa 3 karakter."); return;
             }
             if (string.IsNullOrEmpty(category)) {
                 ShowMessage("error", "Pakiusap pumili ng Kategorya."); return;
@@ -37,8 +40,14 @@ namespace GROUP6_ANGAT {
             if (string.IsNullOrEmpty(barangay)) {
                 ShowMessage("error", "Pakiusap pumili ng Barangay."); return;
             }
+            if (string.IsNullOrEmpty(tags)) {
+                ShowMessage("error", "Pakiusap pumili ng kahit isang tag."); return;
+            }
             if (string.IsNullOrEmpty(description)) {
                 ShowMessage("error", "Pakiusap ilagay ang Detalye ng trabaho."); return;
+            }
+            if (description.Length < 10) {
+                ShowMessage("error", "Ang detalye ay dapat hindi bababa sa 10 karakter."); return;
             }
 
             decimal payMin = ParseDecimal(txtPayMin.Text);
@@ -47,39 +56,49 @@ namespace GROUP6_ANGAT {
             if (payMin <= 0 || payMax <= 0) {
                 ShowMessage("error", "Pakiusap ilagay ang Sahod."); return;
             }
-
-            if (payMin > payMax) {
-                ShowMessage("error", "Ang minimum na sahod ay hindi dapat mas mataas sa maximum."); return;
+            if (payMax < payMin + 1) {
+                ShowMessage("error", "Ang maximum na sahod ay dapat hindi bababa sa minimum + ₱1."); return;
             }
 
+            // ── INSERT TO DATABASE (parameterized — SQL injection safe) ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO Jobs
-                (JobTitle, JobDescription, Category, Barangay, PayMin, PayMax, PayRate, Tags, Status, Slots, IsActive, PostedAt, PostedByUserId)
+                    (JobTitle, JobDescription, Category, Barangay, PayMin, PayMax, PayRate,
+                     Tags, Status, Slots, IsActive, PostedAt, PostedByUserId)
                 VALUES
-                (@JobTitle, @JobDescription, @Category, @Barangay, @PayMin, @PayMax, @PayRate, @Tags, @Status, @Slots, 1, GETDATE(), @PostedByUserId)", conn)) {
-                cmd.Parameters.AddWithValue("@JobTitle", title);
-                cmd.Parameters.AddWithValue("@JobDescription", description);
-                cmd.Parameters.AddWithValue("@Category", category);
-                cmd.Parameters.AddWithValue("@Barangay", barangay);
-                cmd.Parameters.AddWithValue("@PayMin", payMin);
-                cmd.Parameters.AddWithValue("@PayMax", payMax);
-                cmd.Parameters.AddWithValue("@PayRate", payRate);
-                cmd.Parameters.AddWithValue("@Tags", tags);
-                cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@Slots", slots);
-                cmd.Parameters.AddWithValue("@PostedByUserId", Session["UserId"]);
+                    (@JobTitle, @JobDescription, @Category, @Barangay, @PayMin, @PayMax, @PayRate,
+                     @Tags, 'Available', @Slots, 1, GETDATE(), @PostedByUserId)", conn)) {
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.Add("@JobTitle", System.Data.SqlDbType.NVarChar, 150).Value = title;
+                cmd.Parameters.Add("@JobDescription", System.Data.SqlDbType.NVarChar, 500).Value = description;
+                cmd.Parameters.Add("@Category", System.Data.SqlDbType.NVarChar, 60).Value = category;
+                cmd.Parameters.Add("@Barangay", System.Data.SqlDbType.NVarChar, 60).Value = barangay;
+                cmd.Parameters.Add("@PayMin", System.Data.SqlDbType.Decimal).Value = payMin;
+                cmd.Parameters.Add("@PayMax", System.Data.SqlDbType.Decimal).Value = payMax;
+                cmd.Parameters.Add("@PayRate", System.Data.SqlDbType.NVarChar, 30).Value = payRate;
+                cmd.Parameters.Add("@Tags", System.Data.SqlDbType.NVarChar, 300).Value = tags;
+                cmd.Parameters.Add("@Slots", System.Data.SqlDbType.Int).Value = slots;
+                cmd.Parameters.Add("@PostedByUserId", System.Data.SqlDbType.Int).Value = Session["UserId"];
+
+                try {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException) {
+                    ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit.");
+                    return;
+                }
             }
 
-            ShowMessage("success", "Naipost na ang trabaho! Makikita ito sa Hanap Trabaho.");
-            ClearForm();
-            txtSlots.Text = "1";
+            // ── REDIRECT TO HANAPTRABAHO after successful post ──
+            Response.Redirect("~/Pages/HanapTrabaho.aspx?posted=success");
         }
 
+        // ── HELPERS ──
+
+        // Sentence case + strip special chars
         private string CleanTitle(string input) {
             if (string.IsNullOrWhiteSpace(input)) return "";
             input = input.Trim();
@@ -89,6 +108,7 @@ namespace GROUP6_ANGAT {
                 .TextInfo.ToTitleCase(input.ToLower());
         }
 
+        // Strip HTML tags, enforce max length
         private string CleanDescription(string input) {
             if (string.IsNullOrWhiteSpace(input)) return "";
             input = input.Trim();
@@ -97,27 +117,24 @@ namespace GROUP6_ANGAT {
             return input;
         }
 
+        // Strip non-numeric chars and parse
         private decimal ParseDecimal(string input) {
             if (string.IsNullOrWhiteSpace(input)) return 0;
             string cleaned = Regex.Replace(input, @"[^\d\.]", "");
             return decimal.TryParse(cleaned, out decimal result) ? result : 0;
         }
 
+        private string SanitizeText(string input, int maxLength) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            if (input.Length > maxLength) input = input.Substring(0, maxLength);
+            return input;
+        }
+
         private void ShowMessage(string type, string message) {
             pnlPostMessage.Visible = true;
             pnlPostMessage.CssClass = $"form-alert {type}";
             lblPostMessage.Text = message;
-        }
-
-        private void ClearForm() {
-            txtJobTitle.Text = "";
-            txtPayMin.Text = "";
-            txtPayMax.Text = "";
-            txtJobDescription.Text = "";
-            ddlCategory.SelectedIndex = 0;
-            ddlBarangay.SelectedIndex = 0;
-            ddlStatus.SelectedIndex = 0;
-            hfTags.Value = "";
         }
     }
 }

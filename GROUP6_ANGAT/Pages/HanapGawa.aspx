@@ -12,8 +12,8 @@
             <span class="hero-badge"><i class='bx bx-wrench'></i> Services Board</span>
             <h2>Hanap <strong>Gawa</strong></h2>
             <p class="hero-desc">
-                Kailangan mo ba ng tubero, karpintero, o electrician? 
-                Dito direktang nag-uugnay ang mga manggagawa at kustomer sa Biñan.
+                Kailangan mo ba ng tubero, karpintero, o electrician?
+                Dito direktang nag-uugnay ang mga manggagawa at kustomer sa Bi&#241;an.
             </p>
         </div>
         <div class="wave">
@@ -30,7 +30,7 @@
             <div class="quick-icon"><i class='bx bx-wrench'></i></div>
             <div>
                 <h5><asp:Label ID="lblServiceCount" runat="server" Text="0" /> Serbisyo</h5>
-                <p>Available na ngayon sa Biñan.</p>
+                <p>Available na ngayon sa Bi&#241;an.</p>
             </div>
         </div>
         <div class="quick-card">
@@ -59,8 +59,8 @@
             <div class="search-field">
                 <span class="s-icon"><i class='bx bx-map'></i></span>
                 <select id="hgLocation">
-                    <option value="All">Kahit Saan (Biñan)</option>
-                    <option value="Biñan">Biñan (Poblacion)</option>
+                    <option value="All">Kahit Saan (Bi&#241;an)</option>
+                    <option value="Bi&#241;an">Bi&#241;an (Poblacion)</option>
                     <option value="Bungahan">Bungahan</option>
                     <option value="Canlalay">Canlalay</option>
                     <option value="Casile">Casile</option>
@@ -75,7 +75,7 @@
                     <option value="Masile">Masile</option>
                     <option value="Maysilo">Maysilo</option>
                     <option value="Munting Ilog">Munting Ilog</option>
-                    <option value="New Biñan">New Biñan</option>
+                    <option value="New Bi&#241;an">New Bi&#241;an</option>
                     <option value="Platero">Platero</option>
                     <option value="San Antonio">San Antonio</option>
                     <option value="San Francisco">San Francisco</option>
@@ -98,7 +98,7 @@
         <div class="section-header left" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
             <div>
                 <h3>Mga Magagaling na <span>Manggagawa</span></h3>
-                <p class="section-sub">Direktang makipag-ugnayan sa mga skilled workers ng Biñan.</p>
+                <p class="section-sub">Direktang makipag-ugnayan sa mga skilled workers ng Bi&#241;an.</p>
             </div>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                 <asp:PlaceHolder ID="phPostServiceBtn" runat="server">
@@ -113,6 +113,11 @@
             </div>
         </div>
 
+        <%-- Alert message — also used for ?posted=success banner --%>
+        <asp:Panel ID="pnlServiceApplyMessage" runat="server" CssClass="form-alert" Visible="false" ClientIDMode="Static">
+            <asp:Label ID="lblServiceApplyMessage" runat="server" />
+        </asp:Panel>
+
         <%-- Service cards --%>
         <div id="hgListings" class="listings-grid">
             <asp:Repeater ID="rptServices" runat="server">
@@ -120,6 +125,7 @@
                     <button type="button" class="listing-card listing-card-button"
                         data-serviceid='<%# Eval("ServiceId") %>'
                         data-location='<%# Eval("Barangay") %>'
+                        data-category='<%# Eval("Category") %>'
                         data-search='<%# GROUP6_ANGAT.DisplayHelper.GetSearchText(Eval("ServiceTitle"), Eval("Tags"), Eval("Barangay"), Eval("Category")) %>'
                         data-title='<%# Eval("ServiceTitle") %>'
                         data-rate='<%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %>'
@@ -140,7 +146,7 @@
                         </div>
                         <h4><%# Eval("ServiceTitle") %></h4>
                         <p class="listing-company">
-                            <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                            <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                         </p>
                         <div class="listing-tags">
                             <asp:Literal ID="litServiceTags" runat="server" Mode="PassThrough"
@@ -168,7 +174,7 @@
     <div id="serviceModal" class="job-modal">
         <div class="job-modal-backdrop"></div>
         <div class="job-modal-card">
-            <button type="button" class="job-modal-close job-modal-close-icon" aria-label="Isara">✕</button>
+            <button type="button" class="job-modal-close job-modal-close-icon" aria-label="Isara">&#x2715;</button>
 
             <%-- Poster --%>
             <div class="modal-poster">
@@ -212,40 +218,62 @@
             <div class="job-modal-actions">
                 <asp:UpdatePanel ID="UpdatePanelService" runat="server">
                     <ContentTemplate>
-            
-                        <%-- The Message Panel for Service Requests --%>
-                        <asp:Panel ID="pnlServiceApplyMessage" runat="server" Visible="false" Style="margin-bottom: 15px;">
-                            <asp:Label ID="lblServiceApplyMessage" runat="server" />
+                        <asp:Panel ID="pnlModalServiceMessage" runat="server" CssClass="form-alert" Visible="false" Style="margin-bottom:15px;">
+                            <asp:Label ID="lblModalServiceMessage" runat="server" />
                         </asp:Panel>
-
-                        <%-- Logged In: Show Request Button --%>
                         <asp:PlaceHolder ID="phServiceLoggedIn" runat="server">
-                            <asp:Button ID="btnRequestService" runat="server" 
-                                        Text="Mag-request" 
-                                        CssClass="btn-green" 
-                                        OnClick="BtnRequestService_Click" />
+                            <asp:Button ID="btnRequestService" runat="server"
+                                Text="Mag-request"
+                                CssClass="btn-green"
+                                OnClick="BtnRequestService_Click" />
                         </asp:PlaceHolder>
-
-                        <%-- Logged Out: Show Login Link --%>
                         <asp:PlaceHolder ID="phServiceLoggedOut" runat="server" Visible="false">
                             <a runat="server" href="~/Pages/Login.aspx?returnUrl=/Pages/HanapGawa.aspx" class="btn-green">
                                 Mag-login para mag-request
                             </a>
                         </asp:PlaceHolder>
-
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </div>
         </div>
     </div>
 
-
     <%-- Hidden fields --%>
-    <asp:HiddenField ID="hfServiceId" runat="server" />
+    <asp:HiddenField ID="hfServiceId"    runat="server" />
     <asp:HiddenField ID="hfServiceTitle" runat="server" />
-    <asp:HiddenField ID="hfServiceDesc" runat="server" />
+    <asp:HiddenField ID="hfServiceDesc"  runat="server" />
 
     <script>
+        // ── TAG COLOR MAP — mirrors DisplayHelper.GetTagCss ──
+        function getTagClass(tag, category) {
+            var t   = (tag      || '').toLowerCase();
+            var cat = (category || '').toLowerCase();
+
+            if (t.includes('urgent'))                               return 'tag-rose';
+            if (t.includes('full-time'))                            return 'tag-fulltime';
+            if (t.includes('part-time'))                            return 'tag-parttime';
+            if (t.includes('pisikal'))                              return 'tag-physical';
+            if (t.includes('may karanasan') || t.includes('licensed') || t.includes('experienced')) return 'tag-experience';
+            if (t.includes('live-in'))                              return 'tag-housing';
+            if (t.includes('repair'))                               return 'tag-blue';
+            if (t.includes('install') || t.includes('wiring'))      return 'tag-teal';
+            if (t.includes('flexible'))                             return 'tag-teal';
+            if (t.includes('weekday') || t.includes('weekdays'))    return 'tag-blue';
+            if (t.includes('weekend') || t.includes('weekends'))    return 'tag-violet';
+            if (t.includes('anytime') || t.includes('available'))   return 'tag-mint';
+
+            if (cat.includes('karpintero'))                         return 'tag-amber';
+            if (cat.includes('tubero'))                             return 'tag-blue';
+            if (cat.includes('electric'))                           return 'tag-teal';
+            if (cat.includes('aircon') || cat.includes('appliance')) return 'tag-mint';
+            if (cat.includes('mananahi'))                           return 'tag-rose';
+            if (cat.includes('kasambahay') || cat.includes('labandera')) return 'tag-violet';
+            if (cat.includes('driver'))                             return 'tag-blue';
+            if (cat.includes('carinderia') || cat.includes('sari-sari')) return 'tag-amber';
+
+            return 'tag-teal';
+        }
+
         // ── FILTER & SORT ──
         (function () {
             const searchInput    = document.getElementById('hgSearch');
@@ -258,7 +286,6 @@
             function applyFilter() {
                 const q   = searchInput.value.toLowerCase().trim();
                 const loc = locationSelect.value;
-
                 cards.forEach(function (card) {
                     const text     = (card.dataset.search || '').toLowerCase();
                     const barangay = card.dataset.location || '';
@@ -271,9 +298,8 @@
             function applySort() {
                 const mode   = sortSelect.value;
                 const sorted = cards.slice().sort(function (a, b) {
-                    if (mode === 'rate') {
+                    if (mode === 'rate')
                         return parseFloat(b.dataset.rateAmount || 0) - parseFloat(a.dataset.rateAmount || 0);
-                    }
                     return parseFloat(b.dataset.posted || 0) - parseFloat(a.dataset.posted || 0);
                 });
                 sorted.forEach(function (card) { listingWrap.appendChild(card); });
@@ -301,18 +327,20 @@
                 modal.querySelector('#serviceRate').textContent = card.dataset.rate || '';
                 modal.querySelector('#posterName').textContent = card.dataset.poster || 'Hindi nakita';
                 modal.querySelector('#posterDate').textContent = 'Na-post: ' + (card.dataset.exactDate || '');
-                modal.querySelector('#serviceLocation').textContent = 'Brgy. ' + (card.dataset.location || '') + ', Biñan';
+                modal.querySelector('#serviceLocation').textContent = 'Brgy. ' + (card.dataset.location || '') + ', Bi\u00F1an';
 
+                // ── Poster image ──
                 var img = modal.querySelector('#posterImg');
                 var imgPath = card.dataset.posterImg || '';
                 img.src = imgPath && imgPath !== '' ? imgPath : '/Images/default-icon.jpg';
 
-                // tags
+                // ── Tags with correct colors matching card display ──
                 var tagsEl = modal.querySelector('#serviceTags');
+                var category = card.dataset.category || '';
                 tagsEl.innerHTML = '';
                 (card.dataset.tags || '').split('|').filter(Boolean).forEach(function (tag) {
                     var span = document.createElement('span');
-                    span.className = 'badge badge-teal';
+                    span.className = 'badge ' + getTagClass(tag.trim(), category);
                     span.textContent = tag.trim();
                     tagsEl.appendChild(span);
                 });
@@ -339,6 +367,22 @@
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
             });
+        })();
+
+        // ── ?posted=success BANNER ──
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('posted') === 'success') {
+                var banner = document.getElementById('pnlServiceApplyMessage');
+                if (banner) {
+                    banner.style.display = 'block';
+                    banner.className = 'form-alert success';
+                    var lbl = banner.querySelector('span');
+                    if (lbl) lbl.textContent = 'Naipost na ang serbisyo! Makikita ito sa listahan.';
+                    else banner.textContent = 'Naipost na ang serbisyo! Makikita ito sa listahan.';
+                }
+                window.history.replaceState({}, '', window.location.pathname);
+            }
         })();
     </script>
 

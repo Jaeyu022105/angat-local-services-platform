@@ -11,7 +11,7 @@
             <span class="hero-badge"><i class='bx bx-briefcase'></i> Employer Portal</span>
             <h2>I-post ang <strong>Trabaho</strong></h2>
             <p class="hero-desc">
-                Magdagdag ng bagong job listing para makita ng mga aplikante sa Biñan.
+                Magdagdag ng bagong job listing para makita ng mga aplikante sa Bi&#241;an.
             </p>
         </div>
         <div class="wave">
@@ -36,7 +36,7 @@
             <%-- Job Title --%>
             <div class="form-group">
                 <label>Job Title <span class="required">*</span></label>
-                <asp:TextBox ID="txtJobTitle" runat="server" placeholder="Hal. House Helper, Personal Driver"></asp:TextBox>
+                <asp:TextBox ID="txtJobTitle" runat="server" placeholder="Halimbawa: House Helper sa Bi&#241;an, Personal Driver para Pamilya"></asp:TextBox>
                 <small class="field-hint">Iwasan ang emoji at espesyal na karakter.</small>
             </div>
 
@@ -64,7 +64,7 @@
                 <label>Barangay <span class="required">*</span></label>
                 <asp:DropDownList ID="ddlBarangay" runat="server">
                     <asp:ListItem Value="">-- Pumili ng Barangay --</asp:ListItem>
-                    <asp:ListItem Value="Biñan">Biñan (Poblacion)</asp:ListItem>
+                    <asp:ListItem Value="Bi&#241;an">Bi&#241;an (Poblacion)</asp:ListItem>
                     <asp:ListItem Value="Bungahan">Bungahan</asp:ListItem>
                     <asp:ListItem Value="Canlalay">Canlalay</asp:ListItem>
                     <asp:ListItem Value="Casile">Casile</asp:ListItem>
@@ -79,7 +79,7 @@
                     <asp:ListItem Value="Masile">Masile</asp:ListItem>
                     <asp:ListItem Value="Maysilo">Maysilo</asp:ListItem>
                     <asp:ListItem Value="Munting Ilog">Munting Ilog</asp:ListItem>
-                    <asp:ListItem Value="New Biñan">New Biñan</asp:ListItem>
+                    <asp:ListItem Value="New Bi&#241;an">New Bi&#241;an</asp:ListItem>
                     <asp:ListItem Value="Platero">Platero</asp:ListItem>
                     <asp:ListItem Value="San Antonio">San Antonio</asp:ListItem>
                     <asp:ListItem Value="San Francisco">San Francisco</asp:ListItem>
@@ -99,18 +99,16 @@
             <%-- Pay --%>
             <div class="form-group">
                 <label>Sahod <span class="required">*</span></label>
-                <div class="pay-row"> <div class="pay-field">
+                <div class="pay-row">
+                    <div class="pay-field">
                         <span class="pay-currency">&#8369;</span>
                         <asp:TextBox ID="txtPayMin" runat="server" placeholder="Min"></asp:TextBox>
                     </div>
-
-                    <span class="pay-sep">&ndash;</span> 
-
+                    <span class="pay-sep">&ndash;</span>
                     <div class="pay-field">
                         <span class="pay-currency">&#8369;</span>
                         <asp:TextBox ID="txtPayMax" runat="server" placeholder="Max"></asp:TextBox>
                     </div>
-
                     <asp:DropDownList ID="ddlPayRate" runat="server">
                         <asp:ListItem Value="per hour">/ oras</asp:ListItem>
                         <asp:ListItem Value="per day" Selected="True">/ araw</asp:ListItem>
@@ -119,9 +117,10 @@
                     </asp:DropDownList>
                 </div>
             </div>
+
             <%-- Tags --%>
             <div class="form-group">
-                <label>Tags<span class="required">*</span></label>
+                <label>Tags <span class="required">*</span></label>
                 <small class="field-hint" style="margin-bottom: 10px; display:block;">Piliin ang lahat ng angkop.</small>
                 <div class="tag-pills">
                     <label class="tag-pill"><input type="checkbox" value="Full-time" /> Full-time</label>
@@ -137,16 +136,7 @@
                 <asp:HiddenField ID="hfTags" runat="server" />
             </div>
 
-            <%-- Status --%>
-            <div class="form-group">
-                <label>Status<span class="required">*</span></label>
-                <asp:DropDownList ID="ddlStatus" runat="server">
-                    <asp:ListItem Value="Available">Available</asp:ListItem>
-                    <asp:ListItem Value="Filled">Filled</asp:ListItem>
-                    <asp:ListItem Value="Paused">Paused</asp:ListItem>
-                </asp:DropDownList>
-            </div>
-
+            <%-- Slots --%>
             <div class="form-group">
                 <label>Bilang ng Kailangan <span class="required">*</span></label>
                 <asp:TextBox ID="txtSlots" runat="server" TextMode="Number" Text="1"></asp:TextBox>
@@ -157,7 +147,7 @@
             <div class="form-group">
                 <label>Detalye <span class="required">*</span></label>
                 <asp:TextBox ID="txtJobDescription" runat="server" TextMode="MultiLine"
-                    placeholder="Maikling detalye tungkol sa trabaho. Max 500 characters."
+                    placeholder="Halimbawa: Naghahanap kami ng kasambahay para sa pamilya sa Bi&#241;an. Kailangan ng magluto, maglinis, at mag-alaga ng bata. Live-in, may libreng pagkain at tirahan. Kausapin kami para sa interview."
                     MaxLength="500"></asp:TextBox>
                 <small class="field-hint"><span id="descCount">0</span> / 500 characters</small>
             </div>
@@ -169,7 +159,7 @@
     </div>
 
     <script>
-        // Tag pills
+        // ── TAG PILLS ──
         var tagPills = document.querySelectorAll('.tag-pill input');
         var hfTags = document.getElementById('<%= hfTags.ClientID %>');
 
@@ -181,25 +171,24 @@
 
         function updateTags() {
             var selected = [];
-            tagPills.forEach(function(cb) {
+            tagPills.forEach(function (cb) {
                 if (cb.checked) selected.push(cb.value);
             });
             hfTags.value = selected.join('|');
         }
 
-        tagPills.forEach(function(cb) {
-            cb.addEventListener('change', function() {
+        tagPills.forEach(function (cb) {
+            cb.addEventListener('change', function () {
                 cb.closest('.tag-pill').classList.toggle('active', cb.checked);
-
                 updateTags();
             });
         });
 
-        // Description counter
-        var descBox = document.getElementById('<%= txtJobDescription.ClientID %>');
+        // ── DESCRIPTION COUNTER ──
+        var descBox   = document.getElementById('<%= txtJobDescription.ClientID %>');
         var descCount = document.getElementById('descCount');
         if (descBox && descCount) {
-            descBox.addEventListener('input', function() {
+            descBox.addEventListener('input', function () {
                 descCount.textContent = descBox.value.length;
             });
         }

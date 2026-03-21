@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace GROUP6_ANGAT {
     public partial class PostService : System.Web.UI.Page {
@@ -13,14 +14,14 @@ namespace GROUP6_ANGAT {
 
         protected void BtnPostService_Click(object sender, EventArgs e) {
             // ── SANITIZE INPUTS ──
-            string title = SanitizeText(txtServiceTitle.Text, maxLength: 150);
+            string title = CleanTitle(txtServiceTitle.Text);
             string category = SanitizeText(ddlCategory.SelectedValue, maxLength: 60);
             string barangay = SanitizeText(ddlBarangay.SelectedValue, maxLength: 60);
             string minRaw = SanitizeText(txtRateMin.Text, maxLength: 15);
             string maxRaw = SanitizeText(txtRateMax.Text, maxLength: 15);
             string rateUnit = SanitizeText(ddlRateUnit.SelectedValue, maxLength: 30);
             string tags = SanitizeText(hfTags.Value, maxLength: 300);
-            string description = SanitizeText(txtServiceDescription.Text, maxLength: 500);
+            string description = CleanDescription(txtServiceDescription.Text);
 
             // ── VALIDATION ──
             if (string.IsNullOrEmpty(title)) {
@@ -41,8 +42,8 @@ namespace GROUP6_ANGAT {
             if (!decimal.TryParse(maxRaw, out decimal rateMax) || rateMax <= 0) {
                 ShowMessage("error", "Pakiusap ilagay ang tamang maximum na rate."); return;
             }
-            if (rateMin > rateMax) {
-                ShowMessage("error", "Ang minimum rate ay hindi dapat mas mataas sa maximum."); return;
+            if (rateMax < rateMin + 1) {
+                ShowMessage("error", "Ang maximum na rate ay dapat hindi bababa sa minimum + \u20B11."); return;
             }
             if (string.IsNullOrEmpty(tags)) {
                 ShowMessage("error", "Pakiusap pumili ng kahit isang tag."); return;
@@ -84,11 +85,30 @@ namespace GROUP6_ANGAT {
                 }
             }
 
-            // ── REDIRECT TO HANAPGAWA after successful post ──
             Response.Redirect("~/Pages/HanapGawa.aspx?posted=success");
         }
 
         // ── HELPERS ──
+
+        // Title case + strip special chars — same as PostJob
+        private string CleanTitle(string input) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            input = Regex.Replace(input, @"\s+", " ");
+            input = Regex.Replace(input, @"[^\w\s\-\.\,\/]", "");
+            return System.Globalization.CultureInfo.CurrentCulture
+                .TextInfo.ToTitleCase(input.ToLower());
+        }
+
+        // Strip HTML tags, enforce max length — same as PostJob
+        private string CleanDescription(string input) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            input = Regex.Replace(input, @"<[^>]*>", "");
+            if (input.Length > 500) input = input.Substring(0, 500);
+            return input;
+        }
+
         private string SanitizeText(string input, int maxLength) {
             if (string.IsNullOrWhiteSpace(input)) return "";
             input = input.Trim();

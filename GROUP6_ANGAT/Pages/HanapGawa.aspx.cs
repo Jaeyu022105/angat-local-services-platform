@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
 
@@ -13,12 +13,13 @@ namespace GROUP6_ANGAT.Pages {
                 LoadServices();
         }
 
+        // ── FIX: use UtcNow to match GETDATE() on Azure SQL (UTC) ──
         protected string GetRelativeTime(object postedAt) {
             if (postedAt == null || postedAt == DBNull.Value)
                 return "";
 
             DateTime postDate = Convert.ToDateTime(postedAt);
-            TimeSpan ts = DateTime.Now - postDate;
+            TimeSpan ts = DateTime.UtcNow - postDate;
 
             if (ts.TotalSeconds < 60) return "just now";
             if (ts.TotalMinutes < 60) return (int)ts.TotalMinutes + "m";
@@ -33,13 +34,11 @@ namespace GROUP6_ANGAT.Pages {
             using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
 
-                // Service count label
                 using (SqlCommand countCmd = new SqlCommand(
                     "SELECT COUNT(*) FROM Services WHERE IsActive = 1", conn)) {
                     lblServiceCount.Text = countCmd.ExecuteScalar().ToString();
                 }
 
-                // Load services with poster info (same JOIN pattern as HanapTrabaho)
                 using (SqlCommand cmd = new SqlCommand(@"
                     SELECT s.ServiceId, s.ServiceTitle, s.ServiceDescription, s.Category,
                            s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags,
@@ -59,16 +58,13 @@ namespace GROUP6_ANGAT.Pages {
             pnlEmpty.Visible = rptServices.Items.Count == 0;
         }
 
-        protected void BtnRequestService_Click(object sender, EventArgs e)
-        {
-            if (Session["UserId"] == null)
-            {
+        protected void BtnRequestService_Click(object sender, EventArgs e) {
+            if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/HanapGawa.aspx");
                 return;
             }
 
-            if (!int.TryParse(hfServiceId.Value, out int serviceId))
-            {
+            if (!int.TryParse(hfServiceId.Value, out int serviceId)) {
                 ShowMessage("error", "Piliin muna ang serbisyo bago mag-request.");
                 return;
             }
@@ -77,73 +73,57 @@ namespace GROUP6_ANGAT.Pages {
             int ownerUserId = 0;
             string serviceTitle = "";
 
-            using (SqlConnection conn = new SqlConnection(connString))
-            {
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
 
                 using (SqlCommand ownerCmd = new SqlCommand(
-                    "SELECT PostedByUserId, ServiceTitle FROM Services WHERE ServiceId = @ServiceId", conn))
-                {
+                    "SELECT PostedByUserId, ServiceTitle FROM Services WHERE ServiceId = @ServiceId", conn)) {
                     ownerCmd.Parameters.AddWithValue("@ServiceId", serviceId);
-
-                    using (SqlDataReader ownerReader = ownerCmd.ExecuteReader())
-                    {
-                        if (ownerReader.Read())
-                        {
+                    using (SqlDataReader ownerReader = ownerCmd.ExecuteReader()) {
+                        if (ownerReader.Read()) {
                             ownerUserId = ownerReader["PostedByUserId"] != DBNull.Value
-                                ? Convert.ToInt32(ownerReader["PostedByUserId"])
-                                : 0;
+                                ? Convert.ToInt32(ownerReader["PostedByUserId"]) : 0;
                             serviceTitle = ownerReader["ServiceTitle"].ToString();
                         }
                     }
 
-                    if (ownerUserId > 0 && ownerUserId.ToString() == Session["UserId"].ToString())
-                    {
+                    if (ownerUserId > 0 && ownerUserId.ToString() == Session["UserId"].ToString()) {
                         ShowMessage("error", "Hindi ka maaaring mag-request sa sariling listing.");
                         return;
                     }
                 }
 
                 using (SqlCommand existsCmd = new SqlCommand(@"
-            SELECT TOP 1 RequestId, Status
-            FROM ServiceRequests
-            WHERE UserId = @UserId AND ServiceId = @ServiceId
-            ORDER BY RequestedAt DESC", conn))
-                {
+                    SELECT TOP 1 RequestId, Status
+                    FROM ServiceRequests
+                    WHERE UserId = @UserId AND ServiceId = @ServiceId
+                    ORDER BY RequestedAt DESC", conn)) {
                     existsCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     existsCmd.Parameters.AddWithValue("@ServiceId", serviceId);
 
-                    using (SqlDataReader reader = existsCmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
+                    using (SqlDataReader reader = existsCmd.ExecuteReader()) {
+                        if (reader.Read()) {
                             string status = reader["Status"].ToString();
                             int requestId = Convert.ToInt32(reader["RequestId"]);
                             reader.Close();
 
-                            if (string.Equals(status, "Retracted", StringComparison.OrdinalIgnoreCase))
-                            {
+                            if (string.Equals(status, "Retracted", StringComparison.OrdinalIgnoreCase)) {
                                 using (SqlCommand updateCmd = new SqlCommand(@"
-                            UPDATE ServiceRequests
-                            SET Status = 'Pending', RequestedAt = GETDATE()
-                            WHERE RequestId = @RequestId", conn))
-                                {
+                                    UPDATE ServiceRequests
+                                    SET Status = 'Pending', RequestedAt = GETDATE()
+                                    WHERE RequestId = @RequestId", conn)) {
                                     updateCmd.Parameters.AddWithValue("@RequestId", requestId);
                                     updateCmd.ExecuteNonQuery();
+                                }
 
-                                    if (ownerUserId > 0)
-                                    {
-                                        string requesterName = Session["UserName"] != null ? Session["UserName"].ToString() : "May user";
-
-                                        GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
-                                            conn,
-                                            ownerUserId,
-                                            "Bagong service request",
-                                            string.Format("{0} requested your service: {1}.", requesterName, serviceTitle), "service_request_new",
-                                            string.Format("~/Pages/Profile.aspx?tab=servicelistings&requestId={0}", requestId));
-
-
-                                    }
+                                if (ownerUserId > 0) {
+                                    string requesterName = Session["UserName"]?.ToString() ?? "May user";
+                                    GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
+                                        conn, ownerUserId,
+                                        "Bagong service request",
+                                        $"{requesterName} requested your service: {serviceTitle}.",
+                                        "service_request_new",
+                                        $"~/Pages/Profile.aspx?tab=servicelistings&requestId={requestId}");
                                 }
 
                                 ShowMessage("success", "Na-submit ulit ang inyong request.");
@@ -159,31 +139,25 @@ namespace GROUP6_ANGAT.Pages {
                 using (SqlCommand cmd = new SqlCommand(@"
                     INSERT INTO ServiceRequests (UserId, ServiceId, Status, RequestedAt)
                     VALUES (@UserId, @ServiceId, 'Pending', GETDATE());
-                    SELECT CAST(SCOPE_IDENTITY() AS INT);", conn))
-                    {
+                    SELECT CAST(SCOPE_IDENTITY() AS INT);", conn)) {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     cmd.Parameters.AddWithValue("@ServiceId", serviceId);
                     int requestId = Convert.ToInt32(cmd.ExecuteScalar());
 
-                    if (ownerUserId > 0)
-                    {
-                        string requesterName = Session["UserName"] != null ? Session["UserName"].ToString() : "May user";
-
+                    if (ownerUserId > 0) {
+                        string requesterName = Session["UserName"]?.ToString() ?? "May user";
                         GROUP6_ANGAT.NotificationHelper.TryCreateNotification(
-                            conn,
-                            ownerUserId,
+                            conn, ownerUserId,
                             "Bagong service request",
-                            string.Format("{0} requested your service: {1}.", requesterName, serviceTitle),
+                            $"{requesterName} requested your service: {serviceTitle}.",
                             "service_request_new",
-                            string.Format("~/Pages/Profile.aspx?tab=servicelistings&requestId={0}", requestId));
+                            $"~/Pages/Profile.aspx?tab=servicelistings&requestId={requestId}");
                     }
                 }
-
             }
 
             ShowMessage("success", "Na-submit ang inyong request! Makikita ito sa inyong Profile.");
         }
-
 
         private void ShowMessage(string type, string message) {
             pnlServiceApplyMessage.Visible = true;
