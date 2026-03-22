@@ -42,7 +42,7 @@ namespace GROUP6_ANGAT {
             using (SqlConnection conn = new SqlConnection(connStr)) {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT TOP 3 JobId, JobTitle, JobDescription, Category,
+                    SELECT TOP 6 JobId, JobTitle, JobDescription, Category,
                            Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt
                     FROM Jobs WHERE IsActive = 1
                     ORDER BY PostedAt DESC", conn)) {
@@ -60,7 +60,7 @@ namespace GROUP6_ANGAT {
             using (SqlConnection conn = new SqlConnection(connStr)) {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT TOP 3 ServiceId, ServiceTitle, Category,
+                    SELECT TOP 6 ServiceId, ServiceTitle, Category,
                            Barangay, RateMin, RateMax, RateType, Tags, Status, PostedAt
                     FROM Services WHERE IsActive = 1
                     ORDER BY PostedAt DESC", conn)) {

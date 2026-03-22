@@ -1085,7 +1085,7 @@ div.resource-link {
 .listings-grid {
     display: grid;
     /* FIX: auto-fill keeps ghost spaces so 1 item doesn't stretch */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(6, minmax(280px, 1fr));
     gap: 20px;
     justify-content: start;
     /* FIX: ensures all cards in a row have equal border height */
