@@ -152,7 +152,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -214,7 +214,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -247,7 +247,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -310,7 +310,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -345,7 +345,7 @@
                                     <asp:Literal ID="litStatus" runat="server" />
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta" style="display:flex; justify-content:space-between; gap:8px;">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -428,7 +428,7 @@
                                     <span class="app-status deleted">Deleted</span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -461,7 +461,7 @@
                                     <asp:Literal ID="litServiceStatus" runat="server" />
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -540,7 +540,7 @@
                                     <span class="app-status deleted">Deleted</span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi�an
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>

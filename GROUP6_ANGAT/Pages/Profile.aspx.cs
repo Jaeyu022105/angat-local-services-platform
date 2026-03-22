@@ -297,7 +297,7 @@ namespace GROUP6_ANGAT {
             }
         }
         // =============================================
-        // ITEM DATA BOUND � load nested applicants
+        // ITEM DATA BOUND - load nested applicants
         // =============================================
         protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -330,7 +330,7 @@ namespace GROUP6_ANGAT {
                 LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
         }
         // ========================================================================
-        // ITEM DATA BOUND � For service listings, load nested requesters
+        // ITEM DATA BOUND - For service listings, load nested requesters
         // ========================================================================
         protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -966,7 +966,7 @@ namespace GROUP6_ANGAT {
         // HELPERS
         // =============================================
         protected string FormatTags(object tagsObj) {
-            return tagsObj == null ? "" : tagsObj.ToString().Replace("|", " � ");
+            return tagsObj == null ? "" : tagsObj.ToString().Replace("|", " \u2022 ");
         }
 
         protected string GetPayLabel(object minObj, object maxObj, object rateObj) {
