@@ -1221,34 +1221,6 @@ button.listing-card {
     gap: 6px;
 }
 
-.negosyo-card .listing-owner-text {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Puhunan/Training cards: allow long tag pills to wrap */
-.program-card .listing-tags {
-    height: auto;
-    overflow: visible;
-    min-height: 0;
-}
-.program-card .listing-tags .badge {
-    white-space: normal;
-}
-
-/* Puhunan/Training titles: avoid line-clamp clipping */
-.program-card h4 {
-    display: block;
-    -webkit-line-clamp: unset;
-    -webkit-box-orient: initial;
-    overflow: visible;
-    min-height: 0;
-    line-height: 1.35;
-}
-
 /* Hover State */
 .listing-card:hover {
     box-shadow: 0 8px 28px rgba(13,158,110,0.12);
@@ -2705,4 +2677,37 @@ button.listing-card {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+/* ================================
+   PROGRAM CARD OVERRIDES (Puhunan/Training)
+   ================================ */
+.listing-card.program-card h4 {
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+    overflow: visible;
+    min-height: 0;
+    line-height: 1.35;
+}
+
+.listing-card.program-card .listing-tags {
+    height: auto;
+    overflow: visible;
+    min-height: 0;
+}
+
+.listing-card.program-card .listing-tags .badge {
+    white-space: normal;
+}
+
+/* Negosyo owner ellipsis (force on inner text) */
+.negosyo-card .listing-owner-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+    min-width: 0;
 }
