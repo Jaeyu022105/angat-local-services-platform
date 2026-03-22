@@ -381,7 +381,7 @@
                                                     <div class="applicant-meta"><%# Eval("Phone") %></div>
                                                     <div class="applicant-meta" style="overflow-wrap:break-word; word-break:break-all;"><%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? Eval("Email").ToString() : "" %></div>
                                                     <div class="applicant-meta"><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></div>
-                                                    <div style="display:flex; gap:30px; margin-top:6px; flex-wrap:wrap">
+                                                    <div style="display:flex; gap:20px; margin-top:6px; flex-wrap:wrap">
                                                         <asp:LinkButton ID="btnApprove" runat="server"
                                                             CssClass="btn-outline-green app-retract"
                                                             CommandName="Approve"
@@ -493,7 +493,7 @@
                                                         <div class="applicant-meta"><%# Eval("Phone") %></div>
                                                         <div class="applicant-meta" style="overflow-wrap:break-word; word-break:break-all;"><%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? Eval("Email").ToString() : "" %></div>
                                                         <div class="applicant-meta"><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></div>
-                                                       <div style="display:flex; gap:30px; margin-top:6px; flex-wrap:wrap">
+                                                       <div style="display:flex; gap:20px; margin-top:6px; flex-wrap:wrap">
                                                             <asp:LinkButton ID="btnApproveService" runat="server"
                                                                 CssClass="btn-outline-green app-retract"
                                                                 CommandName="ApproveService"
@@ -568,7 +568,7 @@
                             <div class="app-card"
                                 style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; align-self:start;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-                                    <h4 style="font-size:0.85rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("BusinessName") %></h4>
+                                    <h4 style="font-size:0.88rem; font-weight:700; color:#1e293b; margin:0; word-break:break-word; flex:1;"><%# Eval("BusinessName") %></h4>
                                     <span class="app-status <%# Eval("Status").ToString().ToLower() %>" style="white-space:nowrap; flex-shrink:0; font-size:0.75rem; padding:5px 12px;">
                                         <%# Eval("Status") %>
                                     </span>

@@ -69,6 +69,15 @@ namespace GROUP6_ANGAT.Pages {
                         return;
                     }
 
+                    // 2.5 Check if job is still accepting applications
+                    SqlCommand filledCheck = new SqlCommand("SELECT COUNT(*) FROM Jobs WHERE JobId=@jid AND IsActive=1 AND Status != 'Filled'", conn);
+                    filledCheck.Parameters.AddWithValue("@jid", jobId);
+                    if ((int)filledCheck.ExecuteScalar() == 0)
+                    {
+                        ShowModalMessage("error", "Puno na ang slots para sa trabahong ito.");
+                        return;
+                    }
+
                     // 3. Insert Application
                     SqlCommand cmd = new SqlCommand("INSERT INTO JobApplications (UserId, JobId, Status, AppliedAt) VALUES (@uid, @jid, 'Pending', GETDATE())", conn);
                     cmd.Parameters.AddWithValue("@uid", Session["UserId"]);

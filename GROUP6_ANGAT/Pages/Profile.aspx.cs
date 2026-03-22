@@ -174,7 +174,7 @@ namespace GROUP6_ANGAT {
             SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
                    Tags, Category, Status, PostedAt, Slots, IsActive
             FROM Jobs
-            WHERE PostedByUserId = @UserId AND IsActive = 1
+            WHERE PostedByUserId = @UserId AND (IsActive = 1 OR Status = 'Filled')
             ORDER BY PostedAt DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
@@ -192,7 +192,7 @@ namespace GROUP6_ANGAT {
             SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
                    Tags, Category, Status, PostedAt, Slots, IsActive
             FROM Jobs
-            WHERE PostedByUserId = @UserId AND IsActive = 0
+            WHERE PostedByUserId = @UserId AND IsActive = 0 AND Status != 'Filled'
             ORDER BY PostedAt DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
@@ -313,11 +313,15 @@ namespace GROUP6_ANGAT {
             btnDelete.Visible = isActive;
 
             Literal litStatus = (Literal)e.Item.FindControl("litStatus");
-            if (!isActive)
-                litStatus.Text = "<span class=\"app-status deleted\">Deleted</span>";
-            else
-                litStatus.Text = "<span class=\"app-status " + row["Status"].ToString().ToLower() + "\">" + row["Status"].ToString() + "</span>";
-
+            if (litStatus != null)
+            {
+                if (!isActive && row["Status"].ToString() == "Filled")
+                    litStatus.Text = "<span class=\"app-status filled\">Filled</span>";
+                else if (!isActive)
+                    litStatus.Text = "<span class=\"app-status deleted\">Deleted</span>";
+                else
+                    litStatus.Text = "<span class=\"app-status " + row["Status"].ToString().ToLower() + "\">" + row["Status"].ToString() + "</span>";
+            }
             var hf = (HiddenField)e.Item.FindControl("hfListingJobId");
             var rptApplicants = (Repeater)e.Item.FindControl("rptApplicants");
             var pnlNoApplicants = (Panel)e.Item.FindControl("pnlNoApplicants");
@@ -362,19 +366,28 @@ namespace GROUP6_ANGAT {
             if (pnlApplicantsBlock != null)
                 pnlApplicantsBlock.Visible = rptServiceApplicants.Items.Count > 0;
         }
-        private void LoadApplicants(int jobId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
+        private void LoadApplicants(int jobId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty)
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
-                       u.FullName, u.Email, u.Phone
-                FROM JobApplications ja
-                INNER JOIN Users u ON ja.UserId = u.UserId
-                WHERE ja.JobId = @JobId
-                ORDER BY ja.AppliedAt DESC", conn)) {
+            SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
+                   u.FullName, u.Email, u.Phone
+            FROM JobApplications ja
+            INNER JOIN Users u ON ja.UserId = u.UserId
+            INNER JOIN Jobs j ON ja.JobId = j.JobId
+            WHERE ja.JobId = @JobId
+            AND (
+                (j.Status != 'Filled' AND ja.Status IN ('Pending', 'Approved'))
+                OR
+                (j.Status = 'Filled' AND ja.Status = 'Approved')
+            )
+            ORDER BY ja.AppliedAt DESC", conn))
+            {
                 cmd.Parameters.AddWithValue("@JobId", jobId);
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
                     bool hasRows = reader.HasRows;
                     rpt.DataSource = reader;
                     rpt.DataBind();
@@ -383,19 +396,23 @@ namespace GROUP6_ANGAT {
             }
         }
 
-        private void LoadServiceApplicants(int serviceId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
+        private void LoadServiceApplicants(int serviceId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty)
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 SELECT sr.RequestId, sr.Status, sr.RequestedAt,
-                       u.FullName, u.Email, u.Phone
+                        u.FullName, u.Email, u.Phone
                 FROM ServiceRequests sr
                 INNER JOIN Users u ON sr.UserId = u.UserId
                 WHERE sr.ServiceId = @ServiceId
-                ORDER BY sr.RequestedAt DESC", conn)) {
+                AND sr.Status IN ('Pending', 'Approved')
+                ORDER BY sr.RequestedAt DESC", conn))
+            {
                 cmd.Parameters.AddWithValue("@ServiceId", serviceId);
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
                     bool hasRows = reader.HasRows;
                     rpt.DataSource = reader;
                     rpt.DataBind();
@@ -459,18 +476,38 @@ namespace GROUP6_ANGAT {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     rows = cmd.ExecuteNonQuery();
                 }
-
-                // If approved, decrease slots and auto-close if full
-                if (newStatus == "Approved" && rows > 0) {
+                // Check if slots are still available before approving
+                if (newStatus == "Approved")
+                {
+                    using (SqlCommand slotsCheck = new SqlCommand(@"
+                SELECT Slots FROM Jobs 
+                WHERE JobId IN (SELECT JobId FROM JobApplications WHERE ApplicationId = @ApplicationId)
+                AND PostedByUserId = @UserId", conn))
+                    {
+                        slotsCheck.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
+                        slotsCheck.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                        int slots = Convert.ToInt32(slotsCheck.ExecuteScalar());
+                        if (slots <= 0)
+                        {
+                            pnlApplicationsMessage.Visible = true;
+                            pnlApplicationsMessage.CssClass = "form-alert error";
+                            lblApplicationsMessage.Text = "Puno na ang slots para sa trabahong ito.";
+                            return;
+                        }
+                    }
+                }
+                // If approved, decrease slots — keep card visible but mark as Filled when full
+                if (newStatus == "Approved" && rows > 0)
+                {
                     using (SqlCommand slotsCmd = new SqlCommand(@"
-                        UPDATE Jobs
-                        SET Slots = Slots - 1,
-                            IsActive = CASE WHEN Slots - 1 <= 0 THEN 0 ELSE 1 END,
-                            Status   = CASE WHEN Slots - 1 <= 0 THEN 'Filled' ELSE Status END
-                        WHERE JobId IN (
-                            SELECT JobId FROM JobApplications WHERE ApplicationId = @ApplicationId
-                        )
-                        AND PostedByUserId = @UserId", conn)) {
+                    UPDATE Jobs
+                    SET Slots = Slots - 1,
+                        Status = CASE WHEN Slots - 1 <= 0 THEN 'Filled' ELSE Status END
+                    WHERE JobId IN (
+                        SELECT JobId FROM JobApplications WHERE ApplicationId = @ApplicationId
+                    )
+                    AND PostedByUserId = @UserId", conn))
+                    {
                         slotsCmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
                         slotsCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                         slotsCmd.ExecuteNonQuery();

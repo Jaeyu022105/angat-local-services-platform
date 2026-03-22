@@ -2099,6 +2099,11 @@ button.listing-card {
     color: var(--text-soft);
 }
 
+.app-status.filled {
+    background: #1e40af;
+    color: white;
+}
+
 .applicant-actions {
     display: flex;
     align-items: center;
