@@ -1150,43 +1150,54 @@ button.listing-card {
         font-weight: 500;
     }
 
+/* --- UPDATED TAGS SECTION --- */
 .listing-card .listing-tags {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        overflow: hidden;
-        margin-bottom: 16px;
-        align-items: center;
-        max-height: 36px;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    /* Changed to fixed height to strictly enforce one row for the JS calculation */
+    height: 32px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    align-items: center;
+    position: relative; /* Added to help JS positioning */
+}
 
-    .tag-overflow {
-        font-size: 0.75rem;
-        color: var(--muted);
-        white-space: nowrap;
-        flex-shrink: 0;
-        font-weight: 600;
-    }
+/* Changed .tag-overflow to .more-badge for a better 'pill' look */
+.more-badge {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    cursor: default;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+}
 
-    .listing-card .listing-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 14px;
-        border-top: 1.5px solid var(--border);
-    }
+/* Keep your footer styles as they were */
+.listing-card .listing-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1.5px solid var(--border);
+}
 
-    .listing-card .listing-pay {
-        font-weight: 800;
-        font-size: 0.97rem;
-        color: var(--primary-dark);
-    }
+.listing-card .listing-pay {
+    font-weight: 800;
+    font-size: 0.97rem;
+    color: var(--primary-dark);
+}
 
-    .listing-card .listing-date {
-        font-size: 0.78rem;
-        color: var(--muted);
-        font-weight: 500;
-    }
+.listing-card .listing-date {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+}
 
 /* ==========================================
    JOB MODAL
