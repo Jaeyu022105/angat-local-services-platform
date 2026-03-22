@@ -113,7 +113,12 @@
                 </ItemTemplate>
             </asp:Repeater>
         </div>
+    <%-- filter part --%>
+        <div id="dirNoResults" class="empty-state" style="display:none; margin-top:24px;">
+            Walang negosyong tumugma sa iyong filter.
+        </div>
         
+
         <div id="dirPagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:40px; flex-wrap:wrap;"></div>
 
     </div>
@@ -170,10 +175,13 @@
             const searchInput = document.getElementById('dirSearch');
             const categorySelect = document.getElementById('dirCategory');
             const filterBtn = document.getElementById('dirFilterBtn');
+
             const cards = Array.from(document.querySelectorAll('#dirListings .listing-card-button'));
             const heroCount = document.getElementById('lblDirectoryCountHero');
             const directorySubtext = document.getElementById('dirDirectorySubtext');
             const paginationWrap = document.getElementById('dirPagination');
+            const noResults = document.getElementById('dirNoResults');
+
 
             const pageSize = 8;
             let currentPage = 1;
@@ -233,12 +241,21 @@
                     paginationWrap.appendChild(btn);
                 }
             }
-
+            //
             function renderPage() {
                 const filteredCards = getFilteredCards();
                 const totalPages = Math.max(1, Math.ceil(filteredCards.length / pageSize));
-                const start = (currentPage - 1) * pageSize;
+
+                if (noResults) {
+                    noResults.style.display = filteredCards.length === 0 ? 'block' : 'none';
+                }
+                const start = (currentPage - 1) * pageSize; //bago mag compute, tignan muna kung ala results
                 const end = start + pageSize;
+
+                if (noResults) {
+                    noResults.style.display = filteredCards.length === 0 ? 'block' : 'none';
+                }
+
 
                 if (currentPage > totalPages) {
                     currentPage = 1;
@@ -252,7 +269,7 @@
                     card.style.display = '';
                 });
 
-                renderPagination(totalPages);
+                renderPagination(filteredCards.length === 0 ? 0 : totalPages);
             }
 
             function applyFilter() {

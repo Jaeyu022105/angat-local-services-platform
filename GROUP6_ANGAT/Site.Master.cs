@@ -82,7 +82,10 @@ namespace GROUP6_ANGAT
 
             LoadNotifications();
         }
-
+        protected void TmrNotifications_Tick(object sender, EventArgs e)
+        {
+            LoadNotifications();
+        }
         protected string ResolveNotificationUrl(object notificationIdObj, object targetUrlObj)
         {
             string targetUrl = targetUrlObj == null ? "" : targetUrlObj.ToString().Trim();
@@ -125,7 +128,7 @@ namespace GROUP6_ANGAT
                 return string.Empty;
             }
 
-            TimeSpan ts = DateTime.Now - createdAt;
+            TimeSpan ts = DateTime.UtcNow - createdAt;
 
             if (ts.TotalMinutes < 1)
                 return "Ngayon lang";
@@ -136,7 +139,7 @@ namespace GROUP6_ANGAT
             if (ts.TotalDays < 7)
                 return Math.Max(1, (int)Math.Floor(ts.TotalDays)) + " day ago";
 
-            return createdAt.ToString("MMM dd");
+            return createdAt.AddHours(8).ToString("MMM dd");
         }
 
         private void LoadNotifications()
@@ -164,7 +167,7 @@ namespace GROUP6_ANGAT
                 }
 
                 using (SqlCommand listCmd = new SqlCommand(@"
-                    SELECT TOP 5 NotificationId, Title, Message, NotificationType, TargetUrl, IsRead, CreatedAt
+                    SELECT NotificationId, Title, Message, NotificationType, TargetUrl, IsRead, CreatedAt
                     FROM Notifications
                     WHERE UserId = @UserId
                     ORDER BY CreatedAt DESC", conn))
