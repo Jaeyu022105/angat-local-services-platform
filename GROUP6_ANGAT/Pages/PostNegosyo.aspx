@@ -154,7 +154,7 @@
                 <label>Google Maps Link <span class="optional">(optional)</span></label>
                 <asp:TextBox ID="txtMapEmbedUrl" runat="server"
                     placeholder="Halimbawa: https://maps.app.goo.gl/..."></asp:TextBox>
-                <small class="field-hint">I-paste ang Google Maps link ng inyong tindahan. Awtomatikong mag-e-embed.</small>
+                <small class="field-hint">I-paste ang Google Maps link ng inyong tindahan.</small>
             </div>
 
             <%-- Tags --%>
@@ -165,6 +165,7 @@
                     <span class="tag-group-label">Paraan ng Bayad</span>
                     <div class="tag-pills">
                         <label class="tag-pill"><input type="checkbox" value="GCash Accepted" /> GCash Accepted</label>
+                        <label class="tag-pill"><input type="checkbox" value="Cash Only" /> Cash Only</label>
                     </div>
                 </div>
                 <div class="tag-group">
@@ -282,7 +283,6 @@
             var timeStr = openHour.value + ' - ' + closeHour.value;
             var result = (dayStr && dayStr !== 'Hindi tinukoy') ? dayStr + ' | ' + timeStr : timeStr;
 
-            // DO NOT set hfHours.value here - let server-side handle it
             preview.textContent = result;
             preview.style.color = 'var(--primary)';
         }
