@@ -141,14 +141,14 @@ namespace GROUP6_ANGAT {
                     }
                 }
 
-                // Closed (Retracted + Rejected)
+                // Closed (Retracted + Archived)
                 using (SqlCommand cmd = new SqlCommand(@"
-            SELECT sr.RequestId, sr.Status, sr.RequestedAt,
-                   s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags
-            FROM ServiceRequests sr
-            LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
-            WHERE sr.UserId = @UserId AND sr.Status IN ('Retracted', 'Rejected')
-            ORDER BY sr.RequestedAt DESC", conn))
+                    SELECT sr.RequestId, sr.Status, sr.RequestedAt,
+                           s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags
+                    FROM ServiceRequests sr
+                    LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+                    WHERE sr.UserId = @UserId AND (sr.Status = 'Retracted' OR sr.Status LIKE '%_Archived')
+                    ORDER BY sr.RequestedAt DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -409,6 +409,10 @@ namespace GROUP6_ANGAT {
             else if (e.CommandName == "Reject") newStatus = "Rejected";
             else return;
 
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             int rows = 0;
             //notifs
@@ -503,6 +507,10 @@ namespace GROUP6_ANGAT {
             else if (e.CommandName == "RejectService") newStatus = "Rejected";
             else return;
 
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             int rows = 0;
             //notifs
@@ -582,6 +590,10 @@ namespace GROUP6_ANGAT {
             if (!int.TryParse(Session["UserId"].ToString(), out int userId))
                 return;
 
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connString))
@@ -612,6 +624,10 @@ namespace GROUP6_ANGAT {
         protected void RptServiceListings_ItemCommand(object source, RepeaterCommandEventArgs e) {
             if (e.CommandName != "DeleteServiceListing") return;
 
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
@@ -639,6 +655,10 @@ namespace GROUP6_ANGAT {
         protected void RptBusinessListings_ItemCommand(object source, RepeaterCommandEventArgs e) {
             if (e.CommandName != "DeleteBusinessListing") return;
 
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
@@ -664,6 +684,10 @@ namespace GROUP6_ANGAT {
         // =============================================
         protected void RptApplications_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             string newStatus = null;
 
@@ -715,26 +739,62 @@ namespace GROUP6_ANGAT {
         // =============================================
         // RETRACT SERVICE REQUEST
         // =============================================
-        protected void RptServiceRequests_ItemCommand(object source, RepeaterCommandEventArgs e) {
-            if (e.CommandName != "RetractService") return;
+        protected void RptServiceRequests_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                UPDATE ServiceRequests SET Status = 'Retracted'
-                WHERE RequestId = @RequestId AND UserId = @UserId AND Status = 'Pending'", conn)) {
-                cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
-                conn.Open();
-                int rows = cmd.ExecuteNonQuery();
 
-                pnlServiceMessage.Visible = true;
-                pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                lblServiceMessage.Text = rows > 0 ? "Na-retract ang request." : "Hindi ma-retract.";
+            if (e.CommandName == "RetractService")
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(@"
+            UPDATE ServiceRequests SET Status = 'Retracted'
+            WHERE RequestId = @RequestId AND UserId = @UserId AND Status = 'Pending'", conn))
+                {
+                    cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    pnlServiceMessage.Visible = true;
+                    pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+                    lblServiceMessage.Text = rows > 0 ? "Na-retract ang request." : "Hindi ma-retract.";
+                }
             }
+            else if (e.CommandName == "ArchiveService")
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    conn.Open();
+                    string currentStatus = "";
+                    using (SqlCommand getCmd = new SqlCommand(@"
+                SELECT Status FROM ServiceRequests 
+                WHERE RequestId = @RequestId AND UserId = @UserId", conn))
+                    {
+                        getCmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
+                        getCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                        currentStatus = getCmd.ExecuteScalar()?.ToString() ?? "";
+                    }
+                    string newStatus = currentStatus + "_Archived";
+                    using (SqlCommand cmd = new SqlCommand(@"
+                UPDATE ServiceRequests SET Status = @Status
+                WHERE RequestId = @RequestId AND UserId = @UserId", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Status", newStatus);
+                        cmd.Parameters.AddWithValue("@RequestId", e.CommandArgument);
+                        cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                        int rows = cmd.ExecuteNonQuery();
+                        pnlServiceMessage.Visible = true;
+                        pnlServiceMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+                        lblServiceMessage.Text = rows > 0 ? "Na-archive ang request." : "Hindi ma-archive.";
+                    }
+                }
+            }
+            else return;
 
             LoadServiceRequests();
-
             ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
                 "document.querySelector('[data-tab=\"requests\"]').click();", true);
         }
@@ -744,6 +804,11 @@ namespace GROUP6_ANGAT {
         // =============================================
         protected void BtnSaveProfile_Click(object sender, EventArgs e) {
             lblProfileMessage.Text = "";
+
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
+
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             string newImagePath = null;
 
@@ -819,6 +884,10 @@ namespace GROUP6_ANGAT {
             if (next.Length < 6) {
                 lblPasswordMessage.Text = "Ang password ay dapat hindi bababa sa 6 na karakter."; return;
             }
+
+            pnlApplicationsMessage.Visible = false;
+            pnlServiceMessage.Visible = false;
+            pnlBusinessMessage.Visible = false;
 
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
 
