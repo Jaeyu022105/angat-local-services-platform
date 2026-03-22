@@ -166,7 +166,6 @@ i {
     }
 
 .profile-dropdown-menu {
-    display: none !important;
     position: absolute;
     right: 0;
     top: calc(100% + 8px);
@@ -178,10 +177,18 @@ i {
     list-style: none;
     padding: 6px 0;
     z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: all 0.18s ease;
+    pointer-events: none;
 }
 
     .profile-dropdown-menu.open {
-        display: block !important;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
     }
 
     .profile-dropdown-menu li a,
@@ -1094,6 +1101,7 @@ div.resource-link {
     transition: all 0.2s ease;
     text-decoration: none;
     color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
     display: flex;
     flex-direction: column;
     height: 100%; /* Force card to fill the grid slot */
@@ -1130,6 +1138,7 @@ button.listing-card {
     transition: all 0.2s ease;
     text-decoration: none;
     color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
     display: flex;
     flex-direction: column;
     height: 100%; /* Force card to fill the grid slot */

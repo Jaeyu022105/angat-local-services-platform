@@ -231,6 +231,10 @@
             notificationToggle.addEventListener('click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
+                var profileMenu = document.querySelector('.profile-dropdown-menu');
+                if (profileMenu) {
+                    profileMenu.classList.remove('open');
+                }
                 notificationDropdown.classList.toggle('open');
             });
 
@@ -289,6 +293,10 @@
         if (profileMenuBtn) {
             profileMenuBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
+                var notificationDropdown = document.getElementById('notification-dropdown');
+                if (notificationDropdown) {
+                    notificationDropdown.classList.remove('open');
+                }
                 profileMenuBtn.nextElementSibling.classList.toggle('open');
             });
             document.addEventListener('click', function () {

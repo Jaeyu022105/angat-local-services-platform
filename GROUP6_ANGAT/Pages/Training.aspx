@@ -125,8 +125,8 @@
     </div>
 <div id="requirementsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-        <h2 id="modalTitle" style="margin-bottom: 15px; color: #1e293b; font-weight: bold; font-family: sans-serif;">Program Name</h2>
-        <p style="color: #64748b; margin-bottom: 25px; line-height: 1.6; font-family: sans-serif;">Siguraduhing handa ang iyong mga dokumento bago mag-apply sa website ng ahensya.</p>
+        <h2 id="modalTitle" style="margin-bottom: 15px; color: #1e293b; font-weight: bold;">Program Name</h2>
+        <p style="color: #64748b; margin-bottom: 25px; line-height: 1.6;">Siguraduhing handa ang iyong mga dokumento bago mag-apply sa website ng ahensya.</p>
         
         <div style="display: flex; gap: 10px; justify-content: flex-end;">
             <button type="button" onclick="closeModal()" 
