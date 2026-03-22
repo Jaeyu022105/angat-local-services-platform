@@ -108,10 +108,8 @@ namespace GROUP6_ANGAT.Pages {
                 var p = h.Split('|');
                 string rawDays = p[0].Trim();
                 string displayDays = NormalizeDaysLabel(rawDays);
-                string timePart = p[1].Trim();
                 string daysCss = GROUP6_ANGAT.DisplayHelper.GetTagCss(rawDays, null);
-                string timeCss = GROUP6_ANGAT.DisplayHelper.GetTagCss("weekdays", null);
-                return $"<span class='badge {daysCss} hours-badge'><i class='bx bx-calendar'></i> {displayDays}</span> <span class='badge {timeCss} hours-badge'><i class='bx bx-time-five'></i> {timePart}</span>";
+                return $"<span class='badge {daysCss} hours-badge'><i class='bx bx-calendar'></i> {displayDays}</span>";
             }
             return $"<span class='badge tag-blue hours-badge'><i class='bx bx-time-five'></i> {NormalizeDaysLabel(h)}</span>";
         }

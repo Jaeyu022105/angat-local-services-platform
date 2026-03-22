@@ -126,7 +126,7 @@
                         <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(GetDisplayTags(Eval("Tags")), Eval("Category")) %>' />
                     </div>
                     <div class="listing-footer">
-                        <span class="listing-pay" style="white-space:nowrap;">
+                        <span class="listing-pay listing-owner" style="white-space:nowrap;">
                             <i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay")) %>
                         </span>
                         <span style="white-space:nowrap; flex-shrink:0;">
@@ -214,6 +214,13 @@
                         moreLabel.className = 'badge more-badge';
                         moreLabel.innerText = `+${hiddenCount}`;
                         container.appendChild(moreLabel);
+                        while (moreLabel.offsetTop > firstRowTop) {
+                            const lastVisible = [...tagBadges].reverse().find(b => b.style.display !== 'none');
+                            if (!lastVisible) break;
+                            lastVisible.style.display = 'none';
+                            hiddenCount++;
+                            moreLabel.innerText = `+${hiddenCount}`;
+                        }
                     }
                 });
             }
