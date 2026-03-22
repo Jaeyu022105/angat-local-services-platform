@@ -83,7 +83,7 @@
             <div class="listings-grid" id="loanGrid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
         <asp:Repeater ID="Repeater1" runat="server">
             <ItemTemplate>
-                <div class="listing-card" 
+                <div class="listing-card program-card" 
                      data-search='<%# Eval("Title").ToString().ToLower() %> <%# Eval("Agency").ToString().ToLower() %>' 
                      data-status='<%# Eval("Status") %>'
                      style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; transition: transform 0.2s;">

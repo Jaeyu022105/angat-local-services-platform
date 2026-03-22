@@ -1212,6 +1212,43 @@ button.listing-card {
     flex-shrink: 0;
 }
 
+/* Negosyo: prevent long owner names from pushing time off the card */
+.negosyo-card .listing-owner {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.negosyo-card .listing-owner-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Puhunan/Training cards: allow long tag pills to wrap */
+.program-card .listing-tags {
+    height: auto;
+    overflow: visible;
+    min-height: 0;
+}
+.program-card .listing-tags .badge {
+    white-space: normal;
+}
+
+/* Puhunan/Training titles: avoid line-clamp clipping */
+.program-card h4 {
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+    overflow: visible;
+    min-height: 0;
+    line-height: 1.35;
+}
+
 /* Hover State */
 .listing-card:hover {
     box-shadow: 0 8px 28px rgba(13,158,110,0.12);

@@ -126,10 +126,11 @@
                         <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(GetDisplayTags(Eval("Tags")), Eval("Category")) %>' />
                     </div>
                     <div class="listing-footer">
-                        <span class="listing-pay listing-owner" style="white-space:nowrap;">
-                            <i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay")) %>
+                        <span class="listing-pay listing-owner">
+                            <i class='bx bx-user'></i>
+                            <span class="listing-owner-text"><%# GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay")) %></span>
                         </span>
-                        <span style="white-space:nowrap; flex-shrink:0;">
+                        <span class="listing-time">
                             <i class='bx bx-time-five'></i> <%# GetTimePart(Eval("Hours")) %>
                         </span>
                     </div>

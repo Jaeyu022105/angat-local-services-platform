@@ -77,7 +77,7 @@
                 <div class="listings-grid" id="loanGrid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                     <asp:Repeater ID="rptPuhunan" runat="server">
                         <ItemTemplate>
-                            <div class="listing-card" 
+                            <div class="listing-card program-card" 
                                  data-search='<%# Eval("ProgramName").ToString().ToLower() %> <%# Eval("Description").ToString().ToLower() %>' 
                                  data-category='<%# Eval("LoanType") %>'
                                  style="display: flex; flex-direction: column; gap: 15px; background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0;">
