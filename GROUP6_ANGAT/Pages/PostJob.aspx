@@ -125,16 +125,16 @@
                 <div class="tag-group">
                     <span class="tag-group-label">Uri ng Trabaho</span>
                     <div class="tag-pills">
-                        <label class="tag-pill"><input type="checkbox" value="Full-time" /> Full-time</label>
-                        <label class="tag-pill"><input type="checkbox" value="Part-time" /> Part-time</label>
+                        <label class="tag-pill"><input type="radio" value="Full-time" /> Full-time</label>
+                        <label class="tag-pill"><input type="radio" value="Part-time" /> Part-time</label>
                     </div>
                 </div>
                 <div class="tag-group">
                     <span class="tag-group-label">Schedule</span>
                     <div class="tag-pills">
-                        <label class="tag-pill"><input type="checkbox" value="Weekdays Only" /> Weekdays Only</label>
-                        <label class="tag-pill"><input type="checkbox" value="Weekends Only" /> Weekends Only</label>
-                        <label class="tag-pill"><input type="checkbox" value="Flexible Hours" /> Flexible Hours</label>
+                        <label class="tag-pill"><input type="radio" value="Weekdays Only" /> Weekdays Only</label>
+                        <label class="tag-pill"><input type="radio" value="Weekends Only" /> Weekends Only</label>
+                        <label class="tag-pill"><input type="radio" value="Flexible Hours" /> Flexible Hours</label>
                     </div>
                 </div>
                 <div class="tag-group">
@@ -179,7 +179,7 @@
     </div>
 
     <script>
-        // ── TAG PILLS ──
+        // 1. Select both checkboxes and radio buttons
         var tagPills = document.querySelectorAll('.tag-pill input');
         var hfTags = document.getElementById('<%= hfTags.ClientID %>');
 
@@ -199,7 +199,18 @@
 
         tagPills.forEach(function (cb) {
             cb.addEventListener('change', function () {
+                // Fix for Radios: If it's a radio, we need to refresh the 'active' class 
+                // for all pills in this specific group first.
+                if (cb.type === 'radio') {
+                    var group = cb.closest('.tag-pills');
+                    group.querySelectorAll('.tag-pill').forEach(function(pill) {
+                        pill.classList.remove('active');
+                    });
+                }
+            
+                // Toggle active class based on checked status
                 cb.closest('.tag-pill').classList.toggle('active', cb.checked);
+            
                 updateTags();
             });
         });
@@ -213,4 +224,5 @@
             });
         }
     </script>
+
 </asp:Content>

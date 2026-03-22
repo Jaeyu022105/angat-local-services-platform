@@ -362,30 +362,27 @@
             renderPage();
         })();
 
-        // ── LIMIT TAGS ON CARDS (max 3) ──
         function updateTagOverflow() {
-            document.querySelectorAll('.listing-tags').forEach(function (container) {
-                var card = container.closest('.listing-card-button') || container.closest('.listing-card');
-                if (card && card.style.display === 'none') return;
-                var badges = Array.from(container.querySelectorAll('.badge:not(.more-badge)'));
-                badges.forEach(function (b) { b.style.display = ''; });
-                var old = container.querySelector('.more-badge');
-                if (old) old.remove();
-                if (badges.length === 0) return;
-                var top = badges[0].offsetTop;
-                var count = 0;
-                badges.forEach(function (b) {
-                    if (b.offsetTop > top) { b.style.display = 'none'; count++; }
-                });
-                if (count > 0) {
-                    var m = document.createElement('span');
+            document.querySelectorAll('.listing-tags').forEach(container => {
+                const badges = Array.from(container.querySelectorAll('.badge:not(.more-badge)'));
+                const old = container.querySelector('.more-badge'); if (old) old.remove();
+                const maxTags = 2;
+
+                if (badges.length > maxTags) {
+                    badges.forEach((b, index) => {
+                        if (index >= maxTags) {
+                            b.style.display = 'none';
+                        }
+                    });
+
+                    const m = document.createElement('span');
                     m.className = 'badge more-badge';
-                    m.style.background = '#f1f5f9';
-                    m.innerText = '+' + count;
+                    m.innerText = '+' + (badges.length - maxTags);
                     container.appendChild(m);
                 }
             });
         }
+
         document.addEventListener('DOMContentLoaded', function () {
             updateTagOverflow();
         });
@@ -459,7 +456,6 @@
             });
         })();
 
-        // ── ?posted=success BANNER ──
         (function () {
             var params = new URLSearchParams(window.location.search);
             if (params.get('posted') === 'success') {
@@ -474,7 +470,6 @@
                 window.history.replaceState({}, '', window.location.pathname);
             }
         })();
-        // ── UpdatePanel: show modal alert after Mag-request postback ──
         if (typeof Sys !== 'undefined') {
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                 var modalAlert = document.getElementById('pnlModalServiceMessage');
