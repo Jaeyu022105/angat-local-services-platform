@@ -1,0 +1,13 @@
+ALTER TABLE JobApplications ADD FOREIGN KEY (JobId) REFERENCES Jobs(JobId);
+ALTER TABLE JobApplications ADD FOREIGN KEY (UserId) REFERENCES Users(UserId);
+
+ALTER TABLE Jobs ADD FOREIGN KEY (PostedByUserId) REFERENCES Users(UserId);
+
+ALTER TABLE Services ADD FOREIGN KEY (PostedByUserId) REFERENCES Users(UserId);
+
+ALTER TABLE ServiceRequests ADD FOREIGN KEY (ServiceId) REFERENCES Services(ServiceId);
+ALTER TABLE ServiceRequests ADD FOREIGN KEY (UserId) REFERENCES Users(UserId);
+
+ALTER TABLE Notifications ADD FOREIGN KEY (UserId) REFERENCES Users(UserId);
+
+ALTER TABLE Negosyo ADD FOREIGN KEY (UserId) REFERENCES Users(UserId);

@@ -1,0 +1,14 @@
+ALTER TABLE Users ADD CONSTRAINT UQ_Users_Phone UNIQUE (Phone);
+CREATE UNIQUE INDEX UX_Users_Email ON Users(Email);
+
+ALTER TABLE ContactMessages ADD DEFAULT GETDATE() FOR DateSent;
+ALTER TABLE JobApplications ADD DEFAULT 'Pending' FOR Status;
+ALTER TABLE JobApplications ADD DEFAULT GETDATE() FOR AppliedAt;
+
+ALTER TABLE Jobs ADD DEFAULT 'Available' FOR Status;
+ALTER TABLE Jobs ADD DEFAULT 1 FOR IsActive;
+
+ALTER TABLE Services ADD DEFAULT 'Available' FOR Status;
+ALTER TABLE Services ADD DEFAULT 1 FOR IsActive;
+
+ALTER TABLE Notifications ADD DEFAULT 0 FOR IsRead;
