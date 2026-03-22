@@ -2,6 +2,7 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+
     <%-- PAGE HERO --%>
     <div id="page-hero">
         <div class="hero-circles"><div class="c1"></div><div class="c2"></div></div>
@@ -32,7 +33,6 @@
                 <div class="search-field">
                     <span class="s-icon"><i class='bx bx-map'></i></span>
                     <select id="htLocation">
-                        <option value="All">Kahit Saan (Bi&#241;an)</option>
                         <option value="All">Kahit Saan (Bi&#241;an)</option>
                         <option value="Bi&#241;an">Bi&#241;an (Poblacion)</option>
                         <option value="Bungahan">Bungahan</option>
@@ -85,6 +85,7 @@
             </div>
         </div>
 
+        <%-- PAGE LEVEL ALERT --%>
         <asp:Panel ID="pnlApplyMessage" runat="server" CssClass="form-alert" Visible="false" ClientIDMode="Static" style="margin-bottom:20px;">
             <asp:Label ID="lblApplyMessage" runat="server" />
         </asp:Panel>
@@ -122,7 +123,7 @@
                             <span class='badge <%# GROUP6_ANGAT.DisplayHelper.GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>
                         <h4><%# Eval("JobTitle") %></h4>
-                        <p class="listing-company"><i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %></p>
+                        <p class="listing-company"><i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an</p>
                         <div class="listing-tags"><asp:Literal ID="litTags" runat="server" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' /></div>
                         <div class="listing-footer">
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -134,7 +135,7 @@
         </div>
     </div>
 
-    <%-- MODAL --%>
+    <%-- JOB MODAL --%>
     <div id="jobModal" class="job-modal">
         <div class="job-modal-backdrop"></div>
         <div class="job-modal-card">
@@ -152,22 +153,37 @@
                 <div class="modal-info-item"><span class="modal-info-label">Status</span><span id="jobStatus" class="badge"></span></div>
                 <div class="modal-info-item"><span class="modal-info-label">Sahod</span><span id="jobPay" class="modal-info-value"></span></div>
                 <div class="modal-info-item"><span class="modal-info-label">Slots</span><span id="jobSlots" class="modal-info-value"></span></div>
-                <div class="modal-info-item" style="grid-column: span 2;"><span class="modal-info-label">Tags</span><div id="modalTags" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;"></div></div>
+                <div class="modal-info-item" style="grid-column: span 2;"><span class="modal-info-label">Uri ng Trabaho / Tags</span><div id="modalTags" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;"></div></div>
             </div>
             <div class="modal-desc-block"><span class="modal-info-label">Detalye</span><p id="jobDesc" class="job-desc"></p></div>
+            
             <div class="job-modal-actions" style="margin-top:25px;">
-                <asp:UpdatePanel ID="upApply" runat="server"><ContentTemplate>
-                    <asp:Panel ID="pnlModalAlert" runat="server" CssClass="form-alert" Visible="false" style="margin-bottom:15px;"><asp:Label ID="lblModalAlert" runat="server" /></asp:Panel>
-                    <asp:HiddenField ID="hfJobId" runat="server" ClientIDMode="Static" />
-                    <asp:PlaceHolder ID="phApplyLoggedIn" runat="server"><asp:Button ID="btnApplyJob" runat="server" Text="Mag-apply" CssClass="btn-green" OnClick="BtnApplyJob_Click" /></asp:PlaceHolder>
-                    <asp:PlaceHolder ID="phApplyLoggedOut" runat="server" Visible="false"><a href="Login.aspx" class="btn-green">Login to Apply</a></asp:PlaceHolder>
-                </ContentTemplate></asp:UpdatePanel>
+                <asp:UpdatePanel ID="upApply" runat="server">
+                    <ContentTemplate>
+                        <%-- MODAL LEVEL ALERT (NEGOSYO STYLE) --%>
+                        <asp:Panel ID="pnlModalAlert" runat="server" CssClass="form-alert" 
+                            EnableViewState="false"
+                            style="display:none; margin-bottom:15px;" ClientIDMode="Static">
+                            <asp:Label ID="lblModalAlert" runat="server" EnableViewState="false" />
+                        </asp:Panel>
+
+                        <asp:HiddenField ID="hfJobId" runat="server" ClientIDMode="Static" />
+                        
+                        <asp:PlaceHolder ID="phApplyLoggedIn" runat="server">
+                            <asp:Button ID="btnApplyJob" runat="server" Text="Mag-apply" CssClass="btn-green" OnClick="BtnApplyJob_Click" />
+                        </asp:PlaceHolder>
+                        
+                        <asp:PlaceHolder ID="phApplyLoggedOut" runat="server" Visible="false">
+                            <a href="Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx" class="btn-green" style="display:inline-block; text-decoration:none;">Mag-login para mag-apply</a>
+                        </asp:PlaceHolder>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </div>
     </div>
 
     <script>
-        // ── FILTER ENGINE (Working) ──
+        // ── FILTER ENGINE ──
         (function () {
             const searchInput = document.getElementById('htSearch');
             const locationSelect = document.getElementById('htLocation');
@@ -190,22 +206,13 @@
                     return isVisible;
                 });
 
-                // Sorting
                 visibleCards.sort((a, b) => {
-                    if (sort === 'pay') {
-                        return parseFloat(b.dataset.payAmount) - parseFloat(a.dataset.payAmount);
-                    } else {
-                        return parseFloat(b.dataset.postedTicks) - parseFloat(a.dataset.postedTicks);
-                    }
+                    if (sort === 'pay') return parseFloat(b.dataset.payAmount) - parseFloat(a.dataset.payAmount);
+                    return parseFloat(b.dataset.postedTicks) - parseFloat(a.dataset.postedTicks);
                 });
 
-                // Re-append in sorted order
                 visibleCards.forEach(card => listWrap.appendChild(card));
-
-                // Show/Hide Empty State
                 noResults.style.display = visibleCards.length === 0 ? 'block' : 'none';
-
-                // Refresh Tag Overflows for visible items
                 updateTagOverflow();
             }
 
@@ -215,14 +222,16 @@
             sortSelect.onchange = applyFilters;
         })();
 
-        // ── SYNCED TAG LOGIC ──
+        // ── SYNCED TAG LOGIC (Mirrors DisplayHelper.cs) ──
         function getTagColorClass(tag, category) {
             const t = (tag || "").toLowerCase().trim();
+            const cat = (category || "").toLowerCase().trim();
             if (t.includes("urgent")) return "tag-rose";
             if (t.includes("full-time")) return "tag-fulltime";
             if (t.includes("part-time")) return "tag-parttime";
             if (t.includes("weekday") || t.includes("weekend") || t.includes("flexible")) return "tag-blue";
-            if (t.includes("experienced") || t.includes("pisikal") || t.includes("tools")) return "tag-amber";
+            if (t.includes("experienced") || t.includes("may karanasan") || t.includes("licensed") || t.includes("pisikal") || t.includes("nbi") || t.includes("tools")) return "tag-amber";
+            if (cat.includes("kasambahay") || cat.includes("labandera")) return "tag-violet";
             return "tag-teal";
         }
 
@@ -241,10 +250,34 @@
             });
         }
 
+        // ── CHANGE 1: Helper to clear the modal alert ──
+        function clearModalAlert() {
+            const modalAlert = document.getElementById('pnlModalAlert');
+            if (!modalAlert) return;
+            modalAlert.style.display = 'none';
+            modalAlert.className = 'form-alert';
+            const lbl = modalAlert.querySelector('span');
+            if (lbl) lbl.innerHTML = '';
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             updateTagOverflow();
+
+            // Success banner after posting a job
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('posted') === 'success') {
+                const b = document.getElementById('pnlApplyMessage');
+                const lbl = document.getElementById('lblApplyMessage');
+                b.style.display = 'block'; b.className = 'form-alert success';
+                lbl.innerHTML = "<i class='bx bx-check-circle'></i> Naipost na ang trabaho! Makikita ito sa listahan sa ibaba.";
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
             document.querySelectorAll('.listing-card-button').forEach(btn => {
                 btn.onclick = () => {
+                    // CHANGE 1 CONT: Clear alert when opening any card
+                    clearModalAlert();
+
                     document.getElementById('jobTitle').innerText = btn.dataset.title;
                     document.getElementById('jobDesc').innerText = btn.dataset.desc;
                     document.getElementById('jobPay').innerText = btn.dataset.pay;
@@ -270,7 +303,25 @@
                 };
             });
             document.querySelectorAll('.job-modal-close').forEach(b => b.onclick = () => document.getElementById('jobModal').classList.remove('open'));
+
+            // ── CHANGE 2: Fix UpdatePanel overwriting the JS reset ──
+            // After every async postback, check if the server actually put content
+            // in the alert. If not (e.g. modal just opened, no apply yet), keep it hidden.
+            if (typeof Sys !== 'undefined') {
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                    const modalAlert = document.getElementById('pnlModalAlert');
+                    if (!modalAlert) return;
+                    const lbl = modalAlert.querySelector('span');
+                    const hasContent = lbl && lbl.innerHTML.trim() !== '';
+                    if (hasContent) {
+                        modalAlert.style.display = 'block';
+                    } else {
+                        modalAlert.style.display = 'none';
+                    }
+                });
+            }
         });
         window.onresize = updateTagOverflow;
     </script>
+
 </asp:Content>

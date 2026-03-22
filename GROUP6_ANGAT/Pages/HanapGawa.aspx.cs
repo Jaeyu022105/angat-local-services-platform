@@ -13,20 +13,14 @@ namespace GROUP6_ANGAT.Pages {
                 LoadServices();
         }
 
-        // ── FIX: use UtcNow to match GETDATE() on Azure SQL (UTC) ──
-        protected string GetRelativeTime(object postedAt) {
-            if (postedAt == null || postedAt == DBNull.Value)
-                return "";
-
-            DateTime postDate = Convert.ToDateTime(postedAt);
-            TimeSpan ts = DateTime.UtcNow - postDate;
-
-            if (ts.TotalSeconds < 60) return "just now";
-            if (ts.TotalMinutes < 60) return (int)ts.TotalMinutes + "m";
-            if (ts.TotalHours < 24) return (int)ts.TotalHours + "h";
-            if (ts.TotalDays < 7) return (int)ts.TotalDays + "d";
-
-            return postDate.ToString("MMM dd");
+        protected string GetRelativeTime(object p) {
+            if (p == null || p == DBNull.Value) return "";
+            DateTime dt = Convert.ToDateTime(p);
+            TimeSpan ts = DateTime.UtcNow - dt;
+            if (ts.TotalDays >= 7) return dt.ToString("MMM dd");
+            if (ts.TotalDays >= 1) return $"{(int)ts.TotalDays}d ago";
+            if (ts.TotalHours >= 1) return $"{(int)ts.TotalHours}h ago";
+            return $"{(int)ts.TotalMinutes}m ago";
         }
 
         private void LoadServices() {
