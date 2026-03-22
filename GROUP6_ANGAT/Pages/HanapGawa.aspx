@@ -155,10 +155,13 @@
                                 Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
                         </div>
                         <div class="listing-footer">
-                            <span class="listing-pay" style="white-space:nowrap;"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
-                            <span style="white-space:nowrap; flex-shrink:0;"><i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %></span>
+                            <span class="listing-pay">
+                                <%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %>
+                            </span>
+                            <span class="listing-time">
+                                <i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %>
+                            </span>
                         </div>
-
                     </button>
                 </ItemTemplate>
             </asp:Repeater>

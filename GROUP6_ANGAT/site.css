@@ -36,10 +36,10 @@ body {
     line-height: 1.6;
 }
 
-body.modal-open {
-    overflow: hidden;
-    padding-right: 15px; /* compensates for scrollbar width */
-}
+    body.modal-open {
+        overflow: hidden;
+        padding-right: 15px; /* compensates for scrollbar width */
+    }
 
 a {
     text-decoration: none;
@@ -73,10 +73,10 @@ i {
         height: 72px;
     }
 
-    .brand-logo {
-        height: 30px;
-        width: auto;
-    }
+.brand-logo {
+    height: 30px;
+    width: auto;
+}
 
 /* ==========================================
    NAV
@@ -85,6 +85,7 @@ i {
     display: flex;
     align-items: center;
 }
+
     #nav ul, #nav .navbar-nav {
         list-style: none;
         display: flex;
@@ -305,10 +306,10 @@ i {
             transition: color 0.18s;
         }
 
-    .side-nav-links li a:hover {
-        background: var(--primary-light);
-        color: var(--primary);
-    }
+        .side-nav-links li a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
 
             .side-nav-links li a:hover i {
                 color: var(--primary);
@@ -524,11 +525,11 @@ i {
         z-index: 1;
     }
 
-    #page-hero .wave svg {
-        display: block;
-        width: 100%;
-        height: 60px;
-    }
+        #page-hero .wave svg {
+            display: block;
+            width: 100%;
+            height: 60px;
+        }
 
 /* ==========================================
    PAGE QUICK STRIP
@@ -931,6 +932,7 @@ div.resource-link {
     font-family: 'Plus Jakarta Sans', sans-serif;
     text-decoration: none;
 }
+
 .btn-outline {
     background: transparent;
     color: var(--primary);
@@ -946,20 +948,21 @@ div.resource-link {
     text-decoration: none;
 }
 
-    .btn-outline-red:hover {
-        background: #dc2626;
-        color: white;
-    }
+.btn-outline-red:hover {
+    background: #dc2626;
+    color: white;
+}
 
-    .btn-outline-green:hover {
-        background: var(--primary);
-        color: var(--white);
-    }
+.btn-outline-green:hover {
+    background: var(--primary);
+    color: var(--white);
+}
 
-    .btn-outline:hover {
-        background: var(--primary);
-        color: var(--white);
-    }
+.btn-outline:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
 .applicant-actions .btn-outline {
     padding: 8px 16px !important;
     font-size: 0.85rem !important;
@@ -1151,6 +1154,7 @@ button.listing-card {
     font-family: inherit;
     /* FIX: Prevent stretching when only 1 or 2 items exist */
     max-width: 350px;
+    overflow: visible;
 }
 
 /* Title (Fixing 2-line height difference) */
@@ -1187,19 +1191,38 @@ button.listing-card {
     min-height: 32px;
 }
 
-/* Footer (Pushes Price & Time to bottom) */
 .listing-footer {
-    margin-top: auto; /* IMPORTANT: This aligns all footers to the bottom */
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding-top: 15px;
+    align-items: flex-end; /* Keeps time aligned with the bottom line of text */
+    width: 100%;
+    margin-top: auto;
+    padding-top: 12px;
     border-top: 1px solid #f1f5f9;
+    gap: 10px; /* Creates a guaranteed gap so they never touch */
 }
 
 .listing-pay {
+    /* Colors & Font */
     font-weight: 700;
-    color: var(--primary);
+    color: #00897b; /* Or use var(--primary) */
+    font-size: 0.95rem;
+    line-height: 1.2;
+    /* The Fix: Allow wrapping and prevent overlap */
+    flex: 1; /* Tells this span to grow and fill the left side */
+    min-width: 0; /* Essential: allows the flex item to shrink and wrap text */
+    overflow-wrap: anywhere; /* Forces long numbers/strings to break into new lines */
+    word-break: break-word;
+}
+
+.listing-time {
+    /* Visuals */
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 2px; /* Fine-tune alignment with the bold price text */
+    /* The Fix: Keep the time solid on the right */
+    white-space: nowrap; /* Prevents the time from ever breaking into two lines */
+    flex-shrink: 0; /* Prevents the price from "squishing" the time span */
 }
 
 /* Hover State */
@@ -1276,21 +1299,21 @@ button.listing-card {
     color: #A69277;
 }
 
-    .listing-card h4 {
-        font-weight: 700;
-        font-size: 1.02rem;
-        color: var(--text);
-        flex: 1;
-        margin-top: 4px;
-        line-height: 1.4;
-    }
+.listing-card h4 {
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: var(--text);
+    flex: 1;
+    margin-top: 4px;
+    line-height: 1.4;
+}
 
-    .listing-card .listing-company {
-        font-size: 0.84rem;
-        color: var(--text-soft);
-        margin-bottom: 12px;
-        font-weight: 500;
-    }
+.listing-card .listing-company {
+    font-size: 0.84rem;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
 
 /* --- UPDATED TAGS SECTION --- */
 .listing-card .listing-tags {
@@ -1303,7 +1326,6 @@ button.listing-card {
     margin-bottom: 16px;
     align-items: center;
     position: relative; /* Added to help JS positioning */
-    
 }
 
 /* Changed .tag-overflow to .more-badge for a better 'pill' look */
@@ -1328,6 +1350,9 @@ button.listing-card {
     align-items: center;
     padding-top: 14px;
     border-top: 1.5px solid var(--border);
+    margin-top: auto;
+    flex-shrink: 0;
+    gap: 8px;
 }
 
 .listing-card .listing-pay {
@@ -1357,10 +1382,10 @@ button.listing-card {
     z-index: 1200;
 }
 
-.job-modal.open {
-    opacity: 1;
-    visibility: visible;
-}
+    .job-modal.open {
+        opacity: 1;
+        visibility: visible;
+    }
 
 .job-modal-backdrop {
     position: absolute;
@@ -1420,12 +1445,21 @@ button.listing-card {
     color: var(--text-soft);
     margin-bottom: 18px;
     line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .job-modal-actions {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+/* Hidden state for modal alert — toggled by JS after UpdatePanel */
+.modal-alert-hidden {
+    display: none;
+    margin-bottom: 15px;
 }
 
 .modal-info-grid {
@@ -1686,10 +1720,10 @@ button.listing-card {
             box-shadow: 0 0 0 3px rgba(13,158,110,0.12);
         }
 
-.form-group textarea {
-    resize: vertical;
-    min-height: 120px;
-}
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
 
 .pay-inputs {
     display: flex;
@@ -1709,13 +1743,13 @@ button.listing-card {
     min-width: 140px;
 }
 
-.pay-field input {
-    border: none;
-    outline: none;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.92rem;
-    width: 100px;
-}
+    .pay-field input {
+        border: none;
+        outline: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.92rem;
+        width: 100px;
+    }
 
 .pay-currency {
     font-weight: 700;
@@ -1740,17 +1774,17 @@ button.listing-card {
     font-weight: 600;
 }
 
-.form-alert.success {
-    background: #ecfdf5;
-    color: #065f46;
-    border: 1.5px solid #6ee7b7;
-}
+    .form-alert.success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1.5px solid #6ee7b7;
+    }
 
-.form-alert.error {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1.5px solid #fca5a5;
-}
+    .form-alert.error {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1.5px solid #fca5a5;
+    }
 
 /* ==========================================
    LOGIN
@@ -1778,18 +1812,18 @@ button.listing-card {
     box-shadow: var(--shadow-md);
 }
 
-.login-card h3 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 10px;
-}
+    .login-card h3 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 10px;
+    }
 
-.login-card p {
-    color: var(--text-soft);
-    font-size: 0.92rem;
-    margin-bottom: 24px;
-}
+    .login-card p {
+        color: var(--text-soft);
+        font-size: 0.92rem;
+        margin-bottom: 24px;
+    }
 
 .login-actions {
     display: flex;
@@ -1804,10 +1838,10 @@ button.listing-card {
     color: var(--muted);
 }
 
-.login-helper a {
-    color: var(--primary);
-    font-weight: 700;
-}
+    .login-helper a {
+        color: var(--primary);
+        font-weight: 700;
+    }
 
 .nav-user {
     display: inline-flex;
@@ -1857,12 +1891,12 @@ button.listing-card {
     margin-bottom: 18px;
 }
 
-.profile-meta h3 {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 6px;
-}
+    .profile-meta h3 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 6px;
+    }
 
 .profile-email {
     font-size: 0.9rem;
@@ -1886,6 +1920,7 @@ button.listing-card {
     max-width: 1100px;
     margin: 36px auto 0;
 }
+
 .profile-tab-nav {
     display: flex;
     gap: 8px;
@@ -1964,21 +1999,21 @@ button.listing-card {
     font-weight: 700;
 }
 
-.app-status.retracted {
-    background: #64748b;
-}
+    .app-status.retracted {
+        background: #64748b;
+    }
 
-.app-status.deleted {
-    background: #64748b;
-}
+    .app-status.deleted {
+        background: #64748b;
+    }
 
-.app-status.approved {
-    background: #16a34a;
-}
+    .app-status.approved {
+        background: #16a34a;
+    }
 
-.app-status.rejected {
-    background: #dc2626;
-}
+    .app-status.rejected {
+        background: #dc2626;
+    }
 
 .app-meta {
     display: flex;
@@ -2017,11 +2052,11 @@ button.listing-card {
     padding-top: 14px;
 }
 
-.applicants-block h5 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
+    .applicants-block h5 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
 
 .applicant-row {
     display: flex;
@@ -2031,9 +2066,9 @@ button.listing-card {
     border-bottom: 1px solid #e2e8f0;
 }
 
-.applicant-row:last-child {
-    border-bottom: none;
-}
+    .applicant-row:last-child {
+        border-bottom: none;
+    }
 
 .applicant-meta {
     font-size: 0.82rem;
@@ -2115,45 +2150,45 @@ button.listing-card {
     overflow: hidden;
 }
 
-.login-spotlight h4 {
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin-bottom: 12px;
-}
+    .login-spotlight h4 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
 
-.login-spotlight p {
-    color: rgba(255,255,255,0.85);
-    font-size: 0.95rem;
-    line-height: 1.7;
-}
+    .login-spotlight p {
+        color: rgba(255,255,255,0.85);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
 
-.login-spotlight ul {
-    margin-top: 16px;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+    .login-spotlight ul {
+        margin-top: 16px;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 
-.login-spotlight li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-}
+    .login-spotlight li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+    }
 
-.login-spotlight .spotlight-badge {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 12px;
-}
+    .login-spotlight .spotlight-badge {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 12px;
+    }
 
 /* ==========================================
    TEAM CARDS
@@ -2613,26 +2648,27 @@ button.listing-card {
     transition: all 0.3s ease;
     user-select: none;
 }
-.tag-pill input[type="checkbox"] {
-    display: none; /* Checkbox is gone */
-}
-/* The Checkbox inside the pill */
-.tag-pill input[type="checkbox"] {
-    margin-right: 8px;
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-}
 
-/* Active/Selected State (Matches your JS logic) */
-.tag-pill.active {
-    background-color: #087a54;
-    color: white;
-    border-color: #087a54;
-}
+    .tag-pill input[type="checkbox"] {
+        display: none; /* Checkbox is gone */
+    }
+    /* The Checkbox inside the pill */
+    .tag-pill input[type="checkbox"] {
+        margin-right: 8px;
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Active/Selected State (Matches your JS logic) */
+    .tag-pill.active {
+        background-color: #087a54;
+        color: white;
+        border-color: #087a54;
+    }
+
 .pay-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-

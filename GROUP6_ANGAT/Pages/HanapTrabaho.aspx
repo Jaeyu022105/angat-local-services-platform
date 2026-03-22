@@ -2,8 +2,6 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-
-
     <%-- PAGE HERO --%>
     <div id="page-hero">
         <div class="hero-circles"><div class="c1"></div><div class="c2"></div></div>
@@ -91,13 +89,6 @@
             <asp:Label ID="lblApplyMessage" runat="server" />
         </asp:Panel>
 
-        <%-- EMPTY STATE --%>
-        <div id="htNoResults" class="empty-state" style="display:none; text-align:center; padding:40px;">
-            <i class='bx bx-search' style="font-size:3rem; color:#cbd5e1;"></i>
-            <h4>Walang Nahanap</h4>
-            <p>Subukan ang ibang keyword o barangay.</p>
-        </div>
-
         <%-- LISTINGS --%>
         <div id="htListings" class="listings-grid">
             <asp:Repeater ID="rptJobs" runat="server">
@@ -126,26 +117,37 @@
                         <h4 style="flex:0 0 auto; min-height:0; margin-bottom:5px;"><%# Eval("JobTitle") %></h4>
                         <p class="listing-company"><i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an</p>
                         <div class="listing-tags"><asp:Literal ID="litTags" runat="server" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' /></div>
+                        
+                        <%-- FIXED FOOTER --%>
                         <div class="listing-footer">
-                            <span class="listing-pay" style="white-space:nowrap;"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
-                            <span style="white-space:nowrap; flex-shrink:0;"><i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %></span>
+                            <span class="listing-pay">
+                                <%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %>
+                            </span>
+                            <span class="listing-time">
+                                <i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %>
+                            </span>
                         </div>
-
                     </button>
                 </ItemTemplate>
             </asp:Repeater>
         </div>
-    <%-- PAGINATION --%>
+
+        <div id="htNoResults" class="empty-state" style="display:none; text-align:center; padding:40px;">
+            <i class='bx bx-search' style="font-size:3rem; color:#cbd5e1;"></i>
+            <h4>Walang Nahanap</h4>
+            <p>Subukan ang ibang keyword o barangay.</p>
+        </div>
+
         <div id="htPagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:40px; flex-wrap:wrap;"></div>
     </div>
 
     <%-- JOB MODAL --%>
     <div id="jobModal" class="job-modal">
-        <div class="job-modal-backdrop"></div>
+        <div class="job-modal-backdrop" onclick="document.getElementById('jobModal').classList.remove('open')"></div>
         <div class="job-modal-card">
             <button type="button" class="job-modal-close job-modal-close-icon">✕</button>
             <div class="modal-poster">
-                <img id="posterImg" src="/Images/default-icon.jpg" class="modal-poster-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" />
+                 <img id="posterImg" src="/Images/default-icon.jpg" class="modal-poster-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" />
                 <div style="display:flex; flex-direction:column; line-height:1.1; margin-left:10px;">
                     <span id="posterName" class="modal-poster-name" style="font-weight:600; font-size:1rem;"></span>
                     <small id="posterDate" class="modal-poster-date" style="color:#64748b; font-size:0.75rem;"></small>
@@ -164,19 +166,13 @@
             <div class="job-modal-actions" style="margin-top:25px;">
                 <asp:UpdatePanel ID="upApply" runat="server">
                     <ContentTemplate>
-                        <%-- MODAL LEVEL ALERT (NEGOSYO STYLE) --%>
-                        <asp:Panel ID="pnlModalAlert" runat="server" CssClass="form-alert" 
-                            EnableViewState="false"
-                            style="display:none; margin-bottom:15px;" ClientIDMode="Static">
+                        <asp:Panel ID="pnlModalAlert" runat="server" CssClass="form-alert modal-alert-hidden" EnableViewState="false" ClientIDMode="Static">
                             <asp:Label ID="lblModalAlert" runat="server" EnableViewState="false" />
                         </asp:Panel>
-
                         <asp:HiddenField ID="hfJobId" runat="server" ClientIDMode="Static" />
-                        
                         <asp:PlaceHolder ID="phApplyLoggedIn" runat="server">
                             <asp:Button ID="btnApplyJob" runat="server" Text="Mag-apply" CssClass="btn-green" OnClick="BtnApplyJob_Click" />
                         </asp:PlaceHolder>
-                        
                         <asp:PlaceHolder ID="phApplyLoggedOut" runat="server" Visible="false">
                             <a href="Login.aspx?returnUrl=/Pages/HanapTrabaho.aspx" class="btn-green" style="display:inline-block; text-decoration:none;">Mag-login para mag-apply</a>
                         </asp:PlaceHolder>
@@ -187,7 +183,52 @@
     </div>
 
     <script>
-        // ── FILTER ENGINE ──
+        function attachCardListeners() {
+            document.querySelectorAll('.listing-card-button').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    clearModalAlert();
+
+                    document.getElementById('jobTitle').innerText = btn.dataset.title;
+                    document.getElementById('jobDesc').innerText = btn.dataset.desc;
+                    document.getElementById('jobPay').innerText = btn.dataset.pay;
+                    document.getElementById('jobLocation').innerText = "Brgy. " + btn.dataset.location;
+                    document.getElementById('jobSlots').innerText = btn.dataset.slots + " Slots";
+                    document.getElementById('posterName').innerText = btn.dataset.poster;
+                    document.getElementById('posterDate').innerText = "Na-post: " + btn.dataset.date;
+                    document.getElementById('hfJobId').value = btn.dataset.jobid;
+
+                    const tb = document.getElementById('modalTags');
+                    tb.innerHTML = '';
+                    if (btn.dataset.tags) {
+                        btn.dataset.tags.split(/[|,]/).forEach(t => {
+                            if (t.trim()) {
+                                const s = document.createElement('span');
+                                s.className = 'badge ' + getTagColorClass(t.trim(), btn.dataset.category);
+                                s.innerText = t.trim();
+                                tb.appendChild(s);
+                            }
+                        });
+                    }
+
+                    const st = document.getElementById('jobStatus');
+                    st.innerText = btn.dataset.status;
+                    st.className = 'badge ' + (btn.dataset.status.toLowerCase().includes('available') ? 'badge-green' : 'badge-rose');
+
+                    // FIXED ICON PATH LOGIC
+                    const img = document.getElementById('posterImg');
+                    let path = btn.dataset.posterImg;
+                    if (path && path.trim() !== "") {
+                        img.src = path.replace(/^~\//, '/');
+                    } else {
+                        img.src = '/Images/default-icon.jpg';
+                    }
+
+                    document.getElementById('jobModal').classList.add('open');
+                };
+            });
+        }
+
         (function () {
             const searchInput = document.getElementById('htSearch');
             const locationSelect = document.getElementById('htLocation');
@@ -199,6 +240,7 @@
             const cards = Array.from(listWrap.querySelectorAll('.listing-card-button'));
             const pageSize = 10;
             let currentPage = 1;
+
             function getFilteredAndSorted() {
                 const query = searchInput.value.toLowerCase().trim();
                 const location = locationSelect.value;
@@ -210,57 +252,43 @@
                 });
                 filtered.sort((a, b) => {
                     if (sort === 'pay') return parseFloat(b.dataset.payAmount) - parseFloat(a.dataset.payAmount);
-                    return parseFloat(b.dataset.postedTicks || b.dataset.posted || 0) - parseFloat(a.dataset.postedTicks || a.dataset.posted || 0);
+                    return parseFloat(b.dataset.postedTicks || 0) - parseFloat(a.dataset.postedTicks || 0);
                 });
                 return filtered;
             }
+
             function renderPagination(totalItems) {
                 paginationWrap.innerHTML = '';
                 const totalPages = Math.ceil(totalItems / pageSize);
                 if (totalPages <= 1) return;
                 for (let i = 1; i <= totalPages; i++) {
                     const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.textContent = i;
-                    btn.className = 'btn-outline';
+                    btn.type = 'button'; btn.textContent = i; btn.className = 'btn-outline';
                     btn.style.padding = '8px 14px';
-                    if (i === currentPage) {
-                        btn.style.background = 'var(--primary)';
-                        btn.style.color = '#fff';
-                    }
-                    btn.onclick = () => {
-                        currentPage = i;
-                        renderPage();
-                        window.scrollTo({ top: 400, behavior: 'smooth' });
-                    };
+                    if (i === currentPage) { btn.style.background = 'var(--primary)'; btn.style.color = '#fff'; }
+                    btn.onclick = () => { currentPage = i; renderPage(); window.scrollTo({ top: 400, behavior: 'smooth' }); };
                     paginationWrap.appendChild(btn);
                 }
             }
+
             function renderPage() {
                 const filtered = getFilteredAndSorted();
-                const totalPages = Math.ceil(filtered.length / pageSize);
-                if (currentPage > totalPages) currentPage = 1;
                 noResults.style.display = filtered.length === 0 ? 'block' : 'none';
                 cards.forEach(c => c.style.display = 'none');
                 const start = (currentPage - 1) * pageSize;
-                filtered.slice(start, start + pageSize).forEach(c => c.style.display = '');
-                filtered.forEach(card => listWrap.appendChild(card));
+                filtered.slice(start, start + pageSize).forEach(c => { c.style.display = ''; listWrap.appendChild(c); });
                 renderPagination(filtered.length);
                 updateTagOverflow();
-            }
-            function applyFilters() {
-                currentPage = 1;
-                renderPage();
+                attachCardListeners();
             }
 
-            filterBtn.onclick = applyFilters;
-            searchInput.onkeyup = (e) => { if (e.key === 'Enter') applyFilters(); };
-            locationSelect.onchange = applyFilters;
-            sortSelect.onchange = applyFilters;
+            filterBtn.onclick = () => { currentPage = 1; renderPage(); };
+            searchInput.onkeyup = (e) => { if (e.key === 'Enter') { currentPage = 1; renderPage(); } };
+            locationSelect.onchange = () => { currentPage = 1; renderPage(); };
+            sortSelect.onchange = () => { currentPage = 1; renderPage(); };
             renderPage();
         })();
 
-        // ── SYNCED TAG LOGIC (Mirrors DisplayHelper.cs) ──
         function getTagColorClass(tag, category) {
             const t = (tag || "").toLowerCase().trim();
             const cat = (category || "").toLowerCase().trim();
@@ -283,79 +311,35 @@
                 const top = badges[0].offsetTop; let count = 0;
                 badges.forEach(b => { if (b.offsetTop > top) { b.style.display = 'none'; count++; } });
                 if (count > 0) {
-                    const m = document.createElement('span'); m.className = 'badge more-badge'; m.style.background = '#f1f5f9'; m.innerText = '+' + count; container.appendChild(m);
+                    const m = document.createElement('span'); m.className = 'badge more-badge'; m.innerText = '+' + count; container.appendChild(m);
                 }
             });
         }
 
-        // ── CHANGE 1: Helper to clear the modal alert ──
         function clearModalAlert() {
             const modalAlert = document.getElementById('pnlModalAlert');
             if (!modalAlert) return;
-            modalAlert.style.display = 'none';
-            modalAlert.className = 'form-alert';
+            modalAlert.classList.add('modal-alert-hidden');
             const lbl = modalAlert.querySelector('span');
             if (lbl) lbl.innerHTML = '';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            applyFilters();
-
-            // Success banner after posting a job
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('posted') === 'success') {
                 const b = document.getElementById('pnlApplyMessage');
                 const lbl = document.getElementById('lblApplyMessage');
                 b.style.display = 'block'; b.className = 'form-alert success';
-                lbl.innerHTML = "<i class='bx bx-check-circle'></i> Naipost na ang trabaho! Makikita ito sa listahan sa ibaba.";
+                lbl.innerHTML = "<i class='bx bx-check-circle'></i> Naipost na ang trabaho!";
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            document.querySelectorAll('.listing-card-button').forEach(btn => {
-                btn.onclick = () => {
-                    // CHANGE 1 CONT: Clear alert when opening any card
-                    clearModalAlert();
-
-                    document.getElementById('jobTitle').innerText = btn.dataset.title;
-                    document.getElementById('jobDesc').innerText = btn.dataset.desc;
-                    document.getElementById('jobPay').innerText = btn.dataset.pay;
-                    document.getElementById('jobLocation').innerText = "Brgy. " + btn.dataset.location;
-                    document.getElementById('jobSlots').innerText = btn.dataset.slots + " Slots";
-                    document.getElementById('posterName').innerText = btn.dataset.poster;
-                    document.getElementById('posterDate').innerText = "Na-post: " + btn.dataset.date;
-                    document.getElementById('hfJobId').value = btn.dataset.jobid;
-                    const tb = document.getElementById('modalTags'); tb.innerHTML = '';
-                    if (btn.dataset.tags) {
-                        btn.dataset.tags.split(/[|,]/).forEach(t => {
-                            if (t.trim()) {
-                                const s = document.createElement('span'); s.className = 'badge ' + getTagColorClass(t.trim(), btn.dataset.category);
-                                s.innerText = t.trim(); tb.appendChild(s);
-                            }
-                        });
-                    }
-                    const st = document.getElementById('jobStatus'); st.innerText = btn.dataset.status;
-                    st.className = 'badge ' + (btn.dataset.status.toLowerCase().includes('available') ? 'badge-green' : 'badge-rose');
-                    const img = document.getElementById('posterImg'); const path = btn.dataset.posterImg;
-                    img.src = path ? path.replace(/^~\//, '/') : '/Images/default-icon.jpg';
-                    document.getElementById('jobModal').classList.add('open');
-                };
-            });
+            attachCardListeners();
             document.querySelectorAll('.job-modal-close').forEach(b => b.onclick = () => document.getElementById('jobModal').classList.remove('open'));
 
-            // ── CHANGE 2: Fix UpdatePanel overwriting the JS reset ──
-            // After every async postback, check if the server actually put content
-            // in the alert. If not (e.g. modal just opened, no apply yet), keep it hidden.
             if (typeof Sys !== 'undefined') {
                 Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-                    const modalAlert = document.getElementById('pnlModalAlert');
-                    if (!modalAlert) return;
-                    const lbl = modalAlert.querySelector('span');
-                    const hasContent = lbl && lbl.innerHTML.trim() !== '';
-                    if (hasContent) {
-                        modalAlert.style.display = 'block';
-                    } else {
-                        modalAlert.style.display = 'none';
-                    }
+                    attachCardListeners();
                 });
             }
         });
