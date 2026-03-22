@@ -69,14 +69,17 @@ namespace GROUP6_ANGAT {
             {
                 conn.Open();
 
-                // Active (Pending + Approved)
+                // Active (Pending + Approved + Rejected)
                 using (SqlCommand cmd = new SqlCommand(@"
-            SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
-                   j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags
-            FROM JobApplications ja
-            LEFT JOIN Jobs j ON ja.JobId = j.JobId
-            WHERE ja.UserId = @UserId AND ja.Status IN ('Pending', 'Approved')
-            ORDER BY ja.AppliedAt DESC", conn))
+                    SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
+                           j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags,
+                           u.FullName AS EmployerName, u.Email AS EmployerEmail, u.Phone AS EmployerPhone
+                    FROM JobApplications ja
+                    LEFT JOIN Jobs j ON ja.JobId = j.JobId
+                    LEFT JOIN Users u ON j.PostedByUserId = u.UserId
+                    WHERE ja.UserId = @UserId AND ja.Status IN ('Pending', 'Approved', 'Rejected')
+                    AND (ja.Status != 'Retracted' AND ja.Status NOT LIKE '%_Archived')
+                    ORDER BY ja.AppliedAt DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -88,13 +91,13 @@ namespace GROUP6_ANGAT {
                     }
                 }
 
-                // Closed (Retracted + Rejected)
+                // Closed (Retracted + Archived)
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
                    j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags
             FROM JobApplications ja
             LEFT JOIN Jobs j ON ja.JobId = j.JobId
-            WHERE ja.UserId = @UserId AND ja.Status IN ('Retracted', 'Rejected')
+            WHERE ja.UserId = @UserId AND (ja.Status = 'Retracted' OR ja.Status LIKE '%_Archived')
             ORDER BY ja.AppliedAt DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
@@ -119,12 +122,14 @@ namespace GROUP6_ANGAT {
 
                 // Active (Pending + Approved)
                 using (SqlCommand cmd = new SqlCommand(@"
-            SELECT sr.RequestId, sr.Status, sr.RequestedAt,
-                   s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags
-            FROM ServiceRequests sr
-            LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
-            WHERE sr.UserId = @UserId AND sr.Status IN ('Pending', 'Approved')
-            ORDER BY sr.RequestedAt DESC", conn))
+                    SELECT sr.RequestId, sr.Status, sr.RequestedAt,
+                           s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags,
+                           u.FullName AS PosterName, u.Email AS PosterEmail, u.Phone AS PosterPhone
+                    FROM ServiceRequests sr
+                    LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+                    LEFT JOIN Users u ON s.PostedByUserId = u.UserId
+                    WHERE sr.UserId = @UserId AND sr.Status IN ('Pending', 'Approved', 'Rejected')
+                    ORDER BY sr.RequestedAt DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -250,21 +255,45 @@ namespace GROUP6_ANGAT {
         // =============================================
         // LOAD MY BUSINESS LISTINGS (user posted negosyo)
         // =============================================
-        private void LoadMyBusinessListings() {
+        private void LoadMyBusinessListings()
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT DirectoryId, BusinessName, Category, Barangay, AddressLine, Tags, Status, CreatedAt, ContactNumber
-                FROM DirectoryBusinesses
-                WHERE UserId = @UserId AND IsActive = 1
-                ORDER BY CreatedAt DESC", conn)) {
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+            {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
-                    bool hasRows = reader.HasRows;
-                    rptBusinessListings.DataSource = reader;
-                    rptBusinessListings.DataBind();
-                    pnlNoBusinessListings.Visible = !hasRows;
+
+                // Active listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT DirectoryId, BusinessName, Category, Barangay, AddressLine,
+                   Tags, Status, CreatedAt, ContactNumber
+            FROM DirectoryBusinesses
+            WHERE UserId = @UserId AND IsActive = 1
+            ORDER BY CreatedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        bool hasRows = reader.HasRows;
+                        rptBusinessListings.DataSource = reader;
+                        rptBusinessListings.DataBind();
+                        pnlNoBusinessListings.Visible = !hasRows;
+                    }
+                }
+
+                // Deleted listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT DirectoryId, BusinessName, Category, Barangay, AddressLine,
+                   Tags, Status, CreatedAt, ContactNumber
+            FROM DirectoryBusinesses
+            WHERE UserId = @UserId AND IsActive = 0
+            ORDER BY CreatedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        rptBusinessListingsDeleted.DataSource = reader;
+                        rptBusinessListingsDeleted.DataBind();
+                    }
                 }
             }
         }
@@ -405,13 +434,18 @@ namespace GROUP6_ANGAT {
                     }
                 }
 
-                
+
 
                 // Update application status
                 using (SqlCommand cmd = new SqlCommand(@"
-                    UPDATE JobApplications SET Status = @Status
-                    WHERE ApplicationId = @ApplicationId
-                    AND JobId IN (SELECT JobId FROM Jobs WHERE PostedByUserId = @UserId)", conn)) {
+                UPDATE JobApplications SET Status = 
+                    CASE 
+                        WHEN Status LIKE '%_Archived' THEN @Status + '_Archived'
+                        ELSE @Status 
+                    END
+                WHERE ApplicationId = @ApplicationId
+                AND JobId IN (SELECT JobId FROM Jobs WHERE PostedByUserId = @UserId)", conn))
+                {
                     cmd.Parameters.AddWithValue("@Status", newStatus);
                     cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
                     cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
@@ -628,26 +662,52 @@ namespace GROUP6_ANGAT {
         // =============================================
         // RETRACT APPLICATION
         // =============================================
-        protected void RptApplications_ItemCommand(object source, RepeaterCommandEventArgs e) {
-            if (e.CommandName != "Retract") return;
-
+        protected void RptApplications_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                UPDATE JobApplications SET Status = 'Retracted'
-                WHERE ApplicationId = @ApplicationId AND UserId = @UserId AND Status = 'Pending'", conn)) {
-                cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
-                conn.Open();
-                int rows = cmd.ExecuteNonQuery();
+            string newStatus = null;
 
-                pnlApplicationsMessage.Visible = true;
-                pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
-                lblApplicationsMessage.Text = rows > 0 ? "Na-retract ang application." : "Hindi ma-retract.";
+            if (e.CommandName == "Retract") newStatus = "Retracted";
+            else if (e.CommandName == "Archive") newStatus = e.CommandName; // handled below
+            else return;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+
+                if (e.CommandName == "Archive")
+                {
+                    // Get current status first
+                    string currentStatus = "";
+                    using (SqlCommand getCmd = new SqlCommand(@"
+                SELECT Status FROM JobApplications 
+                WHERE ApplicationId = @ApplicationId AND UserId = @UserId", conn))
+                    {
+                        getCmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
+                        getCmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                        currentStatus = getCmd.ExecuteScalar()?.ToString() ?? "";
+                    }
+                    newStatus = currentStatus + "_Archived";
+                }
+
+                using (SqlCommand cmd = new SqlCommand(@"
+            UPDATE JobApplications SET Status = @Status
+            WHERE ApplicationId = @ApplicationId AND UserId = @UserId", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Status", newStatus);
+                    cmd.Parameters.AddWithValue("@ApplicationId", e.CommandArgument);
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    int rows = cmd.ExecuteNonQuery();
+
+                    pnlApplicationsMessage.Visible = true;
+                    pnlApplicationsMessage.CssClass = rows > 0 ? "form-alert success" : "form-alert error";
+                    lblApplicationsMessage.Text = rows > 0
+                        ? (e.CommandName == "Archive" ? "Na-archive ang application." : "Na-retract ang application.")
+                        : "Hindi ma-update. Subukan ulit.";
+                }
             }
 
             LoadApplications();
-
             ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
                 "document.querySelector('[data-tab=\"applications\"]').click();", true);
         }

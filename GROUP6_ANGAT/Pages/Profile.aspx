@@ -106,10 +106,10 @@
                     <i class='bx bx-wrench'></i> Aking Requests
                 </button>
                 <button type="button" class="profile-tab-btn" data-tab="listings">
-                    <i class='bx bx-briefcase'></i> Aking Job Listings
+                    <i class='bx bx-briefcase'></i> Aking Mga Trabaho
                 </button>
                 <button type="button" class="profile-tab-btn" data-tab="servicelistings">
-                    <i class='bx bx-store-alt'></i> Aking Service Listings
+                    <i class='bx bx-store-alt'></i> Aking Mga Serbisyo
                 </button>
                 <button type="button" class="profile-tab-btn" data-tab="businesslistings">
                     <i class='bx bx-store'></i> Aking Negosyo Listings
@@ -142,8 +142,8 @@
                                 style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("JobTitle") %></h4>
-                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                        <%# Eval("Status") %>
+                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                        <%# Eval("Status").ToString().Replace("_Archived","") %>
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0;">
@@ -154,6 +154,25 @@
                                     <span><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></span>
                                 </div>
                                 <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+
+                                <%-- Show employer contact only when Approved --%>
+                                <%# Eval("Status").ToString() == "Approved" ? "" : "<!--" %>
+                                <div style="border-top:1px solid #cbd5e1; padding-top:12px; margin-top:4px;">
+                                    <p style="margin:0 0 8px 0; font-size:0.85rem; font-weight:700; color:#15803d;">
+                                        <i class='bx bx-phone-call'></i> I-contact ang employer dito:
+                                    </p>
+                                    <p style="margin:0; font-size:0.9rem; font-weight:700; color:#1e293b;">
+                                        <i class='bx bx-user'></i> <%# Eval("EmployerName") %>
+                                    </p>
+                                    <p style="margin:4px 0 0 0; font-size:0.85rem; color:#475569;">
+                                        <i class='bx bx-envelope'></i> <%# Eval("EmployerEmail") %>
+                                    </p>
+                                    <p style="margin:4px 0 0 0; font-size:0.85rem; color:#475569;">
+                                        <i class='bx bx-phone'></i> <%# Eval("EmployerPhone") %>
+                                    </p>
+                                </div>
+                                <%# Eval("Status").ToString() == "Approved" ? "" : "-->" %>
+
                                 <div class="app-actions">
                                     <asp:LinkButton ID="btnRetract" runat="server"
                                         CssClass="btn-outline app-retract"
@@ -161,6 +180,13 @@
                                         CommandArgument='<%# Eval("ApplicationId") %>'
                                         Visible='<%# Eval("Status").ToString() == "Pending" %>'>
                                         I-retract
+                                    </asp:LinkButton>
+                                    <asp:LinkButton ID="btnArchive" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="Archive"
+                                        CommandArgument='<%# Eval("ApplicationId") %>'
+                                        Visible='<%# Eval("Status").ToString() == "Approved" || Eval("Status").ToString() == "Rejected" %>'>
+                                        I-archive
                                     </asp:LinkButton>
                                 </div>
                             </div>
@@ -178,8 +204,8 @@
                                 style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("JobTitle") %></h4>
-                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                        <%# Eval("Status") %>
+                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                        <%# Eval("Status").ToString().Replace("_Archived","") %>
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
@@ -211,8 +237,8 @@
                                 style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("ServiceTitle") %></h4>
-                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                        <%# Eval("Status") %>
+                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                        <%# Eval("Status").ToString().Replace("_Archived","") %>
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0;">
@@ -223,6 +249,25 @@
                                     <span><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></span>
                                 </div>
                                 <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+
+                                <%-- Show poster contact only when Approved --%>
+                                <%# Eval("Status").ToString() == "Approved" ? "" : "<!--" %>
+                                <div style="border-top:1px solid #94a3b8; padding-top:12px; margin-top:4px;">
+                                    <p style="margin:0 0 8px 0; font-size:0.85rem; font-weight:700; color:#15803d;">
+                                        <i class='bx bx-phone-call'></i> I-contact ang service poster dito:
+                                    </p>
+                                    <p style="margin:0; font-size:0.9rem; font-weight:700; color:#1e293b;">
+                                        <i class='bx bx-user'></i> <%# Eval("PosterName") %>
+                                    </p>
+                                    <p style="margin:4px 0 0 0; font-size:0.85rem; color:#475569;">
+                                        <i class='bx bx-envelope'></i> <%# Eval("PosterEmail") %>
+                                    </p>
+                                    <p style="margin:4px 0 0 0; font-size:0.85rem; color:#475569;">
+                                        <i class='bx bx-phone'></i> <%# Eval("PosterPhone") %>
+                                    </p>
+                                </div>
+                                <%# Eval("Status").ToString() == "Approved" ? "" : "-->" %>
+
                                 <div class="app-actions">
                                     <asp:LinkButton ID="btnRetractService" runat="server"
                                         CssClass="btn-outline app-retract"
@@ -230,6 +275,13 @@
                                         CommandArgument='<%# Eval("RequestId") %>'
                                         Visible='<%# Eval("Status").ToString() == "Pending" %>'>
                                         I-retract
+                                    </asp:LinkButton>
+                                    <asp:LinkButton ID="btnArchiveService" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="ArchiveService"
+                                        CommandArgument='<%# Eval("RequestId") %>'
+                                        Visible='<%# Eval("Status").ToString() == "Approved" || Eval("Status").ToString() == "Rejected" %>'>
+                                        I-archive
                                     </asp:LinkButton>
                                 </div>
                             </div>
@@ -248,8 +300,8 @@
                                 style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("ServiceTitle") %></h4>
-                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                        <%# Eval("Status") %>
+                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                        <%# Eval("Status").ToString().Replace("_Archived","") %>
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
@@ -326,24 +378,28 @@
                                                     </div>
                                                     <div class="applicant-meta"><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></div>
                                                 </div>
-                                                <div class="applicant-actions">
-                                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                                        <%# Eval("Status") %>
-                                                    </span>
-                                                    <asp:LinkButton ID="btnApprove" runat="server"
-                                                        CssClass="btn-green app-retract"
-                                                        CommandName="Approve"
-                                                        CommandArgument='<%# Eval("ApplicationId") %>'
-                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                        Approve
-                                                    </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnReject" runat="server"
-                                                        CssClass="btn-outline app-retract"
-                                                        CommandName="Reject"
-                                                        CommandArgument='<%# Eval("ApplicationId") %>'
-                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                        Reject
-                                                    </asp:LinkButton>
+                                                <div class="applicant-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                                                <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                                    <%# Eval("Status").ToString().Replace("_Archived","") %>
+                                                </span>
+                                                    <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+                                                        <asp:LinkButton ID="btnApprove" runat="server"
+                                                            CssClass="btn-outline app-retract"
+                                                            CommandName="Approve"
+                                                            CommandArgument='<%# Eval("ApplicationId") %>'
+                                                            Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                                            style="display:flex; align-items:center; justify-content:center;">
+                                                            Approve
+                                                        </asp:LinkButton>
+                                                        <asp:LinkButton ID="btnReject" runat="server"
+                                                            CssClass="btn-outline app-retract"
+                                                            CommandName="Reject"
+                                                            CommandArgument='<%# Eval("ApplicationId") %>'
+                                                            Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                                            style="display:flex; align-items:center; justify-content:center;">
+                                                            Reject
+                                                        </asp:LinkButton>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </ItemTemplate>
@@ -436,24 +492,28 @@
                                                     </div>
                                                     <div class="applicant-meta"><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></div>
                                                 </div>
-                                                <div class="applicant-actions">
-                                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                                        <%# Eval("Status") %>
+                                                <div class="applicant-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                                        <%# Eval("Status").ToString().Replace("_Archived","") %>
                                                     </span>
-                                                    <asp:LinkButton ID="btnApproveService" runat="server"
-                                                        CssClass="btn-green app-retract"
-                                                        CommandName="ApproveService"
-                                                        CommandArgument='<%# Eval("RequestId") %>'
-                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                        Approve
-                                                    </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnRejectService" runat="server"
-                                                        CssClass="btn-outline app-retract"
-                                                        CommandName="RejectService"
-                                                        CommandArgument='<%# Eval("RequestId") %>'
-                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                        Reject
-                                                    </asp:LinkButton>
+                                                    <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+                                                        <asp:LinkButton ID="btnApproveService" runat="server"
+                                                            CssClass="btn-outline app-retract"
+                                                            CommandName="ApproveService"
+                                                            CommandArgument='<%# Eval("RequestId") %>'
+                                                            Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                                            style="padding:8px 16px; font-size:0.85rem; min-width:80px; text-align:center; line-height:1; display:flex; align-items:center; justify-content:center;">
+                                                            Approve
+                                                        </asp:LinkButton>
+                                                        <asp:LinkButton ID="btnRejectService" runat="server"
+                                                            CssClass="btn-outline app-retract"
+                                                            CommandName="RejectService"
+                                                            CommandArgument='<%# Eval("RequestId") %>'
+                                                            Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                                            style="padding:8px 16px; font-size:0.85rem; min-width:80px; text-align:center; line-height:1; display:flex; align-items:center; justify-content:center;">
+                                                            Reject
+                                                        </asp:LinkButton>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </ItemTemplate>
@@ -494,45 +554,75 @@
         
             <%-- TAB 5: My Business Listings --%>
             <div class="profile-tab-content" id="tab-businesslistings">
-                <asp:Panel ID="pnlNoBusinessListings" runat="server" CssClass="empty-state" Visible="false">
-                    <i class='bx bx-store'></i>
-                    <h4>Wala ka pang negosyo listings</h4>
-                    <p><a href="/Pages/PostNegosyo.aspx">Mag-rehistro ng negosyo</a> para magsimula.</p>
-                </asp:Panel>
+                <asp:Panel ID="pnlNoBusinessListings" runat="server" CssClass="empty-state" Visible="false"/>
 
-                <asp:Repeater ID="rptBusinessListings" runat="server" OnItemCommand="RptBusinessListings_ItemCommand">
-                    <ItemTemplate>
-                        <div class="app-card">
-                            <div class="app-card-top">
-                                <div>
-                                    <h4><%# Eval("BusinessName") %></h4>
-                                    <p class="app-location">
-                                        <i class='bx bx-map'></i> <%# GetBusinessLocation(Eval("AddressLine"), Eval("Barangay")) %>
-                                    </p>
+                <%-- Active Business Listings --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
+                    <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Negosyo Listings
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                    <asp:Repeater ID="rptBusinessListings" runat="server" OnItemCommand="RptBusinessListings_ItemCommand">
+                        <ItemTemplate>
+                            <div class="app-card"
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("BusinessName") %></h4>
+                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                        <%# Eval("Status") %>
+                                    </span>
                                 </div>
-                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                    <%# Eval("Status") %>
-                                </span>
+                                <p class="app-location" style="margin:0;">
+                                    <i class='bx bx-map'></i> <%# GetBusinessLocation(Eval("AddressLine"), Eval("Barangay")) %>
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# Eval("Category") %></span>
+                                    <span><%# Eval("CreatedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                                <p style="font-size:0.82rem; color:var(--text-soft); margin-top:6px;">
+                                    <i class='bx bx-phone'></i> <%# GetBusinessContact(Eval("ContactNumber")) %>
+                                </p>
+                                <div class="app-actions">
+                                    <asp:LinkButton ID="btnDeleteBusinessListing" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="DeleteBusinessListing"
+                                        CommandArgument='<%# Eval("DirectoryId") %>'>
+                                        I-delete
+                                    </asp:LinkButton>
+                                </div>
                             </div>
-                            <div class="app-meta">
-                                <span class="app-pay"><%# Eval("Category") %></span>
-                                <span><%# Eval("CreatedAt", "{0:MMM dd, yyyy}") %></span>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+
+                <%-- Deleted Business Listings --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin-bottom:16px;">
+                    <i class='bx bx-archive' style="color:#94a3b8;"></i> Na-delete na Negosyo Listings
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                    <asp:Repeater ID="rptBusinessListingsDeleted" runat="server">
+                        <ItemTemplate>
+                            <div class="app-card"
+                                style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("BusinessName") %></h4>
+                                    <span class="app-status deleted">Deleted</span>
+                                </div>
+                                <p class="app-location" style="margin:0; color:#94a3b8;">
+                                    <i class='bx bx-map'></i> <%# GetBusinessLocation(Eval("AddressLine"), Eval("Barangay")) %>
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# Eval("Category") %></span>
+                                    <span><%# Eval("CreatedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                                <p style="font-size:0.82rem; color:var(--text-soft); margin-top:6px;">
+                                    <i class='bx bx-phone'></i> <%# GetBusinessContact(Eval("ContactNumber")) %>
+                                </p>
                             </div>
-                            <p class="app-tags"><%# FormatTags(Eval("Tags")) %></p>
-                            <p style="font-size:0.82rem; color:var(--text-soft); margin-top:6px;">
-                                <i class='bx bx-phone'></i> <%# GetBusinessContact(Eval("ContactNumber")) %>
-                            </p>
-                            <div class="app-actions">
-                                <asp:LinkButton ID="btnDeleteBusinessListing" runat="server"
-                                    CssClass="btn-outline app-retract"
-                                    CommandName="DeleteBusinessListing"
-                                    CommandArgument='<%# Eval("DirectoryId") %>'>
-                                    I-delete
-                                </asp:LinkButton>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
             </div>
 </div><%-- end profile-tabs --%>
     </div>
