@@ -2667,6 +2667,8 @@ button.listing-card {
 .tag-pill {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    gap: 8px;
     padding: 6px 15px;
     border: 1px solid #ddd;
     border-radius: 20px;
@@ -2676,16 +2678,22 @@ button.listing-card {
     user-select: none;
 }
 
+    .tag-pill input[type="radio"] {
+        margin: 0 4px 0 0;
+        width: 16px;
+        height: 16px;
+        flex: 0 0 auto;
+        position: relative;
+        top: 1px;
+    }
+
     .tag-pill input[type="checkbox"] {
         display: none;
     }
 
-    .tag-pill input[type="checkbox"] {
-        margin-right: 8px;
-        cursor: pointer;
-        width: 16px;
-        height: 16px;
-    }
+
+
+
 
     .tag-pill.active {
         background-color: #087a54;
