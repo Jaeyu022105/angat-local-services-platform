@@ -34,7 +34,7 @@
                 <span class="stat-label">Mga Serbisyo</span>
             </div>
             <div class="stat-item">
-                <span class="stat-num"><%=GetCount("DirectoryBusinesses")%></span>
+                <span class="stat-num"><%=GetCount("Negosyo")%></span>
                 <span class="stat-label">Lokal na Negosyo</span>
             </div>
             <div class="stat-item">
@@ -261,3 +261,4 @@
     });
 </script>
 </asp:Content>
+

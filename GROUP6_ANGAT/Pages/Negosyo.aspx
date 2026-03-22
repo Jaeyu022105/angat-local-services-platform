@@ -96,42 +96,41 @@
     <div id="dirListings" class="listings-grid">
         <asp:Repeater ID="rptDirectory" runat="server">
             <ItemTemplate>
-                <button type="button" class="listing-card listing-card-button"
-                    data-directoryid='<%# Eval("DirectoryId") %>'
+                <button type="button" class="listing-card listing-card-button negosyo-card"
+                    data-negosyoid='<%# Eval("NegosyoId") %>'
                     data-name='<%# EncodeAttr(Eval("BusinessName")) %>'
                     data-category='<%# EncodeAttr(Eval("Category")) %>'
                     data-barangay='<%# EncodeAttr(Eval("Barangay")) %>'
                     data-exact-address='<%# EncodeAttr(Eval("AddressLine")) %>'
-                    data-tags='<%# EncodeAttr(Eval("Tags")) %>'
+                    data-tags='<%# EncodeAttr(GetDisplayTags(Eval("Tags"))) %>'
                     data-owner='<%# EncodeAttr(GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay"))) %>'
                     data-contact='<%# EncodeAttr(Eval("ContactNumber")) %>'
-                    data-status='<%# EncodeAttr(Eval("Status")) %>'
                     data-map='<%# EncodeAttr(Eval("MapEmbedUrl")) %>'
                     data-icon-class='<%# EncodeAttr(GetCategoryIconClass(Eval("Category"))) %>'
-                    data-icon-style='<%# EncodeAttr(GetCategoryIconStyle(Eval("Category"))) %>'
                     data-badge-class='<%# EncodeAttr(GetCategoryBadgeClass(Eval("Category"))) %>'
                     data-search='<%# BuildSearchText(Eval("BusinessName"), Eval("Tags"), Eval("Barangay"), Eval("Category"), Eval("AddressLine"), Eval("OwnerDisplay")) %>'
                     data-days='<%# EncodeAttr(GetDaysPart(Eval("Hours"))) %>'
                     data-time='<%# EncodeAttr(GetTimePart(Eval("Hours"))) %>'
+                    data-status='<%# EncodeAttr(GetDynamicStatus(Eval("Hours"))) %>'
                     data-address-full='<%# EncodeAttr(GetAddressValue(Eval("AddressLine"), Eval("Barangay"))) %>'>
                     <div class="listing-top">
-                        <div class="listing-icon" style='<%# GetCategoryIconStyle(Eval("Category")) %>'>
+                        <div class="listing-icon" data-category='<%# Eval("Category") %>'>
                             <i class='bx <%# GetCategoryIconClass(Eval("Category")) %>'></i>
                         </div>
-                        <span class='badge <%# GetCategoryBadgeClass(Eval("Category")) %>'><%# Eval("Category") %></span>
+                        <span class='badge <%# GROUP6_ANGAT.DisplayHelper.GetStatusClass(GetDynamicStatus(Eval("Hours"))) %>'><%# GetDynamicStatus(Eval("Hours")) %></span>
                     </div>
-                    <h4><%# Eval("BusinessName") %></h4>
+                    <h4 style="flex:0 0 auto; min-height:0; margin-bottom:5px;"><%# Eval("BusinessName") %></h4>
                     <p class="listing-company"><i class='bx bx-map'></i> <%# GetDisplayLocation(null, Eval("Barangay")) %></p>
                     <div class="listing-tags">
                         <asp:Literal ID="litHours" runat="server" Mode="PassThrough" Text='<%# GetHoursBadge(Eval("Hours")) %>' />
-                        <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
+                        <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(GetDisplayTags(Eval("Tags")), Eval("Category")) %>' />
                     </div>
                     <div class="listing-footer">
-                        <span class="listing-pay" style="font-size: 0.85rem; color: #475569;">
+                        <span class="listing-pay" style="white-space:nowrap;">
                             <i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay")) %>
                         </span>
-                        <span class="listing-date" style='<%# GetStatusStyle(Eval("Hours")) %>'>
-                            <%# GetDynamicStatus(Eval("Hours")) %>
+                        <span style="white-space:nowrap; flex-shrink:0;">
+                            <i class='bx bx-time-five'></i> <%# GetTimePart(Eval("Hours")) %>
                         </span>
                     </div>
                 </button>
@@ -194,22 +193,26 @@
                 const containers = document.querySelectorAll('.listing-tags');
                 containers.forEach(container => {
                     const badges = Array.from(container.querySelectorAll('.badge:not(.more-badge)'));
-                    if (badges.length === 0) return;
-                    badges.forEach(b => b.style.display = '');
+                    const tagBadges = badges.filter(b => !b.classList.contains('hours-badge'));
                     const existingMore = container.querySelector('.more-badge');
                     if (existingMore) existingMore.remove();
+                    if (badges.length === 0) return;
+
+                    tagBadges.forEach(b => b.style.display = '');
+                    if (tagBadges.length === 0) return;
+
                     let hiddenCount = 0;
-                    const firstBadgeTop = badges[0].offsetTop;
-                    badges.forEach(badge => {
-                        if (badge.offsetTop > firstBadgeTop) {
+                    const firstRowTop = Math.min.apply(null, badges.map(b => b.offsetTop));
+                    tagBadges.forEach(badge => {
+                        if (badge.offsetTop > firstRowTop) {
                             badge.style.display = 'none';
                             hiddenCount++;
                         }
                     });
                     if (hiddenCount > 0) {
                         const moreLabel = document.createElement('span');
-                        moreLabel.className = 'more-badge';
-                        moreLabel.innerText = `+${hiddenCount} more`;
+                        moreLabel.className = 'badge more-badge';
+                        moreLabel.innerText = `+${hiddenCount}`;
                         container.appendChild(moreLabel);
                     }
                 });
@@ -224,15 +227,15 @@
                     const mq = !q || (c.dataset.search || '').toLowerCase().includes(q);
                     const mc = cat === 'All' || (c.dataset.category || '') === cat;
 
-                    const statusText = (c.querySelector('.listing-date')?.textContent || '').trim().toLowerCase();
+                    const statusText = (c.dataset.status || '').trim().toLowerCase();
                     const ms = sort !== 'open' || statusText === 'bukas ngayon';
 
                     return mq && mc && ms;
                 });
 
                 filtered.sort((a, b) => {
-                    const aId = parseInt(a.dataset.directoryid || '0', 10);
-                    const bId = parseInt(b.dataset.directoryid || '0', 10);
+                    const aId = parseInt(a.dataset.negosyoid || '0', 10);
+                    const bId = parseInt(b.dataset.negosyoid || '0', 10);
                     return bId - aId;
                 });
 
@@ -291,18 +294,34 @@
             const tagsWrap = modal.querySelector('#bizTags');
 
             function getTagClass(tag, category) {
-                var t = (tag || '').toLowerCase(); var cat = (category || '').toLowerCase();
-                if (t.includes('gcash')) return 'tag-teal';
-                if (t.includes('pick-up') || t.includes('delivery')) return 'tag-blue';
-                return 'tag-teal';
+                var t = (tag || '').toLowerCase().trim();
+                var cat = (category || '').toLowerCase().trim();
+                if (t.includes("urgent")) return "tag-rose";
+                if (t.includes("full-time")) return "tag-fulltime";
+                if (t.includes("part-time")) return "tag-parttime";
+                if (t.includes("weekday") || t.includes("weekdays") || t.includes("weekend") || t.includes("weekends") || t.includes("flexible")) return "tag-blue";
+                if (t.includes("experienced") || t.includes("may karanasan") || t.includes("licensed") || t.includes("pisikal") || t.includes("driver's license") || t.includes("nbi") || t.includes("with tools")) return "tag-amber";
+                if (t.includes("repair") || t.includes("install") || t.includes("wiring") || t.includes("cleaning") || t.includes("maintenance") || t.includes("gawa sa order") || t.includes("custom")) return "tag-teal";
+                if (t.includes("emergency")) return "tag-rose";
+                if (t.includes("gcash")) return "tag-teal";
+                if (t.includes("pick-up") || t.includes("takeout") || t.includes("delivery") || t.includes("dine-in")) return "tag-blue";
+                if (cat.includes("karpintero")) return "tag-amber";
+                if (cat.includes("tubero")) return "tag-blue";
+                if (cat.includes("electric")) return "tag-teal";
+                if (cat.includes("aircon") || cat.includes("appliance")) return "tag-mint";
+                if (cat.includes("mananahi")) return "tag-rose";
+                if (cat.includes("kasambahay") || cat.includes("labandera")) return "tag-violet";
+                if (cat.includes("driver")) return "tag-blue";
+                if (cat.includes("carinderia") || cat.includes("sari-sari")) return "tag-amber";
+                return "tag-teal";
             }
 
             function openModal(card) {
                 modal.querySelector('#bizName').textContent = card.dataset.name;
                 modal.querySelector('#bizOwner').textContent = card.dataset.owner;
 
-                // Grabs the "Bukas Ngayon" or "Sarado Ngayon" text directly from the card
-                const statusText = card.querySelector('.listing-date').textContent.trim();
+                // Uses computed status from data attributes
+                const statusText = (card.dataset.status || '').trim();
                 const bizStatusEl = modal.querySelector('#bizStatus');
                 bizStatusEl.textContent = statusText;
 
@@ -321,7 +340,7 @@
                 badge.className = 'badge ' + card.dataset.badgeClass;
 
                 const iconWrap = modal.querySelector('#bizIcon');
-                iconWrap.style.cssText = 'width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;' + card.dataset.iconStyle;
+                iconWrap.setAttribute('data-category', category || '');
                 modal.querySelector('#bizIconI').className = 'bx ' + card.dataset.iconClass;
 
                 tagsWrap.innerHTML = '';
@@ -345,3 +364,4 @@
         })();
     </script>
 </asp:Content>
+

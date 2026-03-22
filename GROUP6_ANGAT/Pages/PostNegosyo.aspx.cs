@@ -114,7 +114,7 @@ namespace GROUP6_ANGAT {
                 // ── UPDATE ──
                 using (SqlConnection conn = new SqlConnection(connString))
                 using (SqlCommand cmd = new SqlCommand(@"
-            UPDATE DirectoryBusinesses SET
+            UPDATE Negosyo SET
                 BusinessName  = @BusinessName,
                 Category      = @Category,
                 Barangay      = @Barangay,
@@ -124,7 +124,7 @@ namespace GROUP6_ANGAT {
                 Hours         = @Hours,
                 Tags          = @Tags,
                 MapEmbedUrl   = @MapEmbedUrl
-            WHERE DirectoryId = @DirectoryId AND UserId = @UserId", conn))
+            WHERE NegosyoId = @NegosyoId AND UserId = @UserId", conn))
                 {
                     cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
                     cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
@@ -135,7 +135,7 @@ namespace GROUP6_ANGAT {
                     cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
                     cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
                     cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
-                    cmd.Parameters.Add("@DirectoryId", SqlDbType.Int).Value = editId;
+                    cmd.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = editId;
                     cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
 
                     try { conn.Open(); cmd.ExecuteNonQuery(); }
@@ -149,7 +149,7 @@ namespace GROUP6_ANGAT {
                 // ── INSERT ──
                 using (SqlConnection conn = new SqlConnection(connString))
                 using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO DirectoryBusinesses
+                INSERT INTO Negosyo
                     (BusinessName, Category, Barangay, AddressLine, OwnerName, ContactNumber,
                      Hours, Tags, MapEmbedUrl, Status, IsActive, CreatedAt, UserId)
                 VALUES
@@ -175,17 +175,17 @@ namespace GROUP6_ANGAT {
             }
         }
         // for updating in profile page
-        private void LoadExistingNegosyo(string directoryId)
+        private void LoadExistingNegosyo(string NegosyoId)
         {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
         SELECT BusinessName, Category, Barangay, AddressLine, OwnerName,
                ContactNumber, Hours, Tags, MapEmbedUrl
-        FROM DirectoryBusinesses
-        WHERE DirectoryId = @DirectoryId AND UserId = @UserId", conn))
+        FROM Negosyo
+        WHERE NegosyoId = @NegosyoId AND UserId = @UserId", conn))
             {
-                cmd.Parameters.AddWithValue("@DirectoryId", directoryId);
+                cmd.Parameters.AddWithValue("@NegosyoId", NegosyoId);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())

@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Configuration;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Web;
 
@@ -20,10 +21,10 @@ namespace GROUP6_ANGAT.Pages {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                SELECT d.DirectoryId, d.BusinessName, d.Category, d.Barangay, d.AddressLine, 
+                SELECT d.NegosyoId, d.BusinessName, d.Category, d.Barangay, d.AddressLine, 
                        d.OwnerName, d.ContactNumber, d.MapEmbedUrl, d.Hours, d.Tags, d.Status,
                        COALESCE(NULLIF(LTRIM(RTRIM(d.OwnerName)), ''), u.FullName) AS OwnerDisplay
-                FROM DirectoryBusinesses d
+                FROM Negosyo d
                 LEFT JOIN Users u ON d.UserId = u.UserId
                 WHERE d.IsActive = 1
                 ORDER BY d.CreatedAt DESC", conn)) {
@@ -35,9 +36,43 @@ namespace GROUP6_ANGAT.Pages {
             }
         }
 
+        private string NormalizeDaysLabel(string raw) {
+            if (string.IsNullOrWhiteSpace(raw)) return raw ?? "";
+            string value = raw.Trim();
+            string lower = value.ToLowerInvariant();
+            bool isWeekends = lower.Contains("weekends");
+            bool isWeekdays = lower.Contains("weekdays");
+            int openIdx = value.IndexOf('(');
+            int closeIdx = value.IndexOf(')');
+            if ((isWeekends || isWeekdays) && openIdx >= 0 && closeIdx > openIdx) {
+                return value.Substring(openIdx + 1, closeIdx - openIdx - 1).Trim();
+            }
+            if (isWeekends && value.StartsWith("Weekends", StringComparison.OrdinalIgnoreCase)) {
+                return value.Substring("Weekends".Length).Trim();
+            }
+            if (isWeekdays && value.StartsWith("Weekdays", StringComparison.OrdinalIgnoreCase)) {
+                return value.Substring("Weekdays".Length).Trim();
+            }
+            return value;
+        }
+
+        protected string GetDisplayTags(object tagsObj) {
+            string tags = (tagsObj ?? "").ToString();
+            if (string.IsNullOrWhiteSpace(tags)) return "";
+            string[] parts = tags.Split('|');
+            var cleaned = new List<string>();
+            foreach (var part in parts) {
+                string value = NormalizeDaysLabel(part);
+                value = (value ?? "").Trim();
+                if (value.Length > 0) cleaned.Add(value);
+            }
+            return string.Join("|", cleaned.ToArray());
+        }
+
         protected string GetDaysPart(object hoursObj) {
             string h = (hoursObj ?? "").ToString();
-            return h.Contains("|") ? h.Split('|')[0].Trim() : h;
+            string raw = h.Contains("|") ? h.Split('|')[0].Trim() : h;
+            return NormalizeDaysLabel(raw);
         }
 
         protected string GetTimePart(object hoursObj) {
@@ -71,9 +106,14 @@ namespace GROUP6_ANGAT.Pages {
             if (string.IsNullOrEmpty(h)) return "";
             if (h.Contains("|")) {
                 var p = h.Split('|');
-                return $"<span class='badge badge-teal'><i class='bx bx-calendar'></i> {p[0].Trim()}</span> <span class='badge badge-blue'><i class='bx bx-time-five'></i> {p[1].Trim()}</span>";
+                string rawDays = p[0].Trim();
+                string displayDays = NormalizeDaysLabel(rawDays);
+                string timePart = p[1].Trim();
+                string daysCss = GROUP6_ANGAT.DisplayHelper.GetTagCss(rawDays, null);
+                string timeCss = GROUP6_ANGAT.DisplayHelper.GetTagCss("weekdays", null);
+                return $"<span class='badge {daysCss} hours-badge'><i class='bx bx-calendar'></i> {displayDays}</span> <span class='badge {timeCss} hours-badge'><i class='bx bx-time-five'></i> {timePart}</span>";
             }
-            return $"<span class='badge badge-blue'><i class='bx bx-time-five'></i> {h}</span>";
+            return $"<span class='badge tag-blue hours-badge'><i class='bx bx-time-five'></i> {NormalizeDaysLabel(h)}</span>";
         }
 
         protected string GetCategoryIconClass(object catObj) {
@@ -84,7 +124,9 @@ namespace GROUP6_ANGAT.Pages {
         }
 
         protected string GetCategoryIconStyle(object catObj) => "color: #0d9e6e; background: #e6f7f1;";
-        protected string GetCategoryBadgeClass(object catObj) => "badge-teal";
+        protected string GetCategoryBadgeClass(object catObj) {
+            return GROUP6_ANGAT.DisplayHelper.GetTagCss(catObj?.ToString(), null);
+        }
         protected string GetDynamicStatus(object hoursObj) {
             string hours = (hoursObj ?? "").ToString().Trim();
             if (string.IsNullOrWhiteSpace(hours) || !hours.Contains("|")) return "Status Unknown";
@@ -147,3 +189,4 @@ namespace GROUP6_ANGAT.Pages {
         }
     }
 }
+

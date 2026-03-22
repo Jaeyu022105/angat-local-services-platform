@@ -1,4 +1,4 @@
-<%@ Page Title="Profile" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Profile.aspx.cs" Inherits="GROUP6_ANGAT.Profile" MaintainScrollPositionOnPostback="true" %>
+ï»¿<%@ Page Title="Profile" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Profile.aspx.cs" Inherits="GROUP6_ANGAT.Profile" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -152,7 +152,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -214,7 +214,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -247,7 +247,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -310,7 +310,7 @@
                                     </span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -345,7 +345,7 @@
                                     <asp:Literal ID="litStatus" runat="server" />
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta" style="display:flex; justify-content:space-between; gap:8px;">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -428,7 +428,7 @@
                                     <span class="app-status deleted">Deleted</span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
@@ -461,7 +461,7 @@
                                     <asp:Literal ID="litServiceStatus" runat="server" />
                                 </div>
                                 <p class="app-location" style="margin:0;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -540,7 +540,7 @@
                                     <span class="app-status deleted">Deleted</span>
                                 </div>
                                 <p class="app-location" style="margin:0; color:#94a3b8;">
-                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biï¿½an
                                 </p>
                                 <div class="app-meta">
                                     <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
@@ -586,7 +586,7 @@
                                 </p>
                                 <div class="app-actions">
                                     <div class="app-actions" style="gap:8px;">
-                                        <a href='<%# "/Pages/PostNegosyo.aspx?edit=" + Eval("DirectoryId") %>' 
+                                        <a href='<%# "/Pages/PostNegosyo.aspx?edit=" + Eval("NegosyoId") %>' 
                                            class="btn-outline app-retract" 
                                            style="text-decoration:none; display:inline-block;">
                                             I-edit
@@ -594,7 +594,7 @@
                                         <asp:LinkButton ID="btnDeleteBusinessListing" runat="server"
                                             CssClass="btn-outline app-retract"
                                             CommandName="DeleteBusinessListing"
-                                            CommandArgument='<%# Eval("DirectoryId") %>'>
+                                            CommandArgument='<%# Eval("NegosyoId") %>'>
                                             I-delete
                                         </asp:LinkButton>
                                     </div>
@@ -718,4 +718,5 @@
         });
     </script>
 </asp:Content>
+
 

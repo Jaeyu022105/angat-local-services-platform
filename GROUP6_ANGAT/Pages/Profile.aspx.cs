@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -263,9 +263,9 @@ namespace GROUP6_ANGAT {
 
                 // Active listings
                 using (SqlCommand cmd = new SqlCommand(@"
-            SELECT DirectoryId, BusinessName, Category, Barangay, AddressLine,
+            SELECT NegosyoId, BusinessName, Category, Barangay, AddressLine,
                    Tags, Status, CreatedAt, ContactNumber
-            FROM DirectoryBusinesses
+            FROM Negosyo
             WHERE UserId = @UserId AND IsActive = 1
             ORDER BY CreatedAt DESC", conn))
                 {
@@ -281,9 +281,9 @@ namespace GROUP6_ANGAT {
 
                 // Deleted listings
                 using (SqlCommand cmd = new SqlCommand(@"
-            SELECT DirectoryId, BusinessName, Category, Barangay, AddressLine,
+            SELECT NegosyoId, BusinessName, Category, Barangay, AddressLine,
                    Tags, Status, CreatedAt, ContactNumber
-            FROM DirectoryBusinesses
+            FROM Negosyo
             WHERE UserId = @UserId AND IsActive = 0
             ORDER BY CreatedAt DESC", conn))
                 {
@@ -297,7 +297,7 @@ namespace GROUP6_ANGAT {
             }
         }
         // =============================================
-        // ITEM DATA BOUND — load nested applicants
+        // ITEM DATA BOUND ï¿½ load nested applicants
         // =============================================
         protected void RptMyListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -326,7 +326,7 @@ namespace GROUP6_ANGAT {
                 LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
         }
         // ========================================================================
-        // ITEM DATA BOUND — For service listings, load nested requesters
+        // ITEM DATA BOUND ï¿½ For service listings, load nested requesters
         // ========================================================================
         protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -666,9 +666,9 @@ namespace GROUP6_ANGAT {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                UPDATE DirectoryBusinesses SET IsActive = 0
-                WHERE DirectoryId = @DirectoryId AND UserId = @UserId", conn)) {
-                cmd.Parameters.AddWithValue("@DirectoryId", e.CommandArgument);
+                UPDATE Negosyo SET IsActive = 0
+                WHERE NegosyoId = @NegosyoId AND UserId = @UserId", conn)) {
+                cmd.Parameters.AddWithValue("@NegosyoId", e.CommandArgument);
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
                 int rows = cmd.ExecuteNonQuery();
@@ -929,7 +929,7 @@ namespace GROUP6_ANGAT {
         // HELPERS
         // =============================================
         protected string FormatTags(object tagsObj) {
-            return tagsObj == null ? "" : tagsObj.ToString().Replace("|", " • ");
+            return tagsObj == null ? "" : tagsObj.ToString().Replace("|", " ï¿½ ");
         }
 
         protected string GetPayLabel(object minObj, object maxObj, object rateObj) {
