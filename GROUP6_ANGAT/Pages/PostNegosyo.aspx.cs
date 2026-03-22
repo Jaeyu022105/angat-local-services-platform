@@ -45,6 +45,11 @@ namespace GROUP6_ANGAT
                 return;
             }
 
+            if (!Page.IsValid)
+            {
+                return;
+            }
+
             string name = (txtBusinessName.Text ?? "").Trim();
             string category = ddlCategory.SelectedValue;
             string barangay = (txtBarangay.Text ?? "").Trim();

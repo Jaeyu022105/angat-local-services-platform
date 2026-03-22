@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Livelihood Directory" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Negosyo.aspx.cs" Inherits="GROUP6_ANGAT.Pages.Directory" %>
+﻿<%@ Page Title="Negosyo" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Negosyo.aspx.cs" Inherits="GROUP6_ANGAT.Pages.Directory" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     
@@ -25,7 +25,7 @@
         <div class="quick-card">
             <div class="quick-icon"><i class='bx bx-store'></i></div>
             <div>
-                <h5>60+ Negosyo</h5>
+                <h5><asp:Label ID="lblDirectoryCountHero" runat="server" ClientIDMode="Static" Text="0" /> Negosyo</h5>
                 <p>Mga lokal na tindahan at serbisyo sa Biñan.</p>
             </div>
         </div>
@@ -70,7 +70,8 @@
         <div class="section-header left" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
                 <h3>Ating Mga <span>Tindahan</span></h3>
-                <p class="section-sub">Mayroong 60+ na lokal na negosyo ang nakarehistro ngayon.</p>
+                <p id="dirDirectorySubtext" class="section-sub">Tuklasin ang mga lokal na negosyong bukas at aktibo sa Biñan.</p>
+
             </div>
             <div style="display:flex; gap: 10px;">
                 <a href="/Pages/PostNegosyo.aspx" class="btn-outline" style="padding: 8px 16px;"><i class='bx bx-plus'></i> I-rehistro ang Negosyo</a>
@@ -113,9 +114,8 @@
             </asp:Repeater>
         </div>
         
-        <div style="text-align:center; margin-top: 40px;">
-            <button class="btn-outline js-coming-soon" data-msg="Wala pang dagdag na negosyo ngayon.">Mag-load ng iba pang negosyo <i class='bx bx-chevron-down'></i></button>
-        </div>
+        <div id="dirPagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:40px; flex-wrap:wrap;"></div>
+
     </div>
 
     <%-- BUSINESS MODAL --%>
@@ -123,18 +123,20 @@
         <div class="job-modal-backdrop"></div>
         <div class="job-modal-card">
             <button type="button" class="job-modal-close job-modal-close-icon" aria-label="Isara">✕</button>
-
+            <%-- fixed space --%>
             <div class="job-modal-header">
-                <div id="bizIcon" class="listing-icon" style="margin-right:6px;">
+                <div id="bizIcon" class="listing-icon" style="width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; flex-shrink:0;">
                     <i id="bizIconI" class='bx'></i>
                 </div>
-                <div>
-                    <h4 id="bizName" style="margin:0;"></h4>
-                    <span id="bizCategory" class="badge"></span>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <h4 id="bizName" style="margin:0; font-size:1.3rem; line-height:1.2;"></h4>
+                    <div>
+                        <span id="bizCategory" class="badge"></span>
+                    </div>
                 </div>
             </div>
-
-            <p id="bizOwner" class="job-meta"></p>
+            <p id="bizOwner" class="job-meta" style="font-size:1rem; font-weight:600; color:var(--text); margin: 0 0 14px 0;"></p>
+            
 
             <div class="modal-info-grid">
                 <div class="modal-info-item">
@@ -146,7 +148,7 @@
                     <span class="modal-info-value" id="bizContact"></span>
                 </div>
             </div>
-
+            <div id="bizTags" class="job-tags"></div>
             <div class="modal-desc-block">
                 <span class="modal-info-label">Google Map</span>
                 <div id="bizMapWrap" style="margin-top:8px; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
@@ -154,6 +156,7 @@
                         style="width:100%; height:220px; border:0;" allowfullscreen
                         referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
+                
                 <p id="bizMapEmpty" class="job-meta" style="margin-top:8px;">Walang map link.</p>
             </div>
 
@@ -167,20 +170,98 @@
             const searchInput = document.getElementById('dirSearch');
             const categorySelect = document.getElementById('dirCategory');
             const filterBtn = document.getElementById('dirFilterBtn');
-            const cards = Array.from(document.querySelectorAll('#dirListings .listing-card'));
+            const cards = Array.from(document.querySelectorAll('#dirListings .listing-card-button'));
+            const heroCount = document.getElementById('lblDirectoryCountHero');
+            const directorySubtext = document.getElementById('dirDirectorySubtext');
+            const paginationWrap = document.getElementById('dirPagination');
 
-            function applyFilter() {
-                const q = (searchInput.value || '').toLowerCase();
+            const pageSize = 8;
+            let currentPage = 1;
+
+            function updateDirectoryCount() {
+                const totalCount = cards.length;
+
+                if (heroCount) {
+                    heroCount.textContent = totalCount;
+                }
+
+                if (directorySubtext) {
+                    directorySubtext.textContent = 'Tuklasin ang mga lokal na negosyong bukas at aktibo sa Biñan.';
+                }
+            }
+
+            function getFilteredCards() {
+                const q = (searchInput.value || '').toLowerCase().trim();
                 const cat = categorySelect.value;
 
-                cards.forEach(card => {
+                return cards.filter(function (card) {
                     const text = (card.dataset.search || '').toLowerCase();
                     const category = card.dataset.category || '';
                     const matchQ = !q || text.includes(q);
                     const matchCat = cat === 'All' || category === cat;
-                    card.style.display = (matchQ && matchCat) ? '' : 'none';
+                    return matchQ && matchCat;
                 });
             }
+
+            function renderPagination(totalPages) {
+                if (!paginationWrap) return;
+
+                paginationWrap.innerHTML = '';
+
+                if (totalPages <= 1) {
+                    return;
+                }
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = i;
+                    btn.className = 'btn-outline';
+                    btn.style.padding = '8px 14px';
+
+                    if (i === currentPage) {
+                        btn.style.background = 'var(--primary)';
+                        btn.style.color = '#fff';
+                        btn.style.borderColor = 'var(--primary)';
+                    }
+
+                    btn.addEventListener('click', function () {
+                        currentPage = i;
+                        renderPage();
+                    });
+
+                    paginationWrap.appendChild(btn);
+                }
+            }
+
+            function renderPage() {
+                const filteredCards = getFilteredCards();
+                const totalPages = Math.max(1, Math.ceil(filteredCards.length / pageSize));
+                const start = (currentPage - 1) * pageSize;
+                const end = start + pageSize;
+
+                if (currentPage > totalPages) {
+                    currentPage = 1;
+                }
+
+                cards.forEach(function (card) {
+                    card.style.display = 'none';
+                });
+
+                filteredCards.slice(start, end).forEach(function (card) {
+                    card.style.display = '';
+                });
+
+                renderPagination(totalPages);
+            }
+
+            function applyFilter() {
+                currentPage = 1;
+                renderPage();
+            }
+
+            updateDirectoryCount();
+            renderPage();
 
             filterBtn.addEventListener('click', applyFilter);
             searchInput.addEventListener('keyup', applyFilter);
@@ -197,6 +278,7 @@
             const categoryBadge = modal.querySelector('#bizCategory');
             const iconWrap = modal.querySelector('#bizIcon');
             const iconI = modal.querySelector('#bizIconI');
+            const tagsWrap = modal.querySelector('#bizTags');
 
             function buildEmbedUrl(mapUrl, address) {
                 const addr = (address || '').trim();
@@ -250,8 +332,14 @@
                 categoryBadge.textContent = category;
                 categoryBadge.className = 'badge ' + (card.dataset.badgeClass || 'badge-teal');
 
-                iconWrap.style.cssText = card.dataset.iconStyle || '';
+                iconWrap.style.cssText = 'width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.9rem; flex-shrink:0; ' + (card.dataset.iconStyle || '');
                 iconI.className = 'bx ' + (card.dataset.iconClass || 'bx-store');
+                iconI.style.fontSize = '1.9rem';
+
+                const sourceTags = card.querySelector('.listing-tags');
+                if (tagsWrap) {
+                    tagsWrap.innerHTML = sourceTags ? sourceTags.innerHTML : '';
+                }
 
                 const mapUrl = card.dataset.map || '';
                 const embedUrl = buildEmbedUrl(mapUrl, card.dataset.address || '');
@@ -273,6 +361,9 @@
                 modal.classList.remove('open');
                 document.body.classList.remove('modal-open');
                 mapFrame.src = '';
+                if (tagsWrap) {
+                    tagsWrap.innerHTML = '';
+                }
             }
 
             document.querySelectorAll('#dirListings .listing-card-button').forEach(function (card) {
@@ -285,5 +376,8 @@
                 if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
             });
         })();
+
+
+
     </script>
 </asp:Content>
