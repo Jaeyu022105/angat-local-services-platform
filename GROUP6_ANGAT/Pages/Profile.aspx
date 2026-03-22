@@ -565,9 +565,9 @@
                         <ItemTemplate>
                             <div class="app-card"
                                 style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("BusinessName") %></h4>
-                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+                                    <h4 style="font-size:0.85rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("BusinessName") %></h4>
+                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>" style="white-space:nowrap; flex-shrink:0; font-size:0.75rem; padding:5px 12px;">
                                         <%# Eval("Status") %>
                                     </span>
                                 </div>
@@ -583,12 +583,19 @@
                                     <i class='bx bx-phone'></i> <%# GetBusinessContact(Eval("ContactNumber")) %>
                                 </p>
                                 <div class="app-actions">
-                                    <asp:LinkButton ID="btnDeleteBusinessListing" runat="server"
-                                        CssClass="btn-outline app-retract"
-                                        CommandName="DeleteBusinessListing"
-                                        CommandArgument='<%# Eval("DirectoryId") %>'>
-                                        I-delete
-                                    </asp:LinkButton>
+                                    <div class="app-actions" style="gap:8px;">
+                                        <a href='<%# "/Pages/PostNegosyo.aspx?edit=" + Eval("DirectoryId") %>' 
+                                           class="btn-outline app-retract" 
+                                           style="text-decoration:none; display:inline-block;">
+                                            I-edit
+                                        </a>
+                                        <asp:LinkButton ID="btnDeleteBusinessListing" runat="server"
+                                            CssClass="btn-outline app-retract"
+                                            CommandName="DeleteBusinessListing"
+                                            CommandArgument='<%# Eval("DirectoryId") %>'>
+                                            I-delete
+                                        </asp:LinkButton>
+                                    </div>
                                 </div>
                             </div>
                         </ItemTemplate>

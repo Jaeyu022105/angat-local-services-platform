@@ -10,27 +10,38 @@ using System.Linq;
 
 namespace GROUP6_ANGAT {
     public partial class PostNegosyo : System.Web.UI.Page {
-        protected void Page_Load(object sender, EventArgs e) {
-            if (Session["UserId"] == null) {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (Session["UserId"] == null)
+            {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/PostNegosyo.aspx");
                 return;
             }
-
-            if (!IsPostBack) {
-                if (!IsUserRole()) {
+            if (!IsPostBack)
+            {
+                if (!IsUserRole())
+                {
                     ShowMessage("error", "Ang page na ito ay para sa mga USERS lamang.");
                     btnPostNegosyo.Enabled = false;
                     return;
                 }
-
                 PopulateHourDropdowns();
 
-                if (Session["UserName"] != null)
-                    txtOwnerName.Text = Session["UserName"].ToString();
+                // ADD THESE 3 LINES
+                string editId = Request.QueryString["edit"];
+                if (!string.IsNullOrEmpty(editId))
+                    LoadExistingNegosyo(editId);
 
-                if (Session["UserPhone"] != null) {
-                    txtContactNumber.Text = Session["UserPhone"].ToString();
-                    lblPhoneHint.Text = "Ginagamit ang inyong registered na number. Pwede mo itong baguhin.";
+                // Only pre-fill name/phone if NOT editing
+                if (string.IsNullOrEmpty(editId))
+                {
+                    if (Session["UserName"] != null)
+                        txtOwnerName.Text = Session["UserName"].ToString();
+                    if (Session["UserPhone"] != null)
+                    {
+                        txtContactNumber.Text = Session["UserPhone"].ToString();
+                        lblPhoneHint.Text = "Ginagamit ang inyong registered na number. Pwede mo itong baguhin.";
+                    }
                 }
             }
         }
@@ -52,13 +63,16 @@ namespace GROUP6_ANGAT {
             ddlCloseHour.SelectedValue = "10:00 PM";
         }
 
-        protected void BtnPostNegosyo_Click(object sender, EventArgs e) {
-            if (Session["UserId"] == null) {
+        protected void BtnPostNegosyo_Click(object sender, EventArgs e)
+        {
+            if (Session["UserId"] == null)
+            {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/PostNegosyo.aspx");
                 return;
             }
 
-            if (!IsUserRole()) {
+            if (!IsUserRole())
+            {
                 ShowMessage("error", "Ang page na ito ay para sa mga USERS lamang.");
                 return;
             }
@@ -81,7 +95,8 @@ namespace GROUP6_ANGAT {
             if (string.IsNullOrEmpty(category)) { ShowMessage("error", "Pakiusap piliin ang Kategorya."); return; }
             if (string.IsNullOrEmpty(barangay)) { ShowMessage("error", "Pakiusap piliin ang Barangay."); return; }
             if (string.IsNullOrEmpty(address) || address.Length < 5) { ShowMessage("error", "Pakiusap ilagay ang eksaktong address ng negosyo."); return; }
-            if (string.IsNullOrEmpty(contact)) {
+            if (string.IsNullOrEmpty(contact))
+            {
                 contact = Session["UserPhone"]?.ToString() ?? "";
                 if (string.IsNullOrEmpty(contact)) { ShowMessage("error", "Pakiusap ilagay ang Contact Number."); return; }
             }
@@ -91,35 +106,128 @@ namespace GROUP6_ANGAT {
 
             if (string.IsNullOrEmpty(ownerName))
                 ownerName = Session["UserName"]?.ToString() ?? "";
-
-            // ── INSERT ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
+            string editId = Request.QueryString["edit"];
+
+            if (!string.IsNullOrEmpty(editId))
+            {
+                // ── UPDATE ──
+                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(@"
+            UPDATE DirectoryBusinesses SET
+                BusinessName  = @BusinessName,
+                Category      = @Category,
+                Barangay      = @Barangay,
+                AddressLine   = @AddressLine,
+                OwnerName     = @OwnerName,
+                ContactNumber = @ContactNumber,
+                Hours         = @Hours,
+                Tags          = @Tags,
+                MapEmbedUrl   = @MapEmbedUrl
+            WHERE DirectoryId = @DirectoryId AND UserId = @UserId", conn))
+                {
+                    cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
+                    cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
+                    cmd.Parameters.Add("@Barangay", SqlDbType.NVarChar, 60).Value = barangay;
+                    cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
+                    cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
+                    cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
+                    cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
+                    cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
+                    cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
+                    cmd.Parameters.Add("@DirectoryId", SqlDbType.Int).Value = editId;
+                    cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
+
+                    try { conn.Open(); cmd.ExecuteNonQuery(); }
+                    catch (SqlException) { ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit."); return; }
+                }
+                Response.Redirect("~/Pages/Profile.aspx?tab=businesslistings");
+
+            }
+            else
+            {
+                // ── INSERT ──
+                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO DirectoryBusinesses
                     (BusinessName, Category, Barangay, AddressLine, OwnerName, ContactNumber,
                      Hours, Tags, MapEmbedUrl, Status, IsActive, CreatedAt, UserId)
                 VALUES
                     (@BusinessName, @Category, @Barangay, @AddressLine, @OwnerName, @ContactNumber,
-                     @Hours, @Tags, @MapEmbedUrl, 'Bukas Ngayon', 1, GETDATE(), @UserId)", conn)) {
-                cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
-                cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
-                cmd.Parameters.Add("@Barangay", SqlDbType.NVarChar, 60).Value = barangay;
-                cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
-                cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
-                cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
-                cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
-                cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
-                cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
-                cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
+                     @Hours, @Tags, @MapEmbedUrl, 'Bukas Ngayon', 1, GETDATE(), @UserId)", conn))
+                {
+                    cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
+                    cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
+                    cmd.Parameters.Add("@Barangay", SqlDbType.NVarChar, 60).Value = barangay;
+                    cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
+                    cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
+                    cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
+                    cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
+                    cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
+                    cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
+                    cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
 
-                try { conn.Open(); cmd.ExecuteNonQuery(); }
-                catch (SqlException) { ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit."); return; }
+                    try { conn.Open(); cmd.ExecuteNonQuery(); }
+                    catch (SqlException) { ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit."); return; }
+                }
+
+                Response.Redirect("~/Pages/Negosyo.aspx?posted=success");
             }
-
-            Response.Redirect("~/Pages/Negosyo.aspx?posted=success");
         }
+        // for updating in profile page
+        private void LoadExistingNegosyo(string directoryId)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand cmd = new SqlCommand(@"
+        SELECT BusinessName, Category, Barangay, AddressLine, OwnerName,
+               ContactNumber, Hours, Tags, MapEmbedUrl
+        FROM DirectoryBusinesses
+        WHERE DirectoryId = @DirectoryId AND UserId = @UserId", conn))
+            {
+                cmd.Parameters.AddWithValue("@DirectoryId", directoryId);
+                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        txtBusinessName.Text = reader["BusinessName"].ToString();
+                        txtAddressLine.Text = reader["AddressLine"].ToString();
+                        txtOwnerName.Text = reader["OwnerName"].ToString();
+                        txtContactNumber.Text = reader["ContactNumber"].ToString();
+                        txtMapEmbedUrl.Text = reader["MapEmbedUrl"].ToString();
+                        hfTags.Value = reader["Tags"].ToString();
 
+                        // Set category dropdown
+                        if (ddlCategory.Items.FindByValue(reader["Category"].ToString()) != null)
+                            ddlCategory.SelectedValue = reader["Category"].ToString();
+
+                        // Set barangay dropdown
+                        if (ddlBarangay.Items.FindByValue(reader["Barangay"].ToString()) != null)
+                            ddlBarangay.SelectedValue = reader["Barangay"].ToString();
+
+                        // Parse hours — format is "Weekdays | 6:00 AM - 10:00 PM"
+                        string hours = reader["Hours"].ToString();
+                        if (hours.Contains("|"))
+                        {
+                            string timePart = hours.Split('|')[1].Trim();
+                            if (timePart.Contains(" - "))
+                            {
+                                string[] times = timePart.Split(new string[] { " - " }, StringSplitOptions.None);
+                                if (ddlOpenHour.Items.FindByValue(times[0].Trim()) != null)
+                                    ddlOpenHour.SelectedValue = times[0].Trim();
+                                if (ddlCloseHour.Items.FindByValue(times[1].Trim()) != null)
+                                    ddlCloseHour.SelectedValue = times[1].Trim();
+                            }
+                        }
+
+                        // Store hours and tags in hidden fields so JS can read them
+                        hfHours.Value = hours;
+                    }
+                }
+            }
+        }
         // ── HELPERS ──
         private string CleanTitle(string input) {
             if (string.IsNullOrWhiteSpace(input)) return "";
