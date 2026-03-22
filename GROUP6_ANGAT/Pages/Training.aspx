@@ -52,8 +52,6 @@
         </div>
     </div>
         <!-- Search Bar title and OPEN CLOSED FILTER (updated lean)-->
-<div style="max-width: 1280px; margin: 40px auto; padding: 0 20px;">
-    
     <div id="search-bar" style="margin-top: 24px;">
         <div class="search-box">
             <div class="search-field">
@@ -82,7 +80,7 @@
         <p class="section-sub">Huwag nang mag-alala kung wala kang budget—narito ang mga ahensya na handang tumulong sa paghasa ng iyong kakayahan at pag-angat ng iyong kinabukasan</p>
     </div>
     <!-- Repeater lists --LEAN -->
-            <div id="hgListings" class="listings-grid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="listings-grid" id="loanGrid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
         <asp:Repeater ID="Repeater1" runat="server">
             <ItemTemplate>
                 <div class="listing-card" 
@@ -125,7 +123,6 @@
             </ItemTemplate>
         </asp:Repeater>
     </div>
-</div>
 <div id="requirementsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
         <h2 id="modalTitle" style="margin-bottom: 15px; color: #1e293b; font-weight: bold; font-family: sans-serif;">Program Name</h2>

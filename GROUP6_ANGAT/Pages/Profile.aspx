@@ -22,82 +22,79 @@
     <div class="section section-white">
 
         <%-- ===== PROFILE INFO ===== --%>
-        <div class="profile-grid">
-
-            <%-- Left: avatar + quick info --%>
-            <div class="profile-card">
-                <div class="profile-avatar-wrap">
-                    <asp:Image ID="imgProfile" runat="server" CssClass="profile-avatar" />
-                </div>
-                <div class="profile-meta">
-                    <h3><asp:Label ID="lblProfileName" runat="server" /></h3>
-                    <span class="profile-badge"><asp:Label ID="lblProfileRole" runat="server" /></span>
-                    <p class="profile-email"><asp:Label ID="lblProfileEmail" runat="server" /></p>
-                </div>
-                <div class="form-group">
-                    <label>Palitan ang Profile Picture</label>
-                    <asp:FileUpload ID="fuProfileImage" runat="server" />
-                </div>
-                <asp:Button ID="btnUploadPhoto" runat="server" Text="I-save ang Photo"
-                    CssClass="btn-outline" OnClick="BtnSaveProfile_Click" />
-                <asp:Label ID="lblProfileMessage" runat="server" CssClass="login-helper" />
-            </div>
-
-            <%-- Right: edit form --%>
-            <div class="profile-card">
-                <h3>I-edit ang Profile</h3>
-                <p style="color:var(--text-soft); font-size:0.9rem; margin-bottom:20px;">
-                    Ayusin ang inyong impormasyon.
-                </p>
-                <div class="form-group">
-                    <label>Buong Pangalan</label>
-                    <asp:TextBox ID="txtFullName" runat="server"></asp:TextBox>
-                </div>
-                <div class="form-group">
-                    <label>Email Address <span class="optional">(optional)</span></label>
-                    <asp:TextBox ID="txtEmail" runat="server" TextMode="Email"></asp:TextBox>
-                </div>
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <asp:TextBox ID="txtPhone" runat="server" placeholder="09XXXXXXXXX"></asp:TextBox>
-                </div>
-                <div class="form-group">
-                    <label>Address</label>
-                    <asp:TextBox ID="txtAddress" runat="server" placeholder="House No., Street"></asp:TextBox>
-                </div>
-                <div class="form-group">
-                    <label>Barangay</label>
-                    <asp:TextBox ID="txtBarangay" runat="server"></asp:TextBox>
-                </div>
-                <asp:Button ID="btnSaveProfile" runat="server" Text="I-save ang Profile"
-                    CssClass="btn-green" OnClick="BtnSaveProfile_Click" />
-            </div>
+        <div class="profile-grid" style="grid-template-columns: 1fr 1.8fr 1fr;">
+    <%-- Left: avatar + quick info --%>
+    <div class="profile-card">
+        <div class="profile-avatar-wrap">
+            <asp:Image ID="imgProfile" runat="server" CssClass="profile-avatar" />
         </div>
-
-        <%-- Change password --%>
-        <div class="profile-grid" style="margin-top:24px;">
-            <div class="profile-card">
-                <h3>Palitan ang Password</h3>
-                <p style="color:var(--text-soft); font-size:0.9rem; margin-bottom:20px;">
-                    Para sa seguridad, palitan ang password kapag kinakailangan.
-                </p>
-                <div class="form-group">
-                    <label>Kasalukuyang Password</label>
-                    <asp:TextBox ID="txtCurrentPassword" runat="server" TextMode="Password"></asp:TextBox>
-                </div>
-                <div class="form-group">
-                    <label>Bagong Password</label>
-                    <asp:TextBox ID="txtNewPassword" runat="server" TextMode="Password"></asp:TextBox>
-                </div>
-                <div class="form-group">
-                    <label>Kumpirmahin ang Bagong Password</label>
-                    <asp:TextBox ID="txtConfirmPassword" runat="server" TextMode="Password"></asp:TextBox>
-                </div>
-                <asp:Button ID="btnChangePassword" runat="server" Text="Palitan ang Password"
-                    CssClass="btn-outline" OnClick="BtnChangePassword_Click" />
-                <asp:Label ID="lblPasswordMessage" runat="server" CssClass="login-helper" />
-            </div>
+        <div class="profile-meta">
+            <h3><asp:Label ID="lblProfileName" runat="server" /></h3>
+            <span class="profile-badge"><asp:Label ID="lblProfileRole" runat="server" /></span>
+            <p class="profile-email"><asp:Label ID="lblProfileEmail" runat="server" /></p>
         </div>
+        <div class="form-group">
+            <label>Palitan ang Profile Picture</label>
+            <asp:FileUpload ID="fuProfileImage" runat="server" />
+        </div>
+        <asp:Button ID="btnUploadPhoto" runat="server" Text="I-save ang Photo"
+            CssClass="btn-outline" OnClick="BtnSaveProfile_Click" />
+        <asp:Label ID="lblProfileMessage" runat="server" CssClass="login-helper" />
+    </div>
+
+    <%-- Middle: edit form --%>
+    <div class="profile-card">
+        <h3>I-edit ang Profile</h3>
+        <p style="color:var(--text-soft); font-size:0.9rem; margin-bottom:20px;">
+            Ayusin ang inyong impormasyon.
+        </p>
+        <div class="form-group">
+            <label>Buong Pangalan</label>
+            <asp:TextBox ID="txtFullName" runat="server"></asp:TextBox>
+        </div>
+        <div class="form-group">
+            <label>Email Address <span class="optional">(optional)</span></label>
+            <asp:TextBox ID="txtEmail" runat="server" TextMode="Email"></asp:TextBox>
+        </div>
+        <div class="form-group">
+            <label>Phone Number</label>
+            <asp:TextBox ID="txtPhone" runat="server" placeholder="09XXXXXXXXX"></asp:TextBox>
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <asp:TextBox ID="txtAddress" runat="server" placeholder="House No., Street"></asp:TextBox>
+        </div>
+        <div class="form-group">
+            <label>Barangay</label>
+            <asp:TextBox ID="txtBarangay" runat="server"></asp:TextBox>
+        </div>
+        <asp:Button ID="btnSaveProfile" runat="server" Text="I-save ang Profile"
+            CssClass="btn-green" OnClick="BtnSaveProfile_Click" />
+    </div>
+
+    <%-- Right: change password --%>
+    <div class="profile-card">
+        <h3>Palitan ang Password</h3>
+        <p style="color:var(--text-soft); font-size:0.9rem; margin-bottom:20px;">
+            Para sa seguridad, palitan ang password kapag kinakailangan.
+        </p>
+        <div class="form-group">
+            <label>Kasalukuyang Password</label>
+            <asp:TextBox ID="txtCurrentPassword" runat="server" TextMode="Password"></asp:TextBox>
+        </div>
+        <div class="form-group">
+            <label>Bagong Password</label>
+            <asp:TextBox ID="txtNewPassword" runat="server" TextMode="Password"></asp:TextBox>
+        </div>
+        <div class="form-group">
+            <label>Kumpirmahin ang Bagong Password</label>
+            <asp:TextBox ID="txtConfirmPassword" runat="server" TextMode="Password"></asp:TextBox>
+        </div>
+        <asp:Button ID="btnChangePassword" runat="server" Text="Palitan ang Password"
+            CssClass="btn-outline" OnClick="BtnChangePassword_Click" />
+        <asp:Label ID="lblPasswordMessage" runat="server" CssClass="login-helper" />
+    </div>
+</div>
 
         <%-- ===== TABS ===== --%>
         <div class="profile-tabs" style="margin-top:40px;">
@@ -132,254 +129,366 @@
 
             <%-- TAB 1: My Applications --%>
             <div class="profile-tab-content active" id="tab-applications">
-                <asp:Panel ID="pnlNoApplications" runat="server" CssClass="empty-state" Visible="false">
-                    <i class='bx bx-file'></i>
-                    <h4>Wala ka pang applications</h4>
-                    <p>Mag-apply sa isang trabaho para makita dito.</p>
-                </asp:Panel>
+                <asp:Panel ID="pnlNoApplications" runat="server" CssClass="empty-state" Visible="false" />
 
-                <asp:Repeater ID="rptApplications" runat="server" OnItemCommand="RptApplications_ItemCommand">
-                    <ItemTemplate>
-                        <div class="app-card" data-application-id='<%# Eval("ApplicationId") %>'> <%-- changed so js can find the card for notifs --%>
-
-                            <div class="app-card-top">
-                                <div>
-                                    <h4><%# Eval("JobTitle") %></h4>
-                                    <p class="app-location">
-                                        <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
-                                    </p>
+                <%-- Active Applications --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
+                    <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Applications
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                    <asp:Repeater ID="rptApplications" runat="server" OnItemCommand="RptApplications_ItemCommand">
+                        <ItemTemplate>
+                            <div class="app-card" data-application-id='<%# Eval("ApplicationId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("JobTitle") %></h4>
+                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                        <%# Eval("Status") %>
+                                    </span>
                                 </div>
-                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                    <%# Eval("Status") %>
-                                </span>
+                                <p class="app-location" style="margin:0;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                                    <span><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                                <div class="app-actions">
+                                    <asp:LinkButton ID="btnRetract" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="Retract"
+                                        CommandArgument='<%# Eval("ApplicationId") %>'
+                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
+                                        I-retract
+                                    </asp:LinkButton>
+                                </div>
                             </div>
-                            <div class="app-meta">
-                                <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
-                                <span><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></span>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+                <%-- Closed/Retracted Applications --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin-bottom:16px;">
+                    <i class='bx bx-archive' style="color:#94a3b8;"></i> Saradong Applications
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                    <asp:Repeater ID="rptApplicationsClosed" runat="server">
+                        <ItemTemplate>
+                            <div class="app-card" data-application-id='<%# Eval("ApplicationId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("JobTitle") %></h4>
+                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                        <%# Eval("Status") %>
+                                    </span>
+                                </div>
+                                <p class="app-location" style="margin:0; color:#94a3b8;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                                    <span><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
                             </div>
-                            <p class="app-tags"><%# FormatTags(Eval("Tags")) %></p>
-                            <div class="app-actions">
-                                <asp:LinkButton ID="btnRetract" runat="server"
-                                    CssClass="btn-outline app-retract"
-                                    CommandName="Retract"
-                                    CommandArgument='<%# Eval("ApplicationId") %>'
-                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                    I-retract
-                                </asp:LinkButton>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
             </div>
 
             <%-- TAB 2: My Service Requests --%>
             <div class="profile-tab-content" id="tab-requests">
-                <asp:Panel ID="pnlNoServiceRequests" runat="server" CssClass="empty-state" Visible="false">
-                    <i class='bx bx-wrench'></i>
-                    <h4>Wala ka pang service requests</h4>
-                    <p>Mag-request ng serbisyo para makita dito.</p>
-                </asp:Panel>
+                <asp:Panel ID="pnlNoServiceRequests" runat="server" CssClass="empty-state" Visible="false" />
 
-                <asp:Repeater ID="rptServiceRequests" runat="server" OnItemCommand="RptServiceRequests_ItemCommand">
-                    <ItemTemplate>
-                        <div class="app-card" data-request-id='<%# Eval("RequestId") %>'><%--changed for notifs again --%>
-                            <div class="app-card-top">
-                                <div>
-                                    <h4><%# Eval("ServiceTitle") %></h4>
-                                    <p class="app-location">
-                                        <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
-                                    </p>
+                <%-- Active Requests --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
+                    <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Requests
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                    <asp:Repeater ID="rptServiceRequests" runat="server" OnItemCommand="RptServiceRequests_ItemCommand">
+                        <ItemTemplate>
+                            <div class="app-card" data-request-id='<%# Eval("RequestId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("ServiceTitle") %></h4>
+                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                        <%# Eval("Status") %>
+                                    </span>
                                 </div>
-                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                    <%# Eval("Status") %>
-                                </span>
+                                <p class="app-location" style="margin:0;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
+                                    <span><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                                <div class="app-actions">
+                                    <asp:LinkButton ID="btnRetractService" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="RetractService"
+                                        CommandArgument='<%# Eval("RequestId") %>'
+                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
+                                        I-retract
+                                    </asp:LinkButton>
+                                </div>
                             </div>
-                            <div class="app-meta">
-                                <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
-                                <span><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></span>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+
+                <%-- Closed Requests --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin-bottom:16px;">
+                    <i class='bx bx-archive' style="color:#94a3b8;"></i> Saradong Requests
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                    <asp:Repeater ID="rptServiceRequestsClosed" runat="server">
+                        <ItemTemplate>
+                            <div class="app-card" data-request-id='<%# Eval("RequestId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("ServiceTitle") %></h4>
+                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                        <%# Eval("Status") %>
+                                    </span>
+                                </div>
+                                <p class="app-location" style="margin:0; color:#94a3b8;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
+                                    <span><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
                             </div>
-                            <p class="app-tags"><%# FormatTags(Eval("Tags")) %></p>
-                            <div class="app-actions">
-                                <asp:LinkButton ID="btnRetractService" runat="server"
-                                    CssClass="btn-outline app-retract"
-                                    CommandName="RetractService"
-                                    CommandArgument='<%# Eval("RequestId") %>'
-                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                    I-retract
-                                </asp:LinkButton>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
             </div>
 
             <%-- TAB 3: My Job Listings --%>
             <div class="profile-tab-content" id="tab-listings">
-                <asp:Panel ID="pnlNoListings" runat="server" CssClass="empty-state" Visible="false">
-                    <i class='bx bx-briefcase'></i>
-                    <h4>Wala ka pang job listings</h4>
-                    <p><a href="/Pages/PostJob.aspx">Mag-post ng trabaho</a> para magsimula.</p>
-                </asp:Panel>
+                <asp:Panel ID="pnlNoListings" runat="server" CssClass="empty-state" Visible="false"/>
+                    
 
-                <asp:Repeater ID="rptMyListings" runat="server"
-                    OnItemDataBound="RptMyListings_ItemDataBound"
-                    OnItemCommand="RptMyListings_ItemCommand">
-                    <ItemTemplate>
-                        <div class="app-card" data-job-id='<%# Eval("JobId") %>'>
-                            <div class="app-card-top">
-                                <div>
-                                    <h4><%# Eval("JobTitle") %></h4>
-                                    <p class="app-location">
-                                        <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
-                                    </p>
+                <%-- Active Listings --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
+                    <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Job Listings
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                    <asp:Repeater ID="rptMyListings" runat="server"
+                        OnItemDataBound="RptMyListings_ItemDataBound"
+                        OnItemCommand="RptMyListings_ItemCommand">
+                        <ItemTemplate>
+                            <%# Convert.ToBoolean(Eval("IsActive")) ? "" : "<!--" %>
+                            <div class="app-card" data-job-id='<%# Eval("JobId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("JobTitle") %></h4>
+                                    <asp:Literal ID="litStatus" runat="server" />
                                 </div>
-                                <asp:Literal ID="litStatus" runat="server" />
-                            </div>
-                            <div class="app-meta">
-                                <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
-                                <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
-                            </div>
-                            <p class="app-tags"><%# FormatTags(Eval("Tags")) %></p>
-                            <p style="font-size:0.82rem; color:var(--text-soft); margin-top:6px;">
-                                <i class='bx bx-group'></i> <strong><%# Eval("Slots") %></strong> slot/s natitira
-                            </p>
-                            <div class="app-actions">
-                                <asp:LinkButton ID="btnDeleteListing" runat="server"
-                                    CssClass="btn-outline app-retract"
-                                    CommandName="DeleteListing"
-                                    CommandArgument='<%# Eval("JobId") %>'
-                                    UseSubmitBehavior="false">
-                                    I-delete
-                                </asp:LinkButton>
-                            </div>
+                                <p class="app-location" style="margin:0;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                                    <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                                <p style="font-size:0.82rem; color:var(--text-soft); margin-top:6px;">
+                                    <i class='bx bx-group'></i> <strong><%# Eval("Slots") %></strong> slot/s natitira
+                                </p>
+                                <div class="app-actions">
+                                    <asp:LinkButton ID="btnDeleteListing" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="DeleteListing"
+                                        CommandArgument='<%# Eval("JobId") %>'
+                                        UseSubmitBehavior="false">
+                                        I-delete
+                                    </asp:LinkButton>
+                                </div>
 
-                            <asp:HiddenField ID="hfListingJobId" runat="server" Value='<%# Eval("JobId") %>' />
+                                <asp:HiddenField ID="hfListingJobId" runat="server" Value='<%# Eval("JobId") %>' />
 
-                            <div class="applicants-block">
-                                <h5>Mga Applicants</h5>
-                                <asp:Panel ID="pnlNoApplicants" runat="server" CssClass="empty-state" Visible="false">
-                                    <p>Wala pang applicants.</p>
-                                </asp:Panel>
-                                <asp:Repeater ID="rptApplicants" runat="server" OnItemCommand="RptApplicants_ItemCommand">
-                                    <ItemTemplate>
-                                        <div class="applicant-row" data-application-id='<%# Eval("ApplicationId") %>'>
-                                            <div>
-                                                <strong><%# Eval("FullName") %></strong>
-                                                <div class="applicant-meta">
-                                                    <%# Eval("Phone") %>
-                                                    <%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? " &bull; " + Eval("Email") : "" %>
+                                <div class="applicants-block">
+                                    <h5>Mga Applicants</h5>
+                                    <asp:Panel ID="pnlNoApplicants" runat="server" CssClass="empty-state" Visible="false">
+                                        <p>Wala pang applicants.</p>
+                                    </asp:Panel>
+                                    <asp:Repeater ID="rptApplicants" runat="server" OnItemCommand="RptApplicants_ItemCommand">
+                                        <ItemTemplate>
+                                            <div class="applicant-row" data-application-id='<%# Eval("ApplicationId") %>'>
+                                                <div>
+                                                    <strong><%# Eval("FullName") %></strong>
+                                                    <div class="applicant-meta">
+                                                        <%# Eval("Phone") %>
+                                                        <%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? " &bull; " + Eval("Email") : "" %>
+                                                    </div>
+                                                    <div class="applicant-meta"><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></div>
                                                 </div>
-                                                <div class="applicant-meta"><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></div>
+                                                <div class="applicant-actions">
+                                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                                        <%# Eval("Status") %>
+                                                    </span>
+                                                    <asp:LinkButton ID="btnApprove" runat="server"
+                                                        CssClass="btn-green app-retract"
+                                                        CommandName="Approve"
+                                                        CommandArgument='<%# Eval("ApplicationId") %>'
+                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
+                                                        Approve
+                                                    </asp:LinkButton>
+                                                    <asp:LinkButton ID="btnReject" runat="server"
+                                                        CssClass="btn-outline app-retract"
+                                                        CommandName="Reject"
+                                                        CommandArgument='<%# Eval("ApplicationId") %>'
+                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
+                                                        Reject
+                                                    </asp:LinkButton>
+                                                </div>
                                             </div>
-                                            <div class="applicant-actions">
-                                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                                    <%# Eval("Status") %>
-                                                </span>
-                                                <asp:LinkButton ID="btnApprove" runat="server"
-                                                    CssClass="btn-green app-retract"
-                                                    CommandName="Approve"
-                                                    CommandArgument='<%# Eval("ApplicationId") %>'
-                                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                    Approve
-                                                </asp:LinkButton>
-                                                <asp:LinkButton ID="btnReject" runat="server"
-                                                    CssClass="btn-outline app-retract"
-                                                    CommandName="Reject"
-                                                    CommandArgument='<%# Eval("ApplicationId") %>'
-                                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                    Reject
-                                                </asp:LinkButton>
-                                            </div>
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:Repeater>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </div>
                             </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+                            <%# Convert.ToBoolean(Eval("IsActive")) ? "" : "-->" %>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+
+                <%-- Deleted Listings --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin-bottom:16px;">
+                    <i class='bx bx-archive' style="color:#94a3b8;"></i> Na-delete na Listings
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                    <asp:Repeater ID="rptMyListingsDeleted" runat="server">
+                        <ItemTemplate>
+                            <div class="app-card" data-job-id='<%# Eval("JobId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("JobTitle") %></h4>
+                                    <span class="app-status deleted">Deleted</span>
+                                </div>
+                                <p class="app-location" style="margin:0; color:#94a3b8;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
+                                    <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
             </div>
 
             <%-- TAB 4: My Service Listings --%>
             <div class="profile-tab-content" id="tab-servicelistings">
-                <asp:Panel ID="pnlNoServiceListings" runat="server" CssClass="empty-state" Visible="false">
-                    <i class='bx bx-store-alt'></i>
-                    <h4>Wala ka pang service listings</h4>
-                    <p><a href="/Pages/PostService.aspx">Mag-post ng serbisyo</a> para magsimula.</p>
-                </asp:Panel>
+                <asp:Panel ID="pnlNoServiceListings" runat="server" CssClass="empty-state" Visible="false"/>
 
-                <asp:Repeater ID="rptServiceListings" runat="server"
-                    OnItemCommand="RptServiceListings_ItemCommand">
-                    <ItemTemplate>
-                        <div class="app-card" data-service-id='<%# Eval("ServiceId") %>'>
-                            <div class="app-card-top">
-                                <div>
-                                    <h4><%# Eval("ServiceTitle") %></h4>
-                                    <p class="app-location">
-                                        <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
-                                    </p>
+                <%-- Active Service Listings --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
+                    <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Service Listings
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                    <asp:Repeater ID="rptServiceListings" runat="server"
+                        OnItemCommand="RptServiceListings_ItemCommand"
+                        OnItemDataBound="RptServiceListings_ItemDataBound">
+                        <ItemTemplate>
+                            <div class="app-card" data-service-id='<%# Eval("ServiceId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("ServiceTitle") %></h4>
+                                    <asp:Literal ID="litServiceStatus" runat="server" />
                                 </div>
-                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                    <%# Eval("Status") %>
-                                </span>
-                            </div>
-                            <div class="app-meta">
-                                <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
-                                <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
-                            </div>
-                            <p class="app-tags"><%# FormatTags(Eval("Tags")) %></p>
-                            <div class="app-actions">
-                                <asp:LinkButton ID="btnDeleteServiceListing" runat="server"
-                                    CssClass="btn-outline app-retract"
-                                    CommandName="DeleteServiceListing"
-                                    CommandArgument='<%# Eval("ServiceId") %>'>
-                                    I-delete
-                                </asp:LinkButton>
-                            </div>
+                                <p class="app-location" style="margin:0;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
+                                    <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                                <div class="app-actions">
+                                    <asp:LinkButton ID="btnDeleteServiceListing" runat="server"
+                                        CssClass="btn-outline app-retract"
+                                        CommandName="DeleteServiceListing"
+                                        CommandArgument='<%# Eval("ServiceId") %>'>
+                                        I-delete
+                                    </asp:LinkButton>
+                                </div>
 
-                            <asp:HiddenField ID="hfListingServiceId" runat="server" Value='<%# Eval("ServiceId") %>' />
+                                <asp:HiddenField ID="hfListingServiceId" runat="server" Value='<%# Eval("ServiceId") %>' />
 
-                            <div class="applicants-block">
-                                <h5>Mga Requests</h5>
-                                <asp:Panel ID="pnlNoServiceApplicants" runat="server" CssClass="empty-state" Visible="false">
-                                    <p>Wala pang requests.</p>
-                                </asp:Panel>
-                                <asp:Repeater ID="rptServiceApplicants" runat="server" OnItemCommand="RptServiceApplicants_ItemCommand">
-                                    <ItemTemplate>
-                                        <div class="applicant-row" data-request-id='<%# Eval("RequestId") %>'>
-                                            <div>
-                                                <strong><%# Eval("FullName") %></strong>
-                                                <div class="applicant-meta">
-                                                    <%# Eval("Phone") %>
-                                                    <%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? " &bull; " + Eval("Email") : "" %>
+                                <div class="applicants-block">
+                                    <h5>Mga Requests</h5>
+                                    <asp:Panel ID="pnlNoServiceApplicants" runat="server" CssClass="empty-state" Visible="false">
+                                        <p>Wala pang requests.</p>
+                                    </asp:Panel>
+                                    <asp:Repeater ID="rptServiceApplicants" runat="server" OnItemCommand="RptServiceApplicants_ItemCommand">
+                                        <ItemTemplate>
+                                            <div class="applicant-row" data-request-id='<%# Eval("RequestId") %>'>
+                                                <div>
+                                                    <strong><%# Eval("FullName") %></strong>
+                                                    <div class="applicant-meta">
+                                                        <%# Eval("Phone") %>
+                                                        <%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? " &bull; " + Eval("Email") : "" %>
+                                                    </div>
+                                                    <div class="applicant-meta"><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></div>
                                                 </div>
-                                                <div class="applicant-meta"><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></div>
+                                                <div class="applicant-actions">
+                                                    <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
+                                                        <%# Eval("Status") %>
+                                                    </span>
+                                                    <asp:LinkButton ID="btnApproveService" runat="server"
+                                                        CssClass="btn-green app-retract"
+                                                        CommandName="ApproveService"
+                                                        CommandArgument='<%# Eval("RequestId") %>'
+                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
+                                                        Approve
+                                                    </asp:LinkButton>
+                                                    <asp:LinkButton ID="btnRejectService" runat="server"
+                                                        CssClass="btn-outline app-retract"
+                                                        CommandName="RejectService"
+                                                        CommandArgument='<%# Eval("RequestId") %>'
+                                                        Visible='<%# Eval("Status").ToString() == "Pending" %>'>
+                                                        Reject
+                                                    </asp:LinkButton>
+                                                </div>
                                             </div>
-                                            <div class="applicant-actions">
-                                                <span class="app-status <%# Eval("Status").ToString().ToLower() %>">
-                                                    <%# Eval("Status") %>
-                                                </span>
-                                                <asp:LinkButton ID="btnApproveService" runat="server"
-                                                    CssClass="btn-green app-retract"
-                                                    CommandName="ApproveService"
-                                                    CommandArgument='<%# Eval("RequestId") %>'
-                                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                    Approve
-                                                </asp:LinkButton>
-                                                <asp:LinkButton ID="btnRejectService" runat="server"
-                                                    CssClass="btn-outline app-retract"
-                                                    CommandName="RejectService"
-                                                    CommandArgument='<%# Eval("RequestId") %>'
-                                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'>
-                                                    Reject
-                                                </asp:LinkButton>
-                                            </div>
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:Repeater>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </div>
                             </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+
+                <%-- Deleted Service Listings --%>
+                <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin-bottom:16px;">
+                    <i class='bx bx-archive' style="color:#94a3b8;"></i> Na-delete na Service Listings
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                    <asp:Repeater ID="rptServiceListingsDeleted" runat="server">
+                        <ItemTemplate>
+                            <div class="app-card" data-service-id='<%# Eval("ServiceId") %>'
+                                style="display:flex; flex-direction:column; gap:12px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0; opacity:0.75;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h4 style="font-size:1rem; font-weight:700; color:#94a3b8; margin:0;"><%# Eval("ServiceTitle") %></h4>
+                                    <span class="app-status deleted">Deleted</span>
+                                </div>
+                                <p class="app-location" style="margin:0; color:#94a3b8;">
+                                    <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
+                                </p>
+                                <div class="app-meta">
+                                    <span class="app-pay"><%# GetPayLabel(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
+                                    <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
+                                </div>
+                                <p class="app-tags" style="margin:0;"><%# FormatTags(Eval("Tags")) %></p>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
             </div>
 
         
@@ -429,6 +538,26 @@
     </div>
 
     <script>
+        // Auto-hide alerts after 3 seconds
+        function autoHideAlerts() {
+            var alerts = document.querySelectorAll('.form-alert');
+            alerts.forEach(function (alert) {
+                if (alert.style.display !== 'none' && alert.offsetParent !== null) {
+                    setTimeout(function () {
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(function () {
+                            alert.style.display = 'none';
+                            alert.style.opacity = '1';
+                        }, 500);
+                    }, 3000);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            autoHideAlerts();
+        });
         // Tab switching
         var tabBtns    = document.querySelectorAll('.profile-tab-btn');
         var tabContents = document.querySelectorAll('.profile-tab-content');

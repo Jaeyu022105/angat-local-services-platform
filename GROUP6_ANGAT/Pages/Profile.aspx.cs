@@ -62,23 +62,47 @@ namespace GROUP6_ANGAT {
         // =============================================
         // LOAD APPLICATIONS (user applied to jobs)
         // =============================================
-        private void LoadApplications() {
+        private void LoadApplications()
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
-                       j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags, j.Category
-                FROM JobApplications ja
-                LEFT JOIN Jobs j ON ja.JobId = j.JobId
-                WHERE ja.UserId = @UserId
-                ORDER BY ja.AppliedAt DESC", conn)) {
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+            {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
-                    bool hasRows = reader.HasRows;
-                    rptApplications.DataSource = reader;
-                    rptApplications.DataBind();
-                    pnlNoApplications.Visible = !hasRows;
+
+                // Active (Pending + Approved)
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
+                   j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags
+            FROM JobApplications ja
+            LEFT JOIN Jobs j ON ja.JobId = j.JobId
+            WHERE ja.UserId = @UserId AND ja.Status IN ('Pending', 'Approved')
+            ORDER BY ja.AppliedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        bool hasRows = reader.HasRows;
+                        rptApplications.DataSource = reader;
+                        rptApplications.DataBind();
+                        pnlNoApplications.Visible = !hasRows;
+                    }
+                }
+
+                // Closed (Retracted + Rejected)
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
+                   j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags
+            FROM JobApplications ja
+            LEFT JOIN Jobs j ON ja.JobId = j.JobId
+            WHERE ja.UserId = @UserId AND ja.Status IN ('Retracted', 'Rejected')
+            ORDER BY ja.AppliedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        rptApplicationsClosed.DataSource = reader;
+                        rptApplicationsClosed.DataBind();
+                    }
                 }
             }
         }
@@ -86,23 +110,47 @@ namespace GROUP6_ANGAT {
         // =============================================
         // LOAD SERVICE REQUESTS (user requested services)
         // =============================================
-        private void LoadServiceRequests() {
+        private void LoadServiceRequests()
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT sr.RequestId, sr.Status, sr.RequestedAt,
-                       s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags, s.Category
-                FROM ServiceRequests sr
-                LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
-                WHERE sr.UserId = @UserId
-                ORDER BY sr.RequestedAt DESC", conn)) {
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+            {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
-                    bool hasRows = reader.HasRows;
-                    rptServiceRequests.DataSource = reader;
-                    rptServiceRequests.DataBind();
-                    pnlNoServiceRequests.Visible = !hasRows;
+
+                // Active (Pending + Approved)
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT sr.RequestId, sr.Status, sr.RequestedAt,
+                   s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags
+            FROM ServiceRequests sr
+            LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+            WHERE sr.UserId = @UserId AND sr.Status IN ('Pending', 'Approved')
+            ORDER BY sr.RequestedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        bool hasRows = reader.HasRows;
+                        rptServiceRequests.DataSource = reader;
+                        rptServiceRequests.DataBind();
+                        pnlNoServiceRequests.Visible = !hasRows;
+                    }
+                }
+
+                // Closed (Retracted + Rejected)
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT sr.RequestId, sr.Status, sr.RequestedAt,
+                   s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags
+            FROM ServiceRequests sr
+            LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+            WHERE sr.UserId = @UserId AND sr.Status IN ('Retracted', 'Rejected')
+            ORDER BY sr.RequestedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        rptServiceRequestsClosed.DataSource = reader;
+                        rptServiceRequestsClosed.DataBind();
+                    }
                 }
             }
         }
@@ -110,22 +158,45 @@ namespace GROUP6_ANGAT {
         // =============================================
         // LOAD MY JOB LISTINGS (user posted jobs)
         // =============================================
-        private void LoadMyListings() {
+        private void LoadMyListings()
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
-                       Tags, Category, Status, PostedAt, Slots, IsActive
-                FROM Jobs
-                WHERE PostedByUserId = @UserId
-                ORDER BY PostedAt DESC", conn)) {
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+            {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
-                    bool hasRows = reader.HasRows;
-                    rptMyListings.DataSource = reader;
-                    rptMyListings.DataBind();
-                    pnlNoListings.Visible = !hasRows;
+
+                // Active listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
+                   Tags, Category, Status, PostedAt, Slots, IsActive
+            FROM Jobs
+            WHERE PostedByUserId = @UserId AND IsActive = 1
+            ORDER BY PostedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        bool hasRows = reader.HasRows;
+                        rptMyListings.DataSource = reader;
+                        rptMyListings.DataBind();
+                        pnlNoListings.Visible = !hasRows;
+                    }
+                }
+
+                // Deleted listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
+                   Tags, Category, Status, PostedAt, Slots, IsActive
+            FROM Jobs
+            WHERE PostedByUserId = @UserId AND IsActive = 0
+            ORDER BY PostedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        rptMyListingsDeleted.DataSource = reader;
+                        rptMyListingsDeleted.DataBind();
+                    }
                 }
             }
         }
@@ -133,22 +204,45 @@ namespace GROUP6_ANGAT {
         // =============================================
         // LOAD MY SERVICE LISTINGS (user posted services)
         // =============================================
-        private void LoadMyServiceListings() {
+        private void LoadMyServiceListings()
+        {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT ServiceId, ServiceTitle, Barangay, RateMin, RateMax, RateType,
-                       Tags, Category, Status, PostedAt
-                FROM Services
-                WHERE PostedByUserId = @UserId
-                ORDER BY PostedAt DESC", conn)) {
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+            {
                 conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader()) {
-                    bool hasRows = reader.HasRows;
-                    rptServiceListings.DataSource = reader;
-                    rptServiceListings.DataBind();
-                    pnlNoServiceListings.Visible = !hasRows;
+
+                // Active listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT ServiceId, ServiceTitle, Barangay, RateMin, RateMax, RateType,
+                   Tags, Category, Status, PostedAt, IsActive
+            FROM Services
+            WHERE PostedByUserId = @UserId AND IsActive = 1
+            ORDER BY PostedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        bool hasRows = reader.HasRows;
+                        rptServiceListings.DataSource = reader;
+                        rptServiceListings.DataBind();
+                        pnlNoServiceListings.Visible = !hasRows;
+                    }
+                }
+
+                // Deleted listings
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT ServiceId, ServiceTitle, Barangay, RateMin, RateMax, RateType,
+                   Tags, Category, Status, PostedAt, IsActive
+            FROM Services
+            WHERE PostedByUserId = @UserId AND IsActive = 0
+            ORDER BY PostedAt DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        rptServiceListingsDeleted.DataSource = reader;
+                        rptServiceListingsDeleted.DataBind();
+                    }
                 }
             }
         }
@@ -203,7 +297,38 @@ namespace GROUP6_ANGAT {
             if (hf != null && int.TryParse(hf.Value, out jobId))
                 LoadApplicants(jobId, rptApplicants, pnlNoApplicants);
         }
+        // ========================================================================
+        // ITEM DATA BOUND — For service listings, load nested requesters
+        // ========================================================================
+        protected void RptServiceListings_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item &&
+                e.Item.ItemType != ListItemType.AlternatingItem) return;
 
+            System.Data.Common.DbDataRecord row =
+                (System.Data.Common.DbDataRecord)e.Item.DataItem;
+
+            bool isActive = Convert.ToBoolean(row["IsActive"]);
+
+            LinkButton btnDelete = (LinkButton)e.Item.FindControl("btnDeleteServiceListing");
+            if (btnDelete != null) btnDelete.Visible = isActive;
+
+            Literal litStatus = (Literal)e.Item.FindControl("litServiceStatus");
+            if (litStatus != null)
+            {
+                if (!isActive)
+                    litStatus.Text = "<span class=\"app-status deleted\">Deleted</span>";
+                else
+                    litStatus.Text = "<span class=\"app-status " + row["Status"].ToString().ToLower() + "\">" + row["Status"].ToString() + "</span>";
+            }
+
+            var hf = (HiddenField)e.Item.FindControl("hfListingServiceId");
+            var rptServiceApplicants = (Repeater)e.Item.FindControl("rptServiceApplicants");
+            var pnlNoServiceApplicants = (Panel)e.Item.FindControl("pnlNoServiceApplicants");
+            int serviceId;
+            if (hf != null && int.TryParse(hf.Value, out serviceId))
+                LoadServiceApplicants(serviceId, rptServiceApplicants, pnlNoServiceApplicants);
+        }
         private void LoadApplicants(int jobId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
@@ -249,7 +374,7 @@ namespace GROUP6_ANGAT {
         // =============================================
         // APPROVE / REJECT JOB APPLICANTS + SLOTS
         // =============================================
-        protected void RptApplicants_ItemCommand(object source, RepeaterCommandEventArgs e) {
+        protected void RptApplicants_ItemCommand(object source, RepeaterCommandEventArgs e) { 
             string newStatus = null;
             if (e.CommandName == "Approve") newStatus = "Approved";
             else if (e.CommandName == "Reject") newStatus = "Rejected";
@@ -331,8 +456,8 @@ namespace GROUP6_ANGAT {
 
             LoadMyListings();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
-            "document.querySelector('[data-tab=\"listings\"]').click();", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
+                "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
         // =============================================
@@ -404,8 +529,8 @@ namespace GROUP6_ANGAT {
 
             LoadMyServiceListings();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
-            "document.querySelector('[data-tab=\"listings\"]').click();", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
+                "document.querySelector('[data-tab=\"servicelistings\"]').click();", true);
         }
 
         // =============================================
@@ -442,7 +567,8 @@ namespace GROUP6_ANGAT {
             }
 
             LoadMyListings();
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
                 "document.querySelector('[data-tab=\"listings\"]').click();", true);
         }
 
@@ -469,8 +595,8 @@ namespace GROUP6_ANGAT {
 
             LoadMyServiceListings();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
-            "document.querySelector('[data-tab=\"listings\"]').click();", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
+                "document.querySelector('[data-tab=\"servicelistings\"]').click();", true);
         }
 
         // =============================================
@@ -496,8 +622,8 @@ namespace GROUP6_ANGAT {
 
             LoadMyBusinessListings();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
-            "document.querySelector('[data-tab=\"listings\"]').click();", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
+                "document.querySelector('[data-tab=\"businesslistings\"]').click();", true);
         }
         // =============================================
         // RETRACT APPLICATION
@@ -522,8 +648,8 @@ namespace GROUP6_ANGAT {
 
             LoadApplications();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
-            "document.querySelector('[data-tab=\"listings\"]').click();", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
+                "document.querySelector('[data-tab=\"applications\"]').click();", true);
         }
 
         // =============================================
@@ -549,8 +675,8 @@ namespace GROUP6_ANGAT {
 
             LoadServiceRequests();
 
-            ScriptManager.RegisterStartupScript(this, GetType(), "StayTabListings",
-            "document.querySelector('[data-tab=\"listings\"]').click();", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "StayTab",
+                "document.querySelector('[data-tab=\"requests\"]').click();", true);
         }
 
         // =============================================

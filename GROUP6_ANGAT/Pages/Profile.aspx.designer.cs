@@ -7,10 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT {
+namespace GROUP6_ANGAT
+{
 
 
-    public partial class Profile {
+    public partial class Profile
+    {
 
         /// <summary>
         /// imgProfile control.
@@ -247,6 +249,15 @@ namespace GROUP6_ANGAT {
         protected global::System.Web.UI.WebControls.Repeater rptApplications;
 
         /// <summary>
+        /// rptApplicationsClosed control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptApplicationsClosed;
+
+        /// <summary>
         /// pnlNoServiceRequests control.
         /// </summary>
         /// <remarks>
@@ -263,6 +274,15 @@ namespace GROUP6_ANGAT {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptServiceRequests;
+
+        /// <summary>
+        /// rptServiceRequestsClosed control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptServiceRequestsClosed;
 
         /// <summary>
         /// pnlNoListings control.
@@ -283,6 +303,15 @@ namespace GROUP6_ANGAT {
         protected global::System.Web.UI.WebControls.Repeater rptMyListings;
 
         /// <summary>
+        /// rptMyListingsDeleted control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptMyListingsDeleted;
+
+        /// <summary>
         /// pnlNoServiceListings control.
         /// </summary>
         /// <remarks>
@@ -299,6 +328,15 @@ namespace GROUP6_ANGAT {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptServiceListings;
+
+        /// <summary>
+        /// rptServiceListingsDeleted control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptServiceListingsDeleted;
 
         /// <summary>
         /// pnlNoBusinessListings control.
