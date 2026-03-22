@@ -19,25 +19,30 @@
         </div>
     </div>
 
-    <div class="section section-white">
+    <div class="section section-light">
 
         <%-- ===== PROFILE INFO ===== --%>
         <div class="profile-grid" style="grid-template-columns: 1fr 1.8fr 1fr;">
     <%-- Left: avatar + quick info --%>
-    <div class="profile-card">
+    <div class="profile-card" style="text-align:center;">
         <div class="profile-avatar-wrap">
             <asp:Image ID="imgProfile" runat="server" CssClass="profile-avatar" />
         </div>
         <div class="profile-meta">
             <h3><asp:Label ID="lblProfileName" runat="server" /></h3>
-            <span class="profile-badge"><asp:Label ID="lblProfileRole" runat="server" /></span>
             <p class="profile-email"><asp:Label ID="lblProfileEmail" runat="server" /></p>
         </div>
-        <div class="form-group">
-            <label>Palitan ang Profile Picture</label>
-            <asp:FileUpload ID="fuProfileImage" runat="server" />
-        </div>
-        <asp:Button ID="btnUploadPhoto" runat="server" Text="I-save ang Photo"
+            <div class="form-group" style="text-align:center;">
+                <label>Palitan ang Profile Picture</label>
+                <label for="<%= fuProfileImage.ClientID %>" 
+                        class="btn-outline-green" 
+                        style="cursor:pointer; display:inline-block; margin-bottom:8px;">
+                    <i class='bx bx-upload'></i> Pumili ng Larawan
+                </label>
+                <asp:FileUpload ID="fuProfileImage" runat="server" style="display:none;" />
+                <span id="fileNameDisplay" style="font-size:0.85rem; color:#64748b; display:block;text-align:center;">Walang napiling file</span>
+            </div>
+        <asp:Button ID="btnUploadPhoto" runat="server" Text="I-save ang Larawan"
             CssClass="btn-outline" OnClick="BtnSaveProfile_Click" />
         <asp:Label ID="lblProfileMessage" runat="server" CssClass="login-helper" />
     </div>
@@ -135,11 +140,11 @@
                 <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
                     <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Applications
                 </h4>
-                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px; align-items:start;">
                     <asp:Repeater ID="rptApplications" runat="server" OnItemCommand="RptApplications_ItemCommand">
                         <ItemTemplate>
                             <div class="app-card" data-application-id='<%# Eval("ApplicationId") %>'
-                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; align-self:start;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("JobTitle") %></h4>
                                     <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
@@ -230,11 +235,11 @@
                 <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:16px;">
                     <i class='bx bx-time-five' style="color:#15803d;"></i> Aktibong Requests
                 </h4>
-                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-bottom:40px;align-items:start;">
                     <asp:Repeater ID="rptServiceRequests" runat="server" OnItemCommand="RptServiceRequests_ItemCommand">
                         <ItemTemplate>
                             <div class="app-card" data-request-id='<%# Eval("RequestId") %>'
-                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; align-self:start;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("ServiceTitle") %></h4>
                                     <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
@@ -334,7 +339,7 @@
                         <ItemTemplate>
                             <%# Convert.ToBoolean(Eval("IsActive")) ? "" : "<!--" %>
                             <div class="app-card" data-job-id='<%# Eval("JobId") %>'
-                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; align-self:start;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("JobTitle") %></h4>
                                     <asp:Literal ID="litStatus" runat="server" />
@@ -342,7 +347,7 @@
                                 <p class="app-location" style="margin:0;">
                                     <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Biñan
                                 </p>
-                                <div class="app-meta">
+                                <div class="app-meta" style="display:flex; justify-content:space-between; gap:8px;">
                                     <span class="app-pay"><%# GetPayLabel(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
                                     <span><%# Eval("PostedAt", "{0:MMM dd, yyyy}") %></span>
                                 </div>
@@ -362,46 +367,44 @@
 
                                 <asp:HiddenField ID="hfListingJobId" runat="server" Value='<%# Eval("JobId") %>' />
 
-                                <div class="applicants-block">
-                                    <h5>Mga Applicants</h5>
-                                    <asp:Panel ID="pnlNoApplicants" runat="server" CssClass="empty-state" Visible="false">
-                                        <p>Wala pang applicants.</p>
-                                    </asp:Panel>
-                                    <asp:Repeater ID="rptApplicants" runat="server" OnItemCommand="RptApplicants_ItemCommand">
-                                        <ItemTemplate>
-                                            <div class="applicant-row" data-application-id='<%# Eval("ApplicationId") %>'>
-                                                <div>
+                            <div class="applicants-block">
+                                <h5>Mga Applicants</h5>
+                                <asp:Panel ID="pnlNoApplicants" runat="server" CssClass="empty-state" Visible="false">
+                                    <p>Wala pang applicants.</p>
+                                </asp:Panel>
+                                <asp:Repeater ID="rptApplicants" runat="server" OnItemCommand="RptApplicants_ItemCommand">
+                                    <ItemTemplate>
+                                        <div class="applicant-row" data-application-id='<%# Eval("ApplicationId") %>'>
+                                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; width:100%;">
+                                                <div style="flex:1; min-width:0; overflow:hidden;">
                                                     <strong><%# Eval("FullName") %></strong>
-                                                    <div class="applicant-meta">
-                                                        <%# Eval("Phone") %>
-                                                        <%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? " &bull; " + Eval("Email") : "" %>
-                                                    </div>
+                                                    <div class="applicant-meta"><%# Eval("Phone") %></div>
+                                                    <div class="applicant-meta" style="overflow-wrap:break-word; word-break:break-all;"><%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? Eval("Email").ToString() : "" %></div>
                                                     <div class="applicant-meta"><%# Eval("AppliedAt", "{0:MMM dd, yyyy}") %></div>
-                                                </div>
-                                                <div class="applicant-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                                                <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
-                                                    <%# Eval("Status").ToString().Replace("_Archived","") %>
-                                                </span>
-                                                    <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+                                                    <div style="display:flex; gap:30px; margin-top:6px; flex-wrap:wrap">
                                                         <asp:LinkButton ID="btnApprove" runat="server"
-                                                            CssClass="btn-outline app-retract"
+                                                            CssClass="btn-outline-green app-retract"
                                                             CommandName="Approve"
                                                             CommandArgument='<%# Eval("ApplicationId") %>'
                                                             Visible='<%# Eval("Status").ToString() == "Pending" %>'
-                                                            style="display:flex; align-items:center; justify-content:center;">
+                                                            style="padding:8px 17px; font-size:0.75rem; border-radius:20px; min-width:70px; text-align:center;">
                                                             Approve
                                                         </asp:LinkButton>
                                                         <asp:LinkButton ID="btnReject" runat="server"
-                                                            CssClass="btn-outline app-retract"
+                                                            CssClass="btn-outline-red app-retract"
                                                             CommandName="Reject"
                                                             CommandArgument='<%# Eval("ApplicationId") %>'
                                                             Visible='<%# Eval("Status").ToString() == "Pending" %>'
-                                                            style="display:flex; align-items:center; justify-content:center;">
+                                                            style="padding:8px 17px; font-size:0.75rem; border-radius:20px; min-width:70px; text-align:center;">
                                                             Reject
                                                         </asp:LinkButton>
                                                     </div>
                                                 </div>
+                                                <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>" style="white-space:nowrap; flex-shrink:0;">
+                                                    <%# Eval("Status").ToString().Replace("_Archived","") %>
+                                                </span>
                                             </div>
+                                        </div>
                                         </ItemTemplate>
                                     </asp:Repeater>
                                 </div>
@@ -452,7 +455,7 @@
                         OnItemDataBound="RptServiceListings_ItemDataBound">
                         <ItemTemplate>
                             <div class="app-card" data-service-id='<%# Eval("ServiceId") %>'
-                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; align-self:start;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <h4 style="font-size:1rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("ServiceTitle") %></h4>
                                     <asp:Literal ID="litServiceStatus" runat="server" />
@@ -475,7 +478,7 @@
                                 </div>
 
                                 <asp:HiddenField ID="hfListingServiceId" runat="server" Value='<%# Eval("ServiceId") %>' />
-
+                            <asp:Panel ID="pnlApplicantsBlock" runat="server">
                                 <div class="applicants-block">
                                     <h5>Mga Requests</h5>
                                     <asp:Panel ID="pnlNoServiceApplicants" runat="server" CssClass="empty-state" Visible="false">
@@ -484,41 +487,40 @@
                                     <asp:Repeater ID="rptServiceApplicants" runat="server" OnItemCommand="RptServiceApplicants_ItemCommand">
                                         <ItemTemplate>
                                             <div class="applicant-row" data-request-id='<%# Eval("RequestId") %>'>
-                                                <div>
-                                                    <strong><%# Eval("FullName") %></strong>
-                                                    <div class="applicant-meta">
-                                                        <%# Eval("Phone") %>
-                                                        <%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? " &bull; " + Eval("Email") : "" %>
+                                                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; width:100%;">
+                                                    <div style="flex:1; min-width:0; overflow:hidden;">
+                                                        <strong><%# Eval("FullName") %></strong>
+                                                        <div class="applicant-meta"><%# Eval("Phone") %></div>
+                                                        <div class="applicant-meta" style="overflow-wrap:break-word; word-break:break-all;"><%# !string.IsNullOrEmpty(Eval("Email").ToString()) ? Eval("Email").ToString() : "" %></div>
+                                                        <div class="applicant-meta"><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></div>
+                                                       <div style="display:flex; gap:30px; margin-top:6px; flex-wrap:wrap">
+                                                            <asp:LinkButton ID="btnApproveService" runat="server"
+                                                                CssClass="btn-outline-green app-retract"
+                                                                CommandName="ApproveService"
+                                                                CommandArgument='<%# Eval("RequestId") %>'
+                                                                Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                                                style="padding:8px 17px; font-size:0.75rem; border-radius:20px; min-width:70px; text-align:center;">
+                                                                Approve
+                                                            </asp:LinkButton>
+                                                            <asp:LinkButton ID="btnRejectService" runat="server"
+                                                                CssClass="btn-outline-red app-retract"
+                                                                CommandName="RejectService"
+                                                                CommandArgument='<%# Eval("RequestId") %>'
+                                                                Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                                                style="padding:8px 17px; font-size:0.75rem; border-radius:20px; min-width:70px; text-align:center;">
+                                                                Reject
+                                                            </asp:LinkButton>
+                                                        </div>
                                                     </div>
-                                                    <div class="applicant-meta"><%# Eval("RequestedAt", "{0:MMM dd, yyyy}") %></div>
-                                                </div>
-                                                <div class="applicant-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>">
+                                                    <span class="app-status <%# Eval("Status").ToString().Replace("_Archived","").ToLower() %>" style="white-space:nowrap; flex-shrink:0;">
                                                         <%# Eval("Status").ToString().Replace("_Archived","") %>
                                                     </span>
-                                                    <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
-                                                        <asp:LinkButton ID="btnApproveService" runat="server"
-                                                            CssClass="btn-outline app-retract"
-                                                            CommandName="ApproveService"
-                                                            CommandArgument='<%# Eval("RequestId") %>'
-                                                            Visible='<%# Eval("Status").ToString() == "Pending" %>'
-                                                            style="padding:8px 16px; font-size:0.85rem; min-width:80px; text-align:center; line-height:1; display:flex; align-items:center; justify-content:center;">
-                                                            Approve
-                                                        </asp:LinkButton>
-                                                        <asp:LinkButton ID="btnRejectService" runat="server"
-                                                            CssClass="btn-outline app-retract"
-                                                            CommandName="RejectService"
-                                                            CommandArgument='<%# Eval("RequestId") %>'
-                                                            Visible='<%# Eval("Status").ToString() == "Pending" %>'
-                                                            style="padding:8px 16px; font-size:0.85rem; min-width:80px; text-align:center; line-height:1; display:flex; align-items:center; justify-content:center;">
-                                                            Reject
-                                                        </asp:LinkButton>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </ItemTemplate>
                                     </asp:Repeater>
                                 </div>
+                            </asp:Panel>
                             </div>
                         </ItemTemplate>
                     </asp:Repeater>
@@ -564,7 +566,7 @@
                     <asp:Repeater ID="rptBusinessListings" runat="server" OnItemCommand="RptBusinessListings_ItemCommand">
                         <ItemTemplate>
                             <div class="app-card"
-                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+                                style="display:flex; flex-direction:column; gap:12px; background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; align-self:start;">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
                                     <h4 style="font-size:0.85rem; font-weight:700; color:#1e293b; margin:0;"><%# Eval("BusinessName") %></h4>
                                     <span class="app-status <%# Eval("Status").ToString().ToLower() %>" style="white-space:nowrap; flex-shrink:0; font-size:0.75rem; padding:5px 12px;">
@@ -631,10 +633,15 @@
                     </asp:Repeater>
                 </div>
             </div>
-</div><%-- end profile-tabs --%>
+        </div>
     </div>
-
+    <%-- end profile-tabs --%>
     <script>
+        // shows selected filename for profile image upload
+        document.getElementById('<%= fuProfileImage.ClientID %>').addEventListener('change', function () {
+            var fileName = this.files[0] ? this.files[0].name : 'Walang napiling file';
+            document.getElementById('fileNameDisplay').textContent = fileName;
+        });
         // Auto-hide alerts after 3 seconds
         function autoHideAlerts() {
             var alerts = document.querySelectorAll('.form-alert');

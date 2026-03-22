@@ -42,7 +42,6 @@ namespace GROUP6_ANGAT {
 
                         lblProfileName.Text = fullName;
                         lblProfileEmail.Text = string.IsNullOrWhiteSpace(email) ? "Walang email" : email;
-                        lblProfileRole.Text = string.IsNullOrWhiteSpace(reader["Role"].ToString()) ? "User" : reader["Role"].ToString();
 
                         txtFullName.Text = fullName;
                         txtEmail.Text = email;
@@ -354,9 +353,14 @@ namespace GROUP6_ANGAT {
             var hf = (HiddenField)e.Item.FindControl("hfListingServiceId");
             var rptServiceApplicants = (Repeater)e.Item.FindControl("rptServiceApplicants");
             var pnlNoServiceApplicants = (Panel)e.Item.FindControl("pnlNoServiceApplicants");
+            var pnlApplicantsBlock = (Panel)e.Item.FindControl("pnlApplicantsBlock");
+
             int serviceId;
             if (hf != null && int.TryParse(hf.Value, out serviceId))
                 LoadServiceApplicants(serviceId, rptServiceApplicants, pnlNoServiceApplicants);
+
+            if (pnlApplicantsBlock != null)
+                pnlApplicantsBlock.Visible = rptServiceApplicants.Items.Count > 0;
         }
         private void LoadApplicants(int jobId, Repeater rpt, System.Web.UI.WebControls.Panel pnlEmpty) {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
