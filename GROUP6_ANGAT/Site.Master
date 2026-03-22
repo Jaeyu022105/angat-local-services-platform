@@ -103,7 +103,7 @@
 
                             <li class="desktop-only nav-profile-dropdown">
                                 <button type="button" class="nav-profile-icon" id="profileMenuBtn" title="Profile">
-                                    <i class='bx bx-user-circle'></i>
+                                    <i class='bx bxs-user-circle'></i>
                                 </button>
                                 <ul class="profile-dropdown-menu">
                                     <li><a runat="server" href="~/Pages/Profile.aspx"><i class='bx bx-user'></i> Profile</a></li>
