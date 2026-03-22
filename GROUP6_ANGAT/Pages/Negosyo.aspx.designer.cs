@@ -7,12 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT.Pages
-{
+namespace GROUP6_ANGAT.Pages {
 
 
-    public partial class Directory
-    {
+    public partial class Directory {
 
         /// <summary>
         /// lblDirectoryCountHero control.
@@ -22,6 +20,24 @@ namespace GROUP6_ANGAT.Pages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDirectoryCountHero;
+
+        /// <summary>
+        /// pnlDirectoryMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlDirectoryMessage;
+
+        /// <summary>
+        /// lblDirectoryMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDirectoryMessage;
 
         /// <summary>
         /// rptDirectory control.

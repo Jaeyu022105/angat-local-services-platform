@@ -242,7 +242,22 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+<script>
+    // ── LIMIT TAGS ON CARDS (max 3) ──
+    document.querySelectorAll('.listings-grid .listing-card').forEach(function (card) {
+        var tagWrap = card.querySelector('.listing-tags');
+        if (!tagWrap) return;
+        var tags = Array.from(tagWrap.querySelectorAll('.badge'));
+        if (tags.length <= 3) return;
+        for (var i = 3; i < tags.length; i++) {
+            tags[i].style.display = 'none';
+        }
+        var more = document.createElement('span');
+        more.className = 'tag-overflow';
+        more.textContent = '+' + (tags.length - 3);
+        tagWrap.appendChild(more);
+    });
+</script>
 </asp:Content>

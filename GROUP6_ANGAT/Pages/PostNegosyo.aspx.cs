@@ -1,165 +1,234 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using System.Web.UI.WebControls;
+using System.Linq;
 
-namespace GROUP6_ANGAT
-{
-    public partial class PostNegosyo : System.Web.UI.Page
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (Session["UserId"] == null)
-            {
+
+namespace GROUP6_ANGAT {
+    public partial class PostNegosyo : System.Web.UI.Page {
+        protected void Page_Load(object sender, EventArgs e) {
+            if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/PostNegosyo.aspx");
                 return;
             }
 
-            if (!IsPostBack)
-            {
-                if (!IsUserRole())
-                {
+            if (!IsPostBack) {
+                if (!IsUserRole()) {
                     ShowMessage("error", "Ang page na ito ay para sa mga USERS lamang.");
                     btnPostNegosyo.Enabled = false;
                     return;
                 }
 
-                if (Session["UserName"] != null && string.IsNullOrWhiteSpace(txtOwnerName.Text))
-                {
+                PopulateHourDropdowns();
+
+                if (Session["UserName"] != null)
                     txtOwnerName.Text = Session["UserName"].ToString();
+
+                if (Session["UserPhone"] != null) {
+                    txtContactNumber.Text = Session["UserPhone"].ToString();
+                    lblPhoneHint.Text = "Ginagamit ang inyong registered na number. Pwede mo itong baguhin.";
                 }
             }
         }
 
-        protected void BtnPostNegosyo_Click(object sender, EventArgs e)
-        {
-            if (Session["UserId"] == null)
-            {
+        private void PopulateHourDropdowns() {
+            ddlOpenHour.Items.Clear();
+            ddlCloseHour.Items.Clear();
+
+            for (int h = 0; h < 24; h++) {
+                string suffix = h < 12 ? "AM" : "PM";
+                int hour12 = h == 0 ? 12 : h > 12 ? h - 12 : h;
+                string label = hour12 + ":00 " + suffix;
+                ddlOpenHour.Items.Add(new ListItem(label, label));
+                ddlCloseHour.Items.Add(new ListItem(label, label));
+            }
+
+            // Default: 6:00 AM open, 10:00 PM close
+            ddlOpenHour.SelectedValue = "6:00 AM";
+            ddlCloseHour.SelectedValue = "10:00 PM";
+        }
+
+        protected void BtnPostNegosyo_Click(object sender, EventArgs e) {
+            if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/PostNegosyo.aspx");
                 return;
             }
 
-            if (!IsUserRole())
-            {
+            if (!IsUserRole()) {
                 ShowMessage("error", "Ang page na ito ay para sa mga USERS lamang.");
                 return;
             }
 
-            if (!Page.IsValid)
-            {
-                return;
+            // ── SANITIZE ──
+            string name = CleanTitle(txtBusinessName.Text);
+            string category = SanitizeText(ddlCategory.SelectedValue, 60);
+            string barangay = SanitizeText(ddlBarangay.SelectedValue, 60);
+            string address = SanitizeText(txtAddressLine.Text, 255);
+            string ownerName = SanitizeText(txtOwnerName.Text, 100);
+            string contact = SanitizeText(txtContactNumber.Text, 20);
+            string days = BuildDaysString();
+            string time = GetSelectedTime();
+            string hours = days + " | " + time; string mapUrl = NormalizeMapUrl(txtMapEmbedUrl.Text);
+            string tags = SanitizeText(hfTags.Value, 300);
+
+            // ── VALIDATE ──
+            if (string.IsNullOrEmpty(name)) { ShowMessage("error", "Pakiusap ilagay ang Pangalan ng Negosyo."); return; }
+            if (name.Length < 3) { ShowMessage("error", "Ang pangalan ng negosyo ay dapat hindi bababa sa 3 karakter."); return; }
+            if (string.IsNullOrEmpty(category)) { ShowMessage("error", "Pakiusap piliin ang Kategorya."); return; }
+            if (string.IsNullOrEmpty(barangay)) { ShowMessage("error", "Pakiusap piliin ang Barangay."); return; }
+            if (string.IsNullOrEmpty(address) || address.Length < 5) { ShowMessage("error", "Pakiusap ilagay ang eksaktong address ng negosyo."); return; }
+            if (string.IsNullOrEmpty(contact)) {
+                contact = Session["UserPhone"]?.ToString() ?? "";
+                if (string.IsNullOrEmpty(contact)) { ShowMessage("error", "Pakiusap ilagay ang Contact Number."); return; }
             }
+            if (!Regex.IsMatch(contact, @"^(09|\+639)\d{9}$")) { ShowMessage("error", "Invalid na format ng contact number. Gamitin: 09XXXXXXXXX"); return; }
+            if (string.IsNullOrEmpty(hours)) { ShowMessage("error", "Pakiusap piliin ang oras ng operasyon. Siguraduhing hindi magkapareho ang opening at closing time."); return; }
+            if (string.IsNullOrEmpty(tags)) { ShowMessage("error", "Pakiusap pumili ng kahit isang tag."); return; }
 
-            string name = (txtBusinessName.Text ?? "").Trim();
-            string category = ddlCategory.SelectedValue;
-            string barangay = (txtBarangay.Text ?? "").Trim();
-            string address = (txtAddressLine.Text ?? "").Trim();
-            string ownerName = (txtOwnerName.Text ?? "").Trim();
-            string contactNumber = (txtContactNumber.Text ?? "").Trim();
-            string hours = (txtHours.Text ?? "").Trim();
-            string mapEmbedUrl = NormalizeMapEmbedUrl(txtMapEmbedUrl.Text);
-            string tags = (txtTags.Text ?? "").Trim();
-            string status = ddlStatus.SelectedValue;
+            if (string.IsNullOrEmpty(ownerName))
+                ownerName = Session["UserName"]?.ToString() ?? "";
 
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(category) || string.IsNullOrWhiteSpace(barangay))
-            {
-                ShowMessage("error", "Paki-kumpleto ang Pangalan ng Negosyo, Kategorya, at Barangay.");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(ownerName) && Session["UserName"] != null)
-            {
-                ownerName = Session["UserName"].ToString();
-            }
-
+            // ── INSERT ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
                 INSERT INTO DirectoryBusinesses
-                    (BusinessName, Category, Barangay, AddressLine, OwnerName, ContactNumber, Hours, Tags, MapEmbedUrl, Status, IsActive, CreatedAt, UserId)
+                    (BusinessName, Category, Barangay, AddressLine, OwnerName, ContactNumber,
+                     Hours, Tags, MapEmbedUrl, Status, IsActive, CreatedAt, UserId)
                 VALUES
-                    (@BusinessName, @Category, @Barangay, @AddressLine, @OwnerName, @ContactNumber, @Hours, @Tags, @MapEmbedUrl, @Status, 1, GETDATE(), @UserId)", conn))
-            {
-                cmd.Parameters.AddWithValue("@BusinessName", name);
-                cmd.Parameters.AddWithValue("@Category", category);
-                cmd.Parameters.AddWithValue("@Barangay", barangay);
-                cmd.Parameters.AddWithValue("@AddressLine", string.IsNullOrWhiteSpace(address) ? (object)DBNull.Value : address);
-                cmd.Parameters.AddWithValue("@OwnerName", string.IsNullOrWhiteSpace(ownerName) ? (object)DBNull.Value : ownerName);
-                cmd.Parameters.AddWithValue("@ContactNumber", string.IsNullOrWhiteSpace(contactNumber) ? (object)DBNull.Value : contactNumber);
-                cmd.Parameters.AddWithValue("@Hours", string.IsNullOrWhiteSpace(hours) ? (object)DBNull.Value : hours);
-                cmd.Parameters.AddWithValue("@Tags", string.IsNullOrWhiteSpace(tags) ? (object)DBNull.Value : tags);
-                cmd.Parameters.AddWithValue("@MapEmbedUrl", string.IsNullOrWhiteSpace(mapEmbedUrl) ? (object)DBNull.Value : mapEmbedUrl);
-                cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                    (@BusinessName, @Category, @Barangay, @AddressLine, @OwnerName, @ContactNumber,
+                     @Hours, @Tags, @MapEmbedUrl, 'Bukas Ngayon', 1, GETDATE(), @UserId)", conn)) {
+                cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
+                cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
+                cmd.Parameters.Add("@Barangay", SqlDbType.NVarChar, 60).Value = barangay;
+                cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
+                cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
+                cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
+                cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
+                cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
+                cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
+                cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                try { conn.Open(); cmd.ExecuteNonQuery(); }
+                catch (SqlException) { ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit."); return; }
             }
 
-            ShowMessage("success", "Nairehistro na ang inyong negosyo! Makikita ito sa Directory.");
-
-            txtBusinessName.Text = "";
-            txtBarangay.Text = "";
-            txtAddressLine.Text = "";
-            txtOwnerName.Text = Session["UserName"] != null ? Session["UserName"].ToString() : "";
-            txtContactNumber.Text = "";
-            txtHours.Text = "";
-            txtMapEmbedUrl.Text = "";
-            txtTags.Text = "";
-            ddlStatus.SelectedIndex = 0;
+            Response.Redirect("~/Pages/Negosyo.aspx?posted=success");
         }
 
-        private bool IsUserRole()
-        {
-            if (Session["UserId"] == null)
-            {
-                return false;
-            }
+        // ── HELPERS ──
+        private string CleanTitle(string input) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = Regex.Replace(input.Trim(), @"\s+", " ");
+            input = Regex.Replace(input, @"[^\w\s\-\.\,\'\/]", "");
+            return System.Globalization.CultureInfo.CurrentCulture
+                .TextInfo.ToTitleCase(input.ToLower());
+        }
 
+        private string SanitizeText(string input, int maxLength) {
+            if (string.IsNullOrWhiteSpace(input)) return "";
+            input = input.Trim();
+            return input.Length > maxLength ? input.Substring(0, maxLength) : input;
+        }
+
+        private bool IsUserRole() {
+            if (Session["UserId"] == null) return false;
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand("SELECT Role FROM Users WHERE UserId = @UserId", conn))
-            {
+            using (SqlCommand cmd = new SqlCommand("SELECT Role FROM Users WHERE UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
-                object roleObj = cmd.ExecuteScalar();
-                string role = roleObj == null ? "" : roleObj.ToString();
-                return string.Equals(role, "User", StringComparison.OrdinalIgnoreCase);
+                object r = cmd.ExecuteScalar();
+                return string.Equals(r?.ToString() ?? "", "User", StringComparison.OrdinalIgnoreCase);
             }
         }
 
-        private void ShowMessage(string type, string message)
-        {
+        private void ShowMessage(string type, string message) {
             pnlPostMessage.Visible = true;
             pnlPostMessage.CssClass = $"form-alert {type}";
             lblPostMessage.Text = message;
         }
 
-        private string NormalizeMapEmbedUrl(string raw)
-        {
+        private string NormalizeMapUrl(string raw) {
             string text = (raw ?? "").Trim();
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return "";
+            if (string.IsNullOrWhiteSpace(text)) return "";
+            if (text.IndexOf("<iframe", StringComparison.OrdinalIgnoreCase) >= 0) {
+                Match m = Regex.Match(text, "src\\s*=\\s*\"([^\"]+)\"", RegexOptions.IgnoreCase);
+                if (m.Success) return m.Groups[1].Value.Trim();
+                m = Regex.Match(text, "src\\s*=\\s*'([^']+)'", RegexOptions.IgnoreCase);
+                if (m.Success) return m.Groups[1].Value.Trim();
             }
-
-            if (text.IndexOf("<iframe", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                Match match = Regex.Match(text, "src\\s*=\\s*\"([^\"]+)\"", RegexOptions.IgnoreCase);
-                if (match.Success)
-                {
-                    return match.Groups[1].Value.Trim();
-                }
-
-                match = Regex.Match(text, "src\\s*=\\s*'([^']+)'", RegexOptions.IgnoreCase);
-                if (match.Success)
-                {
-                    return match.Groups[1].Value.Trim();
-                }
-            }
-
             return text;
+        }
+
+        private string BuildDaysString() {
+            // Get selected days from the checkboxes
+            string[] selectedDays = Request.Form.GetValues("dayCheck");
+            if (selectedDays == null || selectedDays.Length == 0)
+                return "Hindi tinukoy";
+
+            // Convert numeric values to day names
+            string[] dayNames = { "Lunes", "Martes", "Miyerkules", "Huwebes", "Biyernes", "Sabado", "Linggo" };
+            List<int> selected = new List<int>();
+
+            foreach (string val in selectedDays) {
+                if (int.TryParse(val, out int dayIndex))
+                    selected.Add(dayIndex);
+            }
+
+            if (selected.Count == 0) return "Hindi tinukoy";
+            if (selected.Count == 7) return "Araw-araw";
+
+            selected.Sort();
+
+            // Check if it's weekdays only (Mon-Fri = 0-4)
+            var weekdays = new List<int> { 0, 1, 2, 3, 4 };
+            if (selected.Count == 5 && selected.SequenceEqual(weekdays))
+                return "Weekdays (Lunes - Biyernes)";
+
+            // Check if it's weekends only (Sat-Sun = 5-6)
+            var weekends = new List<int> { 5, 6 };
+            if (selected.Count == 2 && selected.SequenceEqual(weekends))
+                return "Weekends (Sabado - Linggo)";
+
+            // Build custom day range
+            List<string> dayStrings = new List<string>();
+            int i = 0;
+            while (i < selected.Count) {
+                int start = selected[i];
+                int end = selected[i];
+                while (i + 1 < selected.Count && selected[i + 1] == selected[i] + 1) {
+                    i++;
+                    end = selected[i];
+                }
+
+                if (end - start >= 2)
+                    dayStrings.Add(dayNames[start] + " - " + dayNames[end]);
+                else if (end - start == 1)
+                    dayStrings.Add(dayNames[start] + ", " + dayNames[end]);
+                else
+                    dayStrings.Add(dayNames[start]);
+                i++;
+            }
+
+            return string.Join(", ", dayStrings);
+        }
+
+        private string GetSelectedTime() {
+            string openHour = SanitizeText(ddlOpenHour.SelectedValue, 30);
+            string closeHour = SanitizeText(ddlCloseHour.SelectedValue, 30);
+
+            if (string.IsNullOrEmpty(openHour) || string.IsNullOrEmpty(closeHour))
+                return "Hindi tinukoy";
+
+            if (openHour == closeHour)
+                return "Buong araw";
+
+            return openHour + " - " + closeHour;
         }
     }
 }

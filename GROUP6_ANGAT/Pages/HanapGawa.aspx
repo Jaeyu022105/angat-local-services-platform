@@ -195,16 +195,16 @@
                     <span class="modal-info-value" id="serviceLocation"></span>
                 </div>
                 <div class="modal-info-item">
-                    <span class="modal-info-label">Uri ng Serbisyo</span>
-                    <div id="serviceTags" class="job-tags" style="margin:0;"></div>
+                    <span class="modal-info-label">Status</span>
+                    <span id="serviceStatus" class="badge badge-green"></span>
                 </div>
                 <div class="modal-info-item">
                     <span class="modal-info-label">Rate</span>
                     <span class="modal-info-value" id="serviceRate"></span>
                 </div>
-                <div class="modal-info-item">
-                    <span class="modal-info-label">Status</span>
-                    <span id="serviceStatus" class="badge badge-green"></span>
+                <div class="modal-info-item modal-tags-item">
+                    <span class="modal-info-label">Uri ng Serbisyo</span>
+                    <div id="serviceTags" class="job-tags" style="margin:0;"></div>
                 </div>
             </div>
 
@@ -249,27 +249,42 @@
             var t   = (tag      || '').toLowerCase();
             var cat = (category || '').toLowerCase();
 
-            if (t.includes('urgent'))                               return 'tag-rose';
-            if (t.includes('full-time'))                            return 'tag-fulltime';
-            if (t.includes('part-time'))                            return 'tag-parttime';
-            if (t.includes('pisikal'))                              return 'tag-physical';
-            if (t.includes('may karanasan') || t.includes('licensed') || t.includes('experienced')) return 'tag-experience';
-            if (t.includes('live-in'))                              return 'tag-housing';
-            if (t.includes('repair'))                               return 'tag-blue';
-            if (t.includes('install') || t.includes('wiring'))      return 'tag-teal';
-            if (t.includes('flexible'))                             return 'tag-teal';
-            if (t.includes('weekday') || t.includes('weekdays'))    return 'tag-blue';
-            if (t.includes('weekend') || t.includes('weekends'))    return 'tag-violet';
-            if (t.includes('anytime') || t.includes('available'))   return 'tag-mint';
+            if (t.includes('urgent'))                                       return 'tag-rose';
+            if (t.includes('full-time'))                                    return 'tag-fulltime';
+            if (t.includes('part-time'))                                    return 'tag-parttime';
+            if (t.includes('weekday') || t.includes('weekdays'))            return 'tag-blue';
+            if (t.includes('weekend') || t.includes('weekends'))            return 'tag-violet';
+            if (t.includes('flexible'))                                     return 'tag-teal';
+            if (t.includes('anytime') || t.includes('available'))           return 'tag-mint';
+            if (t.includes('experienced') || t.includes('may karanasan'))   return 'tag-experience';
+            if (t.includes('licensed'))                                     return 'tag-experience';
+            if (t.includes('pisikal'))                                      return 'tag-physical';
+            if (t.includes("driver's license"))                             return 'tag-blue';
+            if (t.includes('nbi'))                                          return 'tag-amber';
+            if (t.includes('with tools'))                                   return 'tag-amber';
+            if (t.includes('repair'))                                       return 'tag-blue';
+            if (t.includes('install') || t.includes('wiring'))              return 'tag-teal';
+            if (t.includes('cleaning'))                                     return 'tag-mint';
+            if (t.includes('maintenance'))                                  return 'tag-teal';
+            if (t.includes('gawa sa order') || t.includes('custom'))       return 'tag-amber';
+            if (t.includes('emergency'))                                    return 'tag-rose';
+            if (t.includes('gcash'))                                        return 'tag-teal';
+            if (t.includes('pautang') || t.includes('utang'))              return 'tag-amber';
+            if (t.includes('takeout'))                                      return 'tag-blue';
+            if (t.includes('delivery'))                                     return 'tag-violet';
+            if (t.includes('dine-in'))                                      return 'tag-mint';
+            if (t.includes('online selling'))                               return 'tag-teal';
+            if (t.includes('lutong bahay'))                                 return 'tag-amber';
+            if (t.includes('halamang gamot'))                               return 'tag-mint';
 
-            if (cat.includes('karpintero'))                         return 'tag-amber';
-            if (cat.includes('tubero'))                             return 'tag-blue';
-            if (cat.includes('electric'))                           return 'tag-teal';
-            if (cat.includes('aircon') || cat.includes('appliance')) return 'tag-mint';
-            if (cat.includes('mananahi'))                           return 'tag-rose';
-            if (cat.includes('kasambahay') || cat.includes('labandera')) return 'tag-violet';
-            if (cat.includes('driver'))                             return 'tag-blue';
-            if (cat.includes('carinderia') || cat.includes('sari-sari')) return 'tag-amber';
+            if (cat.includes('karpintero'))                                 return 'tag-amber';
+            if (cat.includes('tubero'))                                     return 'tag-blue';
+            if (cat.includes('electric'))                                   return 'tag-teal';
+            if (cat.includes('aircon') || cat.includes('appliance'))       return 'tag-mint';
+            if (cat.includes('mananahi'))                                   return 'tag-rose';
+            if (cat.includes('kasambahay') || cat.includes('labandera'))   return 'tag-violet';
+            if (cat.includes('driver'))                                     return 'tag-blue';
+            if (cat.includes('carinderia') || cat.includes('sari-sari'))   return 'tag-amber';
 
             return 'tag-teal';
         }
@@ -311,6 +326,21 @@
             sortSelect.addEventListener('change', function () { applySort(); applyFilter(); });
         })();
 
+        // ── LIMIT TAGS ON CARDS (max 3) ──
+        document.querySelectorAll('#hgListings .listing-card').forEach(function (card) {
+            var tagWrap = card.querySelector('.listing-tags');
+            if (!tagWrap) return;
+            var tags = Array.from(tagWrap.querySelectorAll('.badge'));
+            if (tags.length <= 3) return;
+            for (var i = 3; i < tags.length; i++) {
+                tags[i].style.display = 'none';
+            }
+            var more = document.createElement('span');
+            more.className = 'tag-overflow';
+            more.textContent = '+' + (tags.length - 3);
+            tagWrap.appendChild(more);
+        });
+
         // ── MODAL ──
         (function () {
             const modal          = document.getElementById('serviceModal');
@@ -331,8 +361,9 @@
 
                 // ── Poster image ──
                 var img = modal.querySelector('#posterImg');
-                var imgPath = card.dataset.posterImg || '';
+                var imgPath = (card.dataset.posterImg || '').replace('~/', '/');
                 img.src = imgPath && imgPath !== '' ? imgPath : '/Images/default-icon.jpg';
+                img.onerror = function () { img.src = '/Images/default-icon.jpg'; };
 
                 // ── Tags with correct colors matching card display ──
                 var tagsEl = modal.querySelector('#serviceTags');

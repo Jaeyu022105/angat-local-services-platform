@@ -31,45 +31,34 @@ namespace GROUP6_ANGAT {
             // ── URGENCY ──
             if (t.Contains("urgent")) return "tag-rose";
 
-            // ── EMPLOYMENT TYPE (Trabaho) ──
+            // ── EMPLOYMENT TYPE ──
             if (t.Contains("full-time")) return "tag-fulltime";
             if (t.Contains("part-time")) return "tag-parttime";
 
-            // ── SCHEDULE (Trabaho & Serbisyo) ──
-            if (t.Contains("weekday") || t.Contains("weekdays")) return "tag-blue";
-            if (t.Contains("weekend") || t.Contains("weekends")) return "tag-violet";
-            if (t.Contains("flexible")) return "tag-teal";
-            if (t.Contains("anytime") || t.Contains("available")) return "tag-mint";
+            // ── SCHEDULE — all blue ──
+            if (t.Contains("weekday") || t.Contains("weekdays") ||
+                t.Contains("weekend") || t.Contains("weekends") ||
+                t.Contains("flexible")) return "tag-blue";
 
-            // ── REQUIREMENTS / TRUST (Trabaho & Serbisyo) ──
-            if (t.Contains("experienced")) return "tag-experience";
-            if (t.Contains("licensed")) return "tag-experience";
-            if (t.Contains("pisikal")) return "tag-physical";
-            if (t.Contains("driver's license")) return "tag-blue";
-            if (t.Contains("nbi")) return "tag-amber";
-            if (t.Contains("with tools")) return "tag-amber";
+            // ── REQUIREMENTS — all amber ──
+            if (t.Contains("experienced") || t.Contains("may karanasan") ||
+                t.Contains("licensed") || t.Contains("pisikal") ||
+                t.Contains("driver's license") || t.Contains("nbi") ||
+                t.Contains("with tools")) return "tag-amber";
 
-            // ── SERVICE TYPE (Serbisyo) ──
-            if (t.Contains("repair")) return "tag-blue";
-            if (t.Contains("install") || t.Contains("wiring")) return "tag-teal";
-            if (t.Contains("cleaning")) return "tag-mint";
-            if (t.Contains("maintenance")) return "tag-teal";
-            if (t.Contains("gawa sa order") || t.Contains("custom")) return "tag-amber";
+            // ── SERVICE TYPE — all teal ──
+            if (t.Contains("repair") || t.Contains("install") ||
+                t.Contains("wiring") || t.Contains("cleaning") ||
+                t.Contains("maintenance") || t.Contains("gawa sa order") ||
+                t.Contains("custom")) return "tag-teal";
             if (t.Contains("emergency")) return "tag-rose";
 
-            // ── NEGOSYO — PAYMENT ──
+            // ── NEGOSYO PAYMENT — teal ──
             if (t.Contains("gcash")) return "tag-teal";
-            if (t.Contains("pautang") || t.Contains("utang")) return "tag-amber";
 
-            // ── NEGOSYO — SERVICE TYPE ──
-            if (t.Contains("takeout")) return "tag-blue";
-            if (t.Contains("delivery")) return "tag-violet";
-            if (t.Contains("dine-in")) return "tag-mint";
-
-            // ── NEGOSYO — FEATURES ──
-            if (t.Contains("online selling")) return "tag-teal";
-            if (t.Contains("lutong bahay")) return "tag-amber";
-            if (t.Contains("halamang gamot")) return "tag-mint";
+            // ── NEGOSYO ORDER — blue ──
+            if (t.Contains("pick-up") || t.Contains("takeout") ||
+                t.Contains("delivery") || t.Contains("dine-in")) return "tag-blue";
 
             // ── CATEGORY-BASED FALLBACK ──
             if (cat.Contains("karpintero")) return "tag-amber";

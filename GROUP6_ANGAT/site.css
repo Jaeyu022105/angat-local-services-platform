@@ -1150,13 +1150,14 @@ button.listing-card {
         font-weight: 500;
     }
 
-    .listing-card .listing-tags {
+.listing-card .listing-tags {
         display: flex;
         gap: 6px;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         overflow: hidden;
         margin-bottom: 16px;
         align-items: center;
+        max-height: 36px;
     }
 
     .tag-overflow {
@@ -1283,8 +1284,7 @@ button.listing-card {
     margin: 12px 0 16px;
 }
 
-.modal-info-item:has(#jobTags),
-.modal-info-item:has(#serviceTags) {
+.modal-tags-item {
     grid-column: 1 / -1;
 }
 

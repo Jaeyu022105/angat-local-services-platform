@@ -7,12 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GROUP6_ANGAT
-{
+namespace GROUP6_ANGAT {
 
 
-    public partial class PostNegosyo
-    {
+    public partial class PostNegosyo {
 
         /// <summary>
         /// pnlPostMessage control.
@@ -42,15 +40,6 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.TextBox txtBusinessName;
 
         /// <summary>
-        /// rfvBusinessName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvBusinessName;
-
-        /// <summary>
         /// ddlCategory control.
         /// </summary>
         /// <remarks>
@@ -60,31 +49,13 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.DropDownList ddlCategory;
 
         /// <summary>
-        /// rfvCategory control.
+        /// ddlBarangay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCategory;
-
-        /// <summary>
-        /// txtBarangay control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBarangay;
-
-        /// <summary>
-        /// rfvBarangay control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvBarangay;
+        protected global::System.Web.UI.WebControls.DropDownList ddlBarangay;
 
         /// <summary>
         /// txtAddressLine control.
@@ -94,15 +65,6 @@ namespace GROUP6_ANGAT
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAddressLine;
-
-        /// <summary>
-        /// rfvAddressLine control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvAddressLine;
 
         /// <summary>
         /// txtOwnerName control.
@@ -123,22 +85,40 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.TextBox txtContactNumber;
 
         /// <summary>
-        /// txtHours control.
+        /// lblPhoneHint control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtHours;
+        protected global::System.Web.UI.WebControls.Label lblPhoneHint;
 
         /// <summary>
-        /// rfvHours control.
+        /// ddlOpenHour control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvHours;
+        protected global::System.Web.UI.WebControls.DropDownList ddlOpenHour;
+
+        /// <summary>
+        /// ddlCloseHour control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCloseHour;
+
+        /// <summary>
+        /// hfHours control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfHours;
 
         /// <summary>
         /// txtMapEmbedUrl control.
@@ -150,40 +130,13 @@ namespace GROUP6_ANGAT
         protected global::System.Web.UI.WebControls.TextBox txtMapEmbedUrl;
 
         /// <summary>
-        /// txtTags control.
+        /// hfTags control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTags;
-
-        /// <summary>
-        /// rfvTags control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTags;
-
-        /// <summary>
-        /// ddlStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
-
-        /// <summary>
-        /// rfvStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvStatus;
+        protected global::System.Web.UI.WebControls.HiddenField hfTags;
 
         /// <summary>
         /// btnPostNegosyo control.
