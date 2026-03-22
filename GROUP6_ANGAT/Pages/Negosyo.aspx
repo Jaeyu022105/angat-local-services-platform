@@ -66,15 +66,22 @@
         </div>
     </div>
 
-    <div class="section-header left" style="display: flex; justify-content: space-between; align-items: flex-end;">
+    <div class="section-header left" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
         <div>
             <h3>Ating Mga <span>Tindahan</span></h3>
             <p id="dirDirectorySubtext" class="section-sub">Tuklasin ang mga lokal na negosyong bukas at aktibo sa Biñan.</p>
         </div>
-        <div style="display:flex; gap: 10px;">
-            <a href="/Pages/PostNegosyo.aspx" class="btn-outline" style="padding: 8px 16px;"><i class='bx bx-plus'></i> I-rehistro ang Negosyo</a>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <a href="/Pages/PostNegosyo.aspx" class="btn-outline" style="padding:8px 16px;">
+                <i class='bx bx-plus'></i> I-rehistro ang Negosyo
+            </a>
+            <select id="dirSort" style="min-width:220px; padding:12px 16px; border-radius:8px; border:1px solid var(--border); outline:none; font-family:inherit; font-size:0.88rem;">
+                <option value="newest">Pinakabago</option>
+                <option value="open">Bukas Ngayon</option>
+            </select>
         </div>
     </div>
+
     
     <asp:Panel ID="pnlDirectoryMessage" runat="server" CssClass="form-alert" Visible="false" ClientIDMode="Static">
         <asp:Label ID="lblDirectoryMessage" runat="server" />
@@ -90,22 +97,23 @@
         <asp:Repeater ID="rptDirectory" runat="server">
             <ItemTemplate>
                 <button type="button" class="listing-card listing-card-button"
-                   data-name='<%# EncodeAttr(Eval("BusinessName")) %>'
-                   data-category='<%# EncodeAttr(Eval("Category")) %>'
-                   data-barangay='<%# EncodeAttr(Eval("Barangay")) %>'
-                   data-exact-address='<%# EncodeAttr(Eval("AddressLine")) %>'
-                   data-tags='<%# EncodeAttr(Eval("Tags")) %>'
-                   data-owner='<%# EncodeAttr(GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay"))) %>'
-                   data-contact='<%# EncodeAttr(Eval("ContactNumber")) %>'
-                   data-status='<%# EncodeAttr(Eval("Status")) %>'
-                   data-map='<%# EncodeAttr(Eval("MapEmbedUrl")) %>'
-                   data-icon-class='<%# EncodeAttr(GetCategoryIconClass(Eval("Category"))) %>'
-                   data-icon-style='<%# EncodeAttr(GetCategoryIconStyle(Eval("Category"))) %>'
-                   data-badge-class='<%# EncodeAttr(GetCategoryBadgeClass(Eval("Category"))) %>'
-                   data-search='<%# BuildSearchText(Eval("BusinessName"), Eval("Tags"), Eval("Barangay"), Eval("Category"), Eval("AddressLine"), Eval("OwnerDisplay")) %>'
-                   data-days='<%# EncodeAttr(GetDaysPart(Eval("Hours"))) %>'
-                   data-time='<%# EncodeAttr(GetTimePart(Eval("Hours"))) %>'
-                   data-address-full='<%# EncodeAttr(GetAddressValue(Eval("AddressLine"), Eval("Barangay"))) %>'>
+                    data-directoryid='<%# Eval("DirectoryId") %>'
+                    data-name='<%# EncodeAttr(Eval("BusinessName")) %>'
+                    data-category='<%# EncodeAttr(Eval("Category")) %>'
+                    data-barangay='<%# EncodeAttr(Eval("Barangay")) %>'
+                    data-exact-address='<%# EncodeAttr(Eval("AddressLine")) %>'
+                    data-tags='<%# EncodeAttr(Eval("Tags")) %>'
+                    data-owner='<%# EncodeAttr(GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay"))) %>'
+                    data-contact='<%# EncodeAttr(Eval("ContactNumber")) %>'
+                    data-status='<%# EncodeAttr(Eval("Status")) %>'
+                    data-map='<%# EncodeAttr(Eval("MapEmbedUrl")) %>'
+                    data-icon-class='<%# EncodeAttr(GetCategoryIconClass(Eval("Category"))) %>'
+                    data-icon-style='<%# EncodeAttr(GetCategoryIconStyle(Eval("Category"))) %>'
+                    data-badge-class='<%# EncodeAttr(GetCategoryBadgeClass(Eval("Category"))) %>'
+                    data-search='<%# BuildSearchText(Eval("BusinessName"), Eval("Tags"), Eval("Barangay"), Eval("Category"), Eval("AddressLine"), Eval("OwnerDisplay")) %>'
+                    data-days='<%# EncodeAttr(GetDaysPart(Eval("Hours"))) %>'
+                    data-time='<%# EncodeAttr(GetTimePart(Eval("Hours"))) %>'
+                    data-address-full='<%# EncodeAttr(GetAddressValue(Eval("AddressLine"), Eval("Barangay"))) %>'>
                     <div class="listing-top">
                         <div class="listing-icon" style='<%# GetCategoryIconStyle(Eval("Category")) %>'>
                             <i class='bx <%# GetCategoryIconClass(Eval("Category")) %>'></i>
@@ -173,6 +181,7 @@
             const searchInput = document.getElementById('dirSearch');
             const categorySelect = document.getElementById('dirCategory');
             const filterBtn = document.getElementById('dirFilterBtn');
+            const sortSelect = document.getElementById('dirSort');
             const cards = Array.from(document.querySelectorAll('#dirListings .listing-card-button'));
             const paginationWrap = document.getElementById('dirPagination');
             const noResults = document.getElementById('dirNoResults');
@@ -209,12 +218,28 @@
             function getFiltered() {
                 const q = (searchInput.value || '').toLowerCase().trim();
                 const cat = categorySelect.value;
-                return cards.filter(c => {
+                const sort = sortSelect ? sortSelect.value : 'newest';
+
+                const filtered = cards.filter(c => {
                     const mq = !q || (c.dataset.search || '').toLowerCase().includes(q);
                     const mc = cat === 'All' || (c.dataset.category || '') === cat;
-                    return mq && mc;
+
+                    const statusText = (c.querySelector('.listing-date')?.textContent || '').trim().toLowerCase();
+                    const ms = sort !== 'open' || statusText === 'bukas ngayon';
+
+                    return mq && mc && ms;
                 });
+
+                filtered.sort((a, b) => {
+                    const aId = parseInt(a.dataset.directoryid || '0', 10);
+                    const bId = parseInt(b.dataset.directoryid || '0', 10);
+                    return bId - aId;
+                });
+
+                return filtered;
             }
+
+
 
             function renderPagination(totalItems) {
                 paginationWrap.innerHTML = '';
@@ -249,6 +274,9 @@
             filterBtn.onclick = () => { currentPage = 1; renderPage(); };
             searchInput.onkeyup = () => { currentPage = 1; renderPage(); };
             categorySelect.onchange = () => { currentPage = 1; renderPage(); };
+            if (sortSelect) {
+                sortSelect.onchange = () => { currentPage = 1; renderPage(); };
+            }
             window.onresize = updateTagOverflow;
 
             renderPage();

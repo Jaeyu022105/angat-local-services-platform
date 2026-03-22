@@ -37,7 +37,7 @@
                 <label>Pangalan ng Negosyo <span class="required">*</span></label>
                 <asp:TextBox ID="txtBusinessName" runat="server"
                     placeholder="Halimbawa: Aling Nena Sari-Sari Store, Karinderia ni Mang Jose"></asp:TextBox>
-                <small class="field-hint">Awtomatikong iko-convert sa Title Case.</small>
+            
             </div>
 
             <%-- Category --%>

@@ -20,7 +20,7 @@ namespace GROUP6_ANGAT.Pages {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                SELECT d.BusinessName, d.Category, d.Barangay, d.AddressLine, 
+                SELECT d.DirectoryId, d.BusinessName, d.Category, d.Barangay, d.AddressLine, 
                        d.OwnerName, d.ContactNumber, d.MapEmbedUrl, d.Hours, d.Tags, d.Status,
                        COALESCE(NULLIF(LTRIM(RTRIM(d.OwnerName)), ''), u.FullName) AS OwnerDisplay
                 FROM DirectoryBusinesses d
