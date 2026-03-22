@@ -119,8 +119,12 @@
                         <asp:Literal ID="litTags" runat="server" Mode="PassThrough" Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
                     </div>
                     <div class="listing-footer">
-                        <span class="listing-pay" style="font-size: 0.85rem; color: #475569;"><i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay")) %></span>
-                        <span class="listing-date" style='<%# GetStatusStyle(Eval("Status")) %>'><%# Eval("Status") %></span>
+                        <span class="listing-pay" style="font-size: 0.85rem; color: #475569;">
+                            <i class='bx bx-user'></i> <%# GetOwnerDisplay(Eval("OwnerName"), Eval("OwnerDisplay")) %>
+                        </span>
+                        <span class="listing-date" style='<%# GetStatusStyle(Eval("Hours")) %>'>
+                            <%# GetDynamicStatus(Eval("Hours")) %>
+                        </span>
                     </div>
                 </button>
             </ItemTemplate>
@@ -268,7 +272,16 @@
             function openModal(card) {
                 modal.querySelector('#bizName').textContent = card.dataset.name;
                 modal.querySelector('#bizOwner').textContent = card.dataset.owner;
-                modal.querySelector('#bizStatus').textContent = card.dataset.status;
+
+                // Grabs the "Bukas Ngayon" or "Sarado Ngayon" text directly from the card
+                const statusText = card.querySelector('.listing-date').textContent.trim();
+                const bizStatusEl = modal.querySelector('#bizStatus');
+                bizStatusEl.textContent = statusText;
+
+                // Updates the color in the modal to match
+                bizStatusEl.style.color = (statusText === "Bukas Ngayon") ? "#0d9e6e" : "#be123c";
+                bizStatusEl.style.fontWeight = "bold";
+
                 modal.querySelector('#bizContact').textContent = card.dataset.contact || 'Walang contact number';
                 modal.querySelector('#bizAddress').textContent = card.dataset.addressFull;
                 modal.querySelector('#bizDaysOpen').textContent = card.dataset.days;

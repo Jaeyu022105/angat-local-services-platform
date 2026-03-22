@@ -85,6 +85,65 @@ namespace GROUP6_ANGAT.Pages {
 
         protected string GetCategoryIconStyle(object catObj) => "color: #0d9e6e; background: #e6f7f1;";
         protected string GetCategoryBadgeClass(object catObj) => "badge-teal";
-        protected string GetStatusStyle(object stat) => (stat ?? "").ToString().ToLower().Contains("sarado") ? "color: #be123c; font-weight: bold;" : "color: #0d9e6e; font-weight: bold;";
+        protected string GetDynamicStatus(object hoursObj) {
+            string hours = (hoursObj ?? "").ToString().Trim();
+            if (string.IsNullOrWhiteSpace(hours) || !hours.Contains("|")) return "Status Unknown";
+
+            try {
+                // 1. Split Hours (e.g., "Lunes - Biyernes | 8:00 AM - 10:00 PM")
+                var parts = hours.Split('|');
+                string daysPart = parts[0].Trim();
+                string timePart = parts[1].Trim();
+
+                // 2. Get Current PH Time
+                DateTime now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Singapore Standard Time");
+                DayOfWeek today = now.DayOfWeek;
+                TimeSpan currentTime = now.TimeOfDay;
+
+                // 3. Check if Today is an Open Day
+                bool isDayOpen = false;
+                string[] dayNames = { "Linggo", "Lunes", "Martes", "Miyerkules", "Huwebes", "Biyernes", "Sabado" };
+
+                if (daysPart.ToLower().Contains("araw-araw")) isDayOpen = true;
+                else if (daysPart.ToLower().Contains("weekdays") && (int)today >= 1 && (int)today <= 5) isDayOpen = true;
+                else if (daysPart.ToLower().Contains("weekends") && ((int)today == 0 || (int)today == 6)) isDayOpen = true;
+                else {
+                    // Check if today's name is mentioned in the list (e.g., "Lunes, Miyerkules")
+                    foreach (var dayName in dayNames) {
+                        if (daysPart.Contains(dayName) && today == (DayOfWeek)System.Array.IndexOf(dayNames, dayName)) {
+                            isDayOpen = true; break;
+                        }
+                    }
+                }
+
+                if (!isDayOpen) return "Sarado Ngayon";
+
+                // 4. Check if Current Time is within range
+                var times = timePart.Split('-');
+                if (times.Length == 2) {
+                    DateTime openDT = DateTime.Parse(times[0].Trim());
+                    DateTime closeDT = DateTime.Parse(times[1].Trim());
+
+                    TimeSpan openTime = openDT.TimeOfDay;
+                    TimeSpan closeTime = closeDT.TimeOfDay;
+
+                    // Handle overnight hours (e.g., 6:00 PM - 2:00 AM)
+                    if (closeTime < openTime) {
+                        if (currentTime >= openTime || currentTime <= closeTime) return "Bukas Ngayon";
+                    }
+                    else {
+                        if (currentTime >= openTime && currentTime <= closeTime) return "Bukas Ngayon";
+                    }
+                }
+            }
+            catch { return "Check Hours"; }
+
+            return "Sarado Ngayon";
+        }
+
+        protected string GetStatusStyle(object hoursObj) {
+            string status = GetDynamicStatus(hoursObj);
+            return status == "Bukas Ngayon" ? "color: #0d9e6e; font-weight: bold;" : "color: #be123c; font-weight: bold;";
+        }
     }
 }
