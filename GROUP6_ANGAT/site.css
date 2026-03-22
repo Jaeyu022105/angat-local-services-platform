@@ -1033,16 +1033,20 @@ div.resource-link {
     text-align: center;
     line-height: 1.4;
 }
-
 /* ==========================================
    LISTING CARDS
    ========================================== */
 .listings-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* FIX: auto-fill keeps ghost spaces so 1 item doesn't stretch */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
+    justify-content: start;
+    /* FIX: ensures all cards in a row have equal border height */
+    align-items: stretch;
 }
 
+/* Card Base */
 .listing-card {
     background: var(--white);
     border: 1.5px solid var(--border);
@@ -1051,7 +1055,9 @@ div.resource-link {
     transition: all 0.2s ease;
     text-decoration: none;
     color: var(--text);
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Force card to fill the grid slot */
 }
 
 button.listing-card {
@@ -1059,33 +1065,121 @@ button.listing-card {
     text-align: left;
     cursor: pointer;
     font-family: inherit;
+    /* FIX: Prevent stretching when only 1 or 2 items exist */
+    max-width: 350px;
 }
 
-    .listing-card:hover {
-        box-shadow: 0 8px 28px rgba(13,158,110,0.12);
-        border-color: var(--primary);
-        transform: translateY(-3px);
-    }
+/* ==========================================
+   LISTING CARDS
+   ========================================== */
+.listings-grid {
+    display: grid;
+    /* FIX: auto-fill keeps ghost spaces so 1 item doesn't stretch */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    justify-content: start;
+    /* FIX: ensures all cards in a row have equal border height */
+    align-items: stretch;
+}
 
-    .listing-card .listing-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 12px;
-        gap: 10px;
-    }
+/* Card Base */
+.listing-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Force card to fill the grid slot */
+}
 
-    .listing-card .listing-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 10px;
-        background: var(--primary-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        flex-shrink: 0;
-    }
+button.listing-card {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    /* FIX: Prevent stretching when only 1 or 2 items exist */
+    max-width: 350px;
+}
+
+/* Title (Fixing 2-line height difference) */
+.listing-card h4 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    /* FIX: Reserves space for 2 lines exactly */
+    min-height: 2.8em;
+    line-height: 1.4em;
+    /* FIX: If title is 3 lines, it cuts off with ... instead of breaking the card */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Location/Brgy Line */
+.listing-company {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 15px;
+    min-height: 1.2em; /* keeps space consistent */
+}
+
+/* Tags Area */
+.listing-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+    /* Keeps tags from pushing footer at different rates */
+    min-height: 32px;
+}
+
+/* Footer (Pushes Price & Time to bottom) */
+.listing-footer {
+    margin-top: auto; /* IMPORTANT: This aligns all footers to the bottom */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.listing-pay {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Hover State */
+.listing-card:hover {
+    box-shadow: 0 8px 28px rgba(13,158,110,0.12);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.listing-card .listing-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.listing-card .listing-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
 
 /* Mint Green (Pandan Pastel) - Kasambahay/Labandera */
 .listing-icon[data-category*="kasambahay" i],

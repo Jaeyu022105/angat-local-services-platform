@@ -67,6 +67,24 @@ namespace GROUP6_ANGAT.Pages {
         protected global::System.Web.UI.UpdatePanel upApply;
 
         /// <summary>
+        /// pnlModalAlert control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlModalAlert;
+
+        /// <summary>
+        /// lblModalAlert control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblModalAlert;
+
+        /// <summary>
         /// hfJobId control.
         /// </summary>
         /// <remarks>
@@ -92,5 +110,14 @@ namespace GROUP6_ANGAT.Pages {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnApplyJob;
+
+        /// <summary>
+        /// phApplyLoggedOut control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder phApplyLoggedOut;
     }
 }
