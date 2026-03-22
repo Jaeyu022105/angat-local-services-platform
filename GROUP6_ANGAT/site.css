@@ -1303,8 +1303,7 @@ button.listing-card {
     margin-bottom: 16px;
     align-items: center;
     position: relative; /* Added to help JS positioning */
-    padding-right: 36px; /* Reserve space for more-badge (+1, +2, etc.) */
-    box-sizing: border-box;
+    
 }
 
 /* Changed .tag-overflow to .more-badge for a better 'pill' look */

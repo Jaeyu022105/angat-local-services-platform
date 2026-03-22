@@ -2,6 +2,7 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+
     <%-- PAGE HERO --%>
     <div id="page-hero">
         <div class="hero-circles">
@@ -145,7 +146,7 @@
                             </div>
                             <span class='badge <%# GROUP6_ANGAT.DisplayHelper.GetStatusClass(Eval("Status")) %>'><%# Eval("Status") %></span>
                         </div>
-                        <h4><%# Eval("ServiceTitle") %></h4>
+                        <h4 style="flex:0 0 auto; min-height:0; margin-bottom:5px;"><%# Eval("ServiceTitle") %></h4>
                         <p class="listing-company">
                             <i class='bx bx-map'></i> Brgy. <%# Eval("Barangay") %>, Bi&#241;an
                         </p>
@@ -154,9 +155,10 @@
                                 Text='<%# GROUP6_ANGAT.DisplayHelper.GetTagsHtml(Eval("Tags"), Eval("Category")) %>' />
                         </div>
                         <div class="listing-footer">
-                            <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
-                            <span><i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %></span>
+                            <span class="listing-pay" style="white-space:nowrap;"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
+                            <span style="white-space:nowrap; flex-shrink:0;"><i class='bx bx-time-five'></i> <%# GetRelativeTime(Eval("PostedAt")) %></span>
                         </div>
+
                     </button>
                 </ItemTemplate>
             </asp:Repeater>
