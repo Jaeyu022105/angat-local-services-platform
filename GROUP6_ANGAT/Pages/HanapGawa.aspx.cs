@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Configuration;
 using System.Data.SqlClient;
 
@@ -53,13 +53,14 @@ namespace GROUP6_ANGAT.Pages {
         }
 
         protected void BtnRequestService_Click(object sender, EventArgs e) {
+            pnlModalServiceMessage.Visible = false;
             if (Session["UserId"] == null) {
                 Response.Redirect("~/Pages/Login.aspx?returnUrl=/Pages/HanapGawa.aspx");
                 return;
             }
 
             if (!int.TryParse(hfServiceId.Value, out int serviceId)) {
-                ShowMessage("error", "Piliin muna ang serbisyo bago mag-request.");
+                ShowModalMessage("error", "Piliin muna ang serbisyo bago mag-request.");
                 return;
             }
 
@@ -82,7 +83,7 @@ namespace GROUP6_ANGAT.Pages {
                     }
 
                     if (ownerUserId > 0 && ownerUserId.ToString() == Session["UserId"].ToString()) {
-                        ShowMessage("error", "Hindi ka maaaring mag-request sa sariling listing.");
+                        ShowModalMessage("error", "Hindi ka maaaring mag-request sa sariling listing.");
                         return;
                     }
                 }
@@ -120,11 +121,11 @@ namespace GROUP6_ANGAT.Pages {
                                         $"~/Pages/Profile.aspx?tab=servicelistings&requestId={requestId}");
                                 }
 
-                                ShowMessage("success", "Na-submit ulit ang inyong request.");
+                                ShowModalMessage("success", "Na-submit ulit ang inyong request.");
                                 return;
                             }
 
-                            ShowMessage("error", "May active request ka na sa serbisyong ito.");
+                            ShowModalMessage("error", "May active request ka na sa serbisyong ito.");
                             return;
                         }
                     }
@@ -150,13 +151,15 @@ namespace GROUP6_ANGAT.Pages {
                 }
             }
 
-            ShowMessage("success", "Na-submit ang inyong request! Makikita ito sa inyong Profile.");
+            ShowModalMessage("success", "Na-submit ang inyong request! Makikita ito sa inyong Profile.");
         }
 
-        private void ShowMessage(string type, string message) {
-            pnlServiceApplyMessage.Visible = true;
-            pnlServiceApplyMessage.CssClass = $"form-alert {type}";
-            lblServiceApplyMessage.Text = message;
+        private void ShowModalMessage(string type, string message)
+        {
+            pnlModalServiceMessage.Visible = true;
+            pnlModalServiceMessage.CssClass = $"form-alert {type}";
+            lblModalServiceMessage.Text = message;
         }
+        
     }
 }

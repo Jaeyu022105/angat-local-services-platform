@@ -133,6 +133,8 @@
                 </ItemTemplate>
             </asp:Repeater>
         </div>
+    <%-- PAGINATION --%>
+        <div id="htPagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:40px; flex-wrap:wrap;"></div>
     </div>
 
     <%-- JOB MODAL --%>
@@ -191,35 +193,69 @@
             const filterBtn = document.getElementById('htFilterBtn');
             const listWrap = document.getElementById('htListings');
             const noResults = document.getElementById('htNoResults');
-            const cards = Array.from(document.querySelectorAll('.listing-card-button'));
-
-            function applyFilters() {
+            const paginationWrap = document.getElementById('htPagination');
+            const cards = Array.from(listWrap.querySelectorAll('.listing-card-button'));
+            const pageSize = 10;
+            let currentPage = 1;
+            function getFilteredAndSorted() {
                 const query = searchInput.value.toLowerCase().trim();
                 const location = locationSelect.value;
                 const sort = sortSelect.value;
-
-                let visibleCards = cards.filter(card => {
+                const filtered = cards.filter(card => {
                     const matchSearch = !query || card.dataset.search.toLowerCase().includes(query);
                     const matchLocation = location === 'All' || card.dataset.location === location;
-                    const isVisible = matchSearch && matchLocation;
-                    card.style.display = isVisible ? '' : 'none';
-                    return isVisible;
+                    return matchSearch && matchLocation;
                 });
-
-                visibleCards.sort((a, b) => {
+                filtered.sort((a, b) => {
                     if (sort === 'pay') return parseFloat(b.dataset.payAmount) - parseFloat(a.dataset.payAmount);
-                    return parseFloat(b.dataset.postedTicks) - parseFloat(a.dataset.postedTicks);
+                    return parseFloat(b.dataset.postedTicks || b.dataset.posted || 0) - parseFloat(a.dataset.postedTicks || a.dataset.posted || 0);
                 });
-
-                visibleCards.forEach(card => listWrap.appendChild(card));
-                noResults.style.display = visibleCards.length === 0 ? 'block' : 'none';
+                return filtered;
+            }
+            function renderPagination(totalItems) {
+                paginationWrap.innerHTML = '';
+                const totalPages = Math.ceil(totalItems / pageSize);
+                if (totalPages <= 1) return;
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = i;
+                    btn.className = 'btn-outline';
+                    btn.style.padding = '8px 14px';
+                    if (i === currentPage) {
+                        btn.style.background = 'var(--primary)';
+                        btn.style.color = '#fff';
+                    }
+                    btn.onclick = () => {
+                        currentPage = i;
+                        renderPage();
+                        window.scrollTo({ top: 400, behavior: 'smooth' });
+                    };
+                    paginationWrap.appendChild(btn);
+                }
+            }
+            function renderPage() {
+                const filtered = getFilteredAndSorted();
+                const totalPages = Math.ceil(filtered.length / pageSize);
+                if (currentPage > totalPages) currentPage = 1;
+                noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+                cards.forEach(c => c.style.display = 'none');
+                const start = (currentPage - 1) * pageSize;
+                filtered.slice(start, start + pageSize).forEach(c => c.style.display = '');
+                filtered.forEach(card => listWrap.appendChild(card));
+                renderPagination(filtered.length);
                 updateTagOverflow();
+            }
+            function applyFilters() {
+                currentPage = 1;
+                renderPage();
             }
 
             filterBtn.onclick = applyFilters;
             searchInput.onkeyup = (e) => { if (e.key === 'Enter') applyFilters(); };
             locationSelect.onchange = applyFilters;
             sortSelect.onchange = applyFilters;
+            renderPage();
         })();
 
         // ── SYNCED TAG LOGIC (Mirrors DisplayHelper.cs) ──
@@ -261,7 +297,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            updateTagOverflow();
+            applyFilters();
 
             // Success banner after posting a job
             const urlParams = new URLSearchParams(window.location.search);

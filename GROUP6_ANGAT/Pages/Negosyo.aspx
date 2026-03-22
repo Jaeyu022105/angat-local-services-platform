@@ -187,7 +187,7 @@
             const noResults = document.getElementById('dirNoResults');
             const heroCount = document.getElementById('lblDirectoryCountHero');
 
-            const pageSize = 8;
+            const pageSize = 10;
             let currentPage = 1;
 
             function updateTagOverflow() {

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Hanap Gawa" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="HanapGawa.aspx.cs" Inherits="GROUP6_ANGAT.Pages.HanapGawa" %>
+<%@ Page Title="Hanap Gawa" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="HanapGawa.aspx.cs" Inherits="GROUP6_ANGAT.Pages.HanapGawa" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -131,6 +131,7 @@
                         data-rate='<%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %>'
                         data-rate-amount='<%# Eval("RateMax") ?? Eval("RateMin") ?? 0 %>'
                         data-posted='<%# GROUP6_ANGAT.DisplayHelper.GetPostedValue(Eval("PostedAt")) %>'
+                        data-posted-ticks='<%# Convert.ToDateTime(Eval("PostedAt")).Ticks %>'
                         data-tags='<%# Eval("Tags") %>'
                         data-status='<%# Eval("Status") %>'
                         data-date='<%# GetRelativeTime(Eval("PostedAt")) %>'
@@ -161,6 +162,9 @@
             </asp:Repeater>
         </div>
 
+        <%-- PAGINATION= --%>
+        <div id="hgPagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:40px; flex-wrap:wrap;"></div>
+
         <%-- Empty state --%>
         <asp:Panel ID="pnlEmpty" runat="server" Visible="false" CssClass="empty-state">
             <i class='bx bx-wrench'></i>
@@ -178,35 +182,25 @@
 
             <%-- Poster --%>
             <div class="modal-poster">
-                <img id="posterImg" src="/Images/default-icon.jpg" alt="Poster" class="modal-poster-img" />
-                <div>
-                    <span class="modal-poster-name" id="posterName"></span>
-                    <span class="modal-poster-date" id="posterDate"></span>
+                <img id="posterImg" src="/Images/default-icon.jpg" alt="Poster" class="modal-poster-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" />
+                <div style="display:flex; flex-direction:column; line-height:1.1; margin-left:10px;">
+                    <span class="modal-poster-name" id="posterName" style="font-weight:600; font-size:1rem;"></span>
+                    <small class="modal-poster-date" id="posterDate" style="color:#64748b; font-size:0.75rem;"></small>
                 </div>
             </div>
 
             <%-- Title --%>
-            <h4 id="serviceTitle"></h4>
+            <h4 id="serviceTitle" style="margin-top:15px; font-weight:700;"></h4>
 
-            <%-- Info grid --%>
-            <div class="modal-info-grid">
-                <div class="modal-info-item">
-                    <span class="modal-info-label">Lokasyon</span>
-                    <span class="modal-info-value" id="serviceLocation"></span>
-                </div>
-                <div class="modal-info-item">
-                    <span class="modal-info-label">Status</span>
-                    <span id="serviceStatus" class="badge badge-green"></span>
-                </div>
-                <div class="modal-info-item">
-                    <span class="modal-info-label">Rate</span>
-                    <span class="modal-info-value" id="serviceRate"></span>
-                </div>
-                <div class="modal-info-item modal-tags-item">
-                    <span class="modal-info-label">Uri ng Serbisyo</span>
-                    <div id="serviceTags" class="job-tags" style="margin:0;"></div>
-                </div>
+            <%-- Info grid (same layout as Hanap Trabaho) --%>
+            <div class="modal-info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top:15px;">
+                <div class="modal-info-item"><span class="modal-info-label">Lokasyon</span><span class="modal-info-value" id="serviceLocation"></span></div>
+                <div class="modal-info-item"><span class="modal-info-label">Status</span><span id="serviceStatus" class="badge"></span></div>
+                <div class="modal-info-item"><span class="modal-info-label">Rate</span><span class="modal-info-value" id="serviceRate"></span></div>
+                <div class="modal-info-item" style="grid-column: span 2;"><span class="modal-info-label">Uri ng Serbisyo / Tags</span><div id="serviceTags" class="job-tags" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;"></div></div>
             </div>
+            <div class="modal-desc-block"><span class="modal-info-label">Detalye</span><p id="serviceDesc" class="job-desc" style="margin-top:8px;"></p></div>
+
 
             <%-- Description --%>
             <div class="modal-desc-block">
@@ -218,8 +212,10 @@
             <div class="job-modal-actions">
                 <asp:UpdatePanel ID="UpdatePanelService" runat="server">
                     <ContentTemplate>
-                        <asp:Panel ID="pnlModalServiceMessage" runat="server" CssClass="form-alert" Visible="false" Style="margin-bottom:15px;">
-                            <asp:Label ID="lblModalServiceMessage" runat="server" />
+                        <asp:Panel ID="pnlModalServiceMessage" runat="server" CssClass="form-alert" 
+                            EnableViewState="false"
+                            style="display:none; margin-bottom:15px;" ClientIDMode="Static">
+                            <asp:Label ID="lblModalServiceMessage" runat="server" EnableViewState="false" />
                         </asp:Panel>
                         <asp:PlaceHolder ID="phServiceLoggedIn" runat="server">
                             <asp:Button ID="btnRequestService" runat="server"
@@ -291,55 +287,104 @@
 
         // ── FILTER & SORT ──
         (function () {
-            const searchInput    = document.getElementById('hgSearch');
+            const searchInput = document.getElementById('hgSearch');
             const locationSelect = document.getElementById('hgLocation');
-            const filterBtn      = document.getElementById('hgFilterBtn');
-            const sortSelect     = document.getElementById('hgSort');
-            const listingWrap    = document.getElementById('hgListings');
-            const cards          = Array.from(listingWrap.querySelectorAll('.listing-card'));
-
-            function applyFilter() {
-                const q   = searchInput.value.toLowerCase().trim();
+            const filterBtn = document.getElementById('hgFilterBtn');
+            const sortSelect = document.getElementById('hgSort');
+            const listingWrap = document.getElementById('hgListings');
+            const paginationWrap = document.getElementById('hgPagination');
+            const cards = Array.from(listingWrap.querySelectorAll('.listing-card'));
+            const pageSize = 10;
+            let currentPage = 1;
+            function getFilteredAndSorted() {
+                const q = searchInput.value.toLowerCase().trim();
                 const loc = locationSelect.value;
-                cards.forEach(function (card) {
-                    const text     = (card.dataset.search || '').toLowerCase();
+                const sort = sortSelect.value;
+                const filtered = cards.filter(function (card) {
+                    const text = (card.dataset.search || '').toLowerCase();
                     const barangay = card.dataset.location || '';
-                    const matchQ   = !q || text.includes(q);
+                    const matchQ = !q || text.includes(q);
                     const matchLoc = loc === 'All' || barangay === loc;
-                    card.style.display = (matchQ && matchLoc) ? '' : 'none';
+                    return matchQ && matchLoc;
                 });
-            }
-
-            function applySort() {
-                const mode   = sortSelect.value;
-                const sorted = cards.slice().sort(function (a, b) {
-                    if (mode === 'rate')
+                filtered.sort(function (a, b) {
+                    if (sort === 'rate')
                         return parseFloat(b.dataset.rateAmount || 0) - parseFloat(a.dataset.rateAmount || 0);
-                    return parseFloat(b.dataset.posted || 0) - parseFloat(a.dataset.posted || 0);
+                    return parseFloat(b.dataset.postedTicks || b.dataset.posted || 0) - parseFloat(a.dataset.postedTicks || a.dataset.posted || 0);
                 });
-                sorted.forEach(function (card) { listingWrap.appendChild(card); });
+                return filtered;
             }
-
-            filterBtn.addEventListener('click', applyFilter);
-            searchInput.addEventListener('keyup', applyFilter);
-            locationSelect.addEventListener('change', applyFilter);
-            sortSelect.addEventListener('change', function () { applySort(); applyFilter(); });
+            function renderPagination(totalItems) {
+                paginationWrap.innerHTML = '';
+                const totalPages = Math.ceil(totalItems / pageSize);
+                if (totalPages <= 1) return;
+                for (var i = 1; i <= totalPages; i++) {
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = i;
+                    btn.className = 'btn-outline';
+                    btn.style.padding = '8px 14px';
+                    if (i === currentPage) {
+                        btn.style.background = 'var(--primary)';
+                        btn.style.color = '#fff';
+                    }
+                    btn.onclick = (function (page) {
+                        return function () {
+                            currentPage = page;
+                            renderPage();
+                            window.scrollTo({ top: 400, behavior: 'smooth' });
+                        };
+                    })(i);
+                    paginationWrap.appendChild(btn);
+                }
+            }
+            function renderPage() {
+                var filtered = getFilteredAndSorted();
+                var totalPages = Math.ceil(filtered.length / pageSize);
+                if (currentPage > totalPages) currentPage = 1;
+                cards.forEach(function (c) { c.style.display = 'none'; });
+                var start = (currentPage - 1) * pageSize;
+                filtered.slice(start, start + pageSize).forEach(function (c) { c.style.display = ''; });
+                filtered.forEach(function (card) { listingWrap.appendChild(card); });
+                renderPagination(filtered.length);
+                updateTagOverflow();
+            }
+            filterBtn.addEventListener('click', function () { currentPage = 1; renderPage(); });
+            searchInput.addEventListener('keyup', function () { currentPage = 1; renderPage(); });
+            locationSelect.addEventListener('change', function () { currentPage = 1; renderPage(); });
+            sortSelect.addEventListener('change', function () { currentPage = 1; renderPage(); });
+            window.addEventListener('resize', updateTagOverflow);
+            renderPage();
         })();
 
         // ── LIMIT TAGS ON CARDS (max 3) ──
-        document.querySelectorAll('#hgListings .listing-card').forEach(function (card) {
-            var tagWrap = card.querySelector('.listing-tags');
-            if (!tagWrap) return;
-            var tags = Array.from(tagWrap.querySelectorAll('.badge'));
-            if (tags.length <= 3) return;
-            for (var i = 3; i < tags.length; i++) {
-                tags[i].style.display = 'none';
-            }
-            var more = document.createElement('span');
-            more.className = 'tag-overflow';
-            more.textContent = '+' + (tags.length - 3);
-            tagWrap.appendChild(more);
+        function updateTagOverflow() {
+            document.querySelectorAll('.listing-tags').forEach(function (container) {
+                var card = container.closest('.listing-card-button') || container.closest('.listing-card');
+                if (card && card.style.display === 'none') return;
+                var badges = Array.from(container.querySelectorAll('.badge:not(.more-badge)'));
+                badges.forEach(function (b) { b.style.display = ''; });
+                var old = container.querySelector('.more-badge');
+                if (old) old.remove();
+                if (badges.length === 0) return;
+                var top = badges[0].offsetTop;
+                var count = 0;
+                badges.forEach(function (b) {
+                    if (b.offsetTop > top) { b.style.display = 'none'; count++; }
+                });
+                if (count > 0) {
+                    var m = document.createElement('span');
+                    m.className = 'badge more-badge';
+                    m.style.background = '#f1f5f9';
+                    m.innerText = '+' + count;
+                    container.appendChild(m);
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            updateTagOverflow();
         });
+        window.addEventListener('resize', updateTagOverflow);
 
         // ── MODAL ──
         (function () {
@@ -351,8 +396,17 @@
             const hfServiceDesc  = document.getElementById('<%= hfServiceDesc.ClientID %>');
 
             function openModal(card) {
+                var modalAlert = document.getElementById('pnlModalServiceMessage');
+                if (modalAlert) {
+                    modalAlert.style.display = 'none';
+                    modalAlert.className = 'form-alert';
+                    var lbl = modalAlert.querySelector('span');
+                    if (lbl) lbl.innerHTML = '';
+                }
                 modal.querySelector('#serviceTitle').textContent = card.dataset.title || '';
-                modal.querySelector('#serviceStatus').textContent = card.dataset.status || '';
+                var st = modal.querySelector('#serviceStatus');
+                st.textContent = card.dataset.status || '';
+                st.className = 'badge ' + (String(card.dataset.status || '').toLowerCase().includes('available') ? 'badge-green' : 'badge-rose');
                 modal.querySelector('#serviceDesc').textContent = card.dataset.desc || '';
                 modal.querySelector('#serviceRate').textContent = card.dataset.rate || '';
                 modal.querySelector('#posterName').textContent = card.dataset.poster || 'Hindi nakita';
@@ -415,6 +469,16 @@
                 window.history.replaceState({}, '', window.location.pathname);
             }
         })();
+        // ── UpdatePanel: show modal alert after Mag-request postback ──
+        if (typeof Sys !== 'undefined') {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                var modalAlert = document.getElementById('pnlModalServiceMessage');
+                if (!modalAlert) return;
+                var lbl = modalAlert.querySelector('span');
+                var hasContent = lbl && lbl.innerHTML.trim() !== '';
+                modalAlert.style.display = hasContent ? 'block' : 'none';
+            });
+        }
     </script>
 
 </asp:Content>
