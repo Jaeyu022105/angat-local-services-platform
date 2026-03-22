@@ -1145,9 +1145,19 @@ button.listing-card {
 
     .listing-card .listing-tags {
         display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
+        gap: 6px;
+        flex-wrap: nowrap;
+        overflow: hidden;
         margin-bottom: 16px;
+        align-items: center;
+    }
+
+    .tag-overflow {
+        font-size: 0.75rem;
+        color: var(--muted);
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-weight: 600;
     }
 
     .listing-card .listing-footer {
@@ -1255,7 +1265,7 @@ button.listing-card {
     gap: 12px;
     flex-wrap: wrap;
 }
-/* Modal info grid */
+
 .modal-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1264,6 +1274,17 @@ button.listing-card {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     margin: 12px 0 16px;
+}
+
+.modal-info-item:has(#jobTags),
+.modal-info-item:has(#serviceTags) {
+    grid-column: 1 / -1;
+}
+
+#jobTags.job-tags,
+#serviceTags.job-tags {
+    gap: 6px;
+    margin: 0;
 }
 
 .modal-info-item {

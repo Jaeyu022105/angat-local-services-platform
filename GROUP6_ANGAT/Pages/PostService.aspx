@@ -38,7 +38,7 @@
                 <label>Service Title <span class="required">*</span></label>
                 <asp:TextBox ID="txtServiceTitle" runat="server"
                     placeholder="Halimbawa: Aircon Cleaning at Repair, Tubero para sa Bi&#241;an Area"></asp:TextBox>
-                <small class="field-hint">Iwasan ang emoji at espesyal na karakter. Awtomatikong iko-convert sa Title Case.</small>
+                <small class="field-hint">Iwasan ang emoji at espesyal na karakter.</small>
             </div>
 
             <%-- Category — Tagalog only --%>
@@ -129,12 +129,11 @@
                         </div>
                     </div>
                     <div class="tag-group">
-                        <span class="tag-group-label">Iskedyul</span>
+                        <span class="tag-group-label">Schedule</span>
                         <div class="tag-pills">
                             <label class="tag-pill"><input type="checkbox" value="Weekdays Only" /> Weekdays Only</label>
                             <label class="tag-pill"><input type="checkbox" value="Weekends Only" /> Weekends Only</label>
                             <label class="tag-pill"><input type="checkbox" value="Flexible Hours" /> Flexible Hours</label>
-                            <label class="tag-pill"><input type="checkbox" value="Anytime" /> Anytime</label>
                         </div>
                     </div>
                     <div class="tag-group">

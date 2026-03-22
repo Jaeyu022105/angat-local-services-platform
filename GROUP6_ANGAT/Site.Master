@@ -245,9 +245,17 @@
             if (!page || page === '') page = 'default.aspx';
             if (!page.includes('.')) page = page + '.aspx';
 
+            var parentMap = {
+                'postjob.aspx': 'hanaptrabaho.aspx',
+                'postservice.aspx': 'hanapgawa.aspx',
+                'postnegosyo.aspx': 'negosyo.aspx'
+            };
+
+            var activePage = parentMap[page] || page;
+
             document.querySelectorAll('#nav a, .side-nav-links a').forEach(function (link) {
                 var propPage = (link.href || '').toLowerCase().split('?')[0].split('#')[0].split('/').pop();
-                if (propPage && propPage === page) {
+                if (propPage && propPage === activePage) {
                     link.classList.add('active');
                 }
             });

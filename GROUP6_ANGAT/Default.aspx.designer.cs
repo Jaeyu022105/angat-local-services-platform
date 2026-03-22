@@ -13,33 +13,6 @@ namespace GROUP6_ANGAT {
     public partial class _Default {
 
         /// <summary>
-        /// lblStatJobs control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatJobs;
-
-        /// <summary>
-        /// lblStatServices control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatServices;
-
-        /// <summary>
-        /// lblStatNegosyo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatNegosyo;
-
-        /// <summary>
         /// rptFeaturedJobs control.
         /// </summary>
         /// <remarks>

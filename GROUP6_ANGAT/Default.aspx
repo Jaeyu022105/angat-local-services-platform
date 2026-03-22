@@ -24,25 +24,24 @@
             </svg>
         </div>
     </div>
-
-    <div class="stats-bar">
-        <div class="stat-item">
-            <asp:Label ID="lblStatJobs" runat="server" Text="0" CssClass="stat-num" />
-            <span class="stat-label">Mga Trabaho</span>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-num"><%=GetCount("Jobs")%></span>
+                <span class="stat-label">Mga Trabaho</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num"><%=GetCount("Services")%></span>
+                <span class="stat-label">Mga Serbisyo</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num"><%=GetCount("DirectoryBusinesses")%></span>
+                <span class="stat-label">Lokal na Negosyo</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">24</span>
+                <span class="stat-label">Mga Barangay</span>
+            </div>
         </div>
-        <div class="stat-item">
-            <asp:Label ID="lblStatServices" runat="server" Text="0" CssClass="stat-num" />
-            <span class="stat-label">Mga Serbisyo</span>
-        </div>
-        <div class="stat-item">
-            <asp:Label ID="lblStatNegosyo" runat="server" Text="0" CssClass="stat-num" />
-            <span class="stat-label">Lokal na Negosyo</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-num">24</span>
-            <span class="stat-label">Mga Barangay</span>
-        </div>
-    </div>
 
         <div class="section section-white">
         <div class="section-header">
@@ -95,7 +94,7 @@
                         </div>
                         <div class="listing-footer">
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("PayMin"), Eval("PayMax"), Eval("PayRate")) %></span>
-                            <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
+                            <span class="listing-date"><%# GetRelativeTime(Eval("PostedAt")) %></span>
                         </div>
                     </div>
                 </ItemTemplate>
@@ -129,7 +128,7 @@
                         </div>
                         <div class="listing-footer">
                             <span class="listing-pay"><%# GROUP6_ANGAT.DisplayHelper.GetPayDisplay(Eval("RateMin"), Eval("RateMax"), Eval("RateType")) %></span>
-                            <span class="listing-date"><%# GROUP6_ANGAT.DisplayHelper.GetDateLabel(Eval("PostedAt")) %></span>
+                            <span class="listing-date"><%# GetRelativeTime(Eval("PostedAt")) %></span>
                         </div>
                     </div>
                 </ItemTemplate>

@@ -196,20 +196,20 @@
                     <span class="modal-info-value" id="jobLocation"></span>
                 </div>
                 <div class="modal-info-item">
-                    <span class="modal-info-label">Uri ng Trabaho</span>
-                    <div id="jobTags" class="job-tags" style="margin:0;"></div>
+                    <span class="modal-info-label">Status</span>
+                    <span id="jobStatus" class="badge badge-green"></span>
                 </div>
                 <div class="modal-info-item">
                     <span class="modal-info-label">Sahod</span>
                     <span class="modal-info-value" id="jobPay"></span>
                 </div>
                 <div class="modal-info-item">
-                    <span class="modal-info-label">Status</span>
-                    <span id="jobStatus" class="badge badge-green"></span>
-                </div>
-                <div class="modal-info-item">
                     <span class="modal-info-label">Slots Natitira</span>
                     <span class="modal-info-value" id="jobSlots"></span>
+                </div>
+                <div class="modal-info-item modal-tags-item">
+                    <span class="modal-info-label">Uri ng Trabaho</span>
+                    <div id="jobTags" class="job-tags" style="margin:0;"></div>
                 </div>
             </div>
 
@@ -319,6 +319,23 @@
             sortSelect.addEventListener('change', function () { applySort(); applyFilter(); });
         })();
 
+        // ── LIMIT TAGS ON CARDS ──
+        document.querySelectorAll('#htListings .listing-card').forEach(function (card) {
+            var tagWrap = card.querySelector('.listing-tags');
+            if (!tagWrap) return;
+            var tags = Array.from(tagWrap.querySelectorAll('.badge'));
+            if (tags.length <= 3) return;
+            // hide tags beyond 3
+            for (var i = 3; i < tags.length; i++) {
+                tags[i].style.display = 'none';
+            }
+            // add +N indicator
+            var more = document.createElement('span');
+            more.className = 'tag-overflow';
+            more.textContent = '+' + (tags.length - 3);
+            tagWrap.appendChild(more);
+        });
+
         // ── MODAL ──
         (function () {
             const modal      = document.getElementById('jobModal');
@@ -340,8 +357,9 @@
                 modal.querySelector('#jobSlots').textContent = (card.dataset.slots || '1') + ' slot/s';
 
                 var img = modal.querySelector('#posterImg');
-                var imgPath = card.dataset.posterImg || '';
+                var imgPath = (card.dataset.posterImg || '').replace('~/', '/');
                 img.src = imgPath && imgPath !== '' ? imgPath : '/Images/default-icon.jpg';
+                img.onerror = function () { img.src = '/Images/default-icon.jpg'; };
 
                 // ── TAGS with correct colors matching card display ──
                 var tagsEl = modal.querySelector('#jobTags');
