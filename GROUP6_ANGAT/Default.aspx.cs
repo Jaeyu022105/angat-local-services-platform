@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
 using System.Web.UI;
 
 namespace GROUP6_ANGAT {
@@ -10,6 +10,7 @@ namespace GROUP6_ANGAT {
             if (!IsPostBack) {
                 LoadFeaturedJobs();
                 LoadFeaturedServices();
+                LoadNegosyoCount();
             }
         }
 
@@ -17,12 +18,19 @@ namespace GROUP6_ANGAT {
             string connStr = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr)) {
                 conn.Open();
-                string query = @"SELECT TOP 3 JobId, JobTitle, JobDescription, Category, 
-                         Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt
-                         FROM Jobs WHERE IsActive = 1 
-                         ORDER BY PostedAt DESC";
 
-                using (SqlCommand cmd = new SqlCommand(query, conn)) {
+                // ── Count — same pattern as HanapTrabaho ──
+                using (SqlCommand countCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Jobs WHERE IsActive = 1", conn)) {
+                    lblStatJobs.Text = countCmd.ExecuteScalar().ToString();
+                }
+
+                // ── Featured cards ──
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT TOP 3 JobId, JobTitle, JobDescription, Category,
+                           Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt
+                    FROM Jobs WHERE IsActive = 1
+                    ORDER BY PostedAt DESC", conn)) {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
@@ -36,17 +44,35 @@ namespace GROUP6_ANGAT {
             string connStr = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr)) {
                 conn.Open();
-                string query = @"SELECT TOP 3 ServiceId, ServiceTitle, Category,
-                         Barangay, RateMin, RateMax, RateType, Tags, Status, PostedAt
-                         FROM Services WHERE IsActive = 1
-                         ORDER BY PostedAt DESC";
-                using (SqlCommand cmd = new SqlCommand(query, conn)) {
+
+                // ── Count — same pattern as HanapGawa ──
+                using (SqlCommand countCmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM Services WHERE IsActive = 1", conn)) {
+                    lblStatServices.Text = countCmd.ExecuteScalar().ToString();
+                }
+
+                // ── Featured cards ──
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT TOP 3 ServiceId, ServiceTitle, Category,
+                           Barangay, RateMin, RateMax, RateType, Tags, Status, PostedAt
+                    FROM Services WHERE IsActive = 1
+                    ORDER BY PostedAt DESC", conn)) {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
-                    System.Diagnostics.Debug.WriteLine("Services count: " + dt.Rows.Count);
                     rptFeaturedServices.DataSource = dt;
                     rptFeaturedServices.DataBind();
+                }
+            }
+        }
+
+        private void LoadNegosyoCount() {
+            string connStr = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr)) {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM DirectoryBusinesses WHERE IsActive = 1", conn)) {
+                    lblStatNegosyo.Text = cmd.ExecuteScalar().ToString();
                 }
             }
         }

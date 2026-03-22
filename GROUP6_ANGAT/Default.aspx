@@ -27,15 +27,15 @@
 
     <div class="stats-bar">
         <div class="stat-item">
-            <span class="stat-num">120+</span>
+            <asp:Label ID="lblStatJobs" runat="server" Text="0" CssClass="stat-num" />
             <span class="stat-label">Mga Trabaho</span>
         </div>
         <div class="stat-item">
-            <span class="stat-num">85+</span>
+            <asp:Label ID="lblStatServices" runat="server" Text="0" CssClass="stat-num" />
             <span class="stat-label">Mga Serbisyo</span>
         </div>
         <div class="stat-item">
-            <span class="stat-num">60+</span>
+            <asp:Label ID="lblStatNegosyo" runat="server" Text="0" CssClass="stat-num" />
             <span class="stat-label">Lokal na Negosyo</span>
         </div>
         <div class="stat-item">

@@ -241,17 +241,13 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            var path = window.location.pathname.toLowerCase();
-            var page = path.split("/").pop();
-
-            if (page === "" || page === "default.aspx") {
-                page = "default.aspx";
-            }
+            var page = window.location.pathname.toLowerCase().split('/').pop();
+            if (!page || page === '') page = 'default.aspx';
+            if (!page.includes('.')) page = page + '.aspx';
 
             document.querySelectorAll('#nav a, .side-nav-links a').forEach(function (link) {
-                var href = link.getAttribute('href').toLowerCase();
-
-                if (href.includes(page)) {
+                var propPage = (link.href || '').toLowerCase().split('?')[0].split('#')[0].split('/').pop();
+                if (propPage && propPage === page) {
                     link.classList.add('active');
                 }
             });

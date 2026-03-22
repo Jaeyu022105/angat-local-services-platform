@@ -118,18 +118,39 @@
             <div class="form-group">
                 <label>Tags <span class="required">*</span></label>
                 <small class="field-hint" style="margin-bottom: 10px; display:block;">Piliin ang lahat ng angkop.</small>
-                <div class="tag-pills">
-                    <label class="tag-pill"><input type="checkbox" value="Urgent" /> Urgent</label>
-                    <label class="tag-pill"><input type="checkbox" value="May Karanasan" /> May Karanasan</label>
-                    <label class="tag-pill"><input type="checkbox" value="Licensed" /> Licensed</label>
-                    <label class="tag-pill"><input type="checkbox" value="Repair" /> Repair</label>
-                    <label class="tag-pill"><input type="checkbox" value="Installation" /> Installation</label>
-                    <label class="tag-pill"><input type="checkbox" value="Anytime" /> Anytime</label>
-                    <label class="tag-pill"><input type="checkbox" value="Weekdays Only" /> Weekdays Only</label>
-                    <label class="tag-pill"><input type="checkbox" value="Weekends Only" /> Weekends Only</label>
-                    <label class="tag-pill"><input type="checkbox" value="Flexible Hours" /> Flexible Hours</label>
-                    <label class="tag-pill"><input type="checkbox" value="Pisikal na Trabaho" /> Pisikal na Trabaho</label>
-                </div>
+                    <div class="tag-group">
+                        <span class="tag-group-label">Uri ng Serbisyo</span>
+                        <div class="tag-pills">
+                            <label class="tag-pill"><input type="checkbox" value="Repair" /> Repair</label>
+                            <label class="tag-pill"><input type="checkbox" value="Installation" /> Installation</label>
+                            <label class="tag-pill"><input type="checkbox" value="Cleaning" /> Cleaning</label>
+                            <label class="tag-pill"><input type="checkbox" value="Maintenance" /> Maintenance</label>
+                            <label class="tag-pill"><input type="checkbox" value="Gawa sa Order" /> Custom / Gawa sa Order</label>
+                        </div>
+                    </div>
+                    <div class="tag-group">
+                        <span class="tag-group-label">Iskedyul</span>
+                        <div class="tag-pills">
+                            <label class="tag-pill"><input type="checkbox" value="Weekdays Only" /> Weekdays Only</label>
+                            <label class="tag-pill"><input type="checkbox" value="Weekends Only" /> Weekends Only</label>
+                            <label class="tag-pill"><input type="checkbox" value="Flexible Hours" /> Flexible Hours</label>
+                            <label class="tag-pill"><input type="checkbox" value="Anytime" /> Anytime</label>
+                        </div>
+                    </div>
+                    <div class="tag-group">
+                        <span class="tag-group-label">Urgency</span>
+                        <div class="tag-pills">
+                            <label class="tag-pill"><input type="checkbox" value="Urgent" /> Urgent</label>
+                        </div>
+                    </div>
+                    <div class="tag-group">
+                        <span class="tag-group-label">Kinakailangan / Tiwala</span>
+                        <div class="tag-pills">
+                            <label class="tag-pill"><input type="checkbox" value="Experienced" /> Experienced</label>
+                            <label class="tag-pill"><input type="checkbox" value="Licensed" /> Licensed</label>
+                            <label class="tag-pill"><input type="checkbox" value="Pisikal na Trabaho" /> Pisikal na Trabaho</label>
+                        </div>
+                    </div>
                 <asp:HiddenField ID="hfTags" runat="server" />
             </div>
 
