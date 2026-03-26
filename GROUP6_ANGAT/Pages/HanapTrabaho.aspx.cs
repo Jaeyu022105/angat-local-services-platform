@@ -17,12 +17,12 @@ namespace GROUP6_ANGAT.Pages {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString)) {
                 conn.Open();
-                using (SqlCommand countCmd = new SqlCommand("SELECT COUNT(*) FROM Jobs WHERE IsActive = 1", conn)) {
+                using (SqlCommand countCmd = new SqlCommand("SELECT COUNT(*) FROM vwJobs WHERE IsActive = 1", conn)) {
                     lblJobCount.Text = countCmd.ExecuteScalar().ToString();
                 }
                 using (SqlCommand cmd = new SqlCommand(@"
                     SELECT j.*, u.FullName AS PosterName, u.ProfileImagePath AS PosterImage 
-                    FROM Jobs j LEFT JOIN Users u ON j.PostedByUserId = u.UserId 
+                    FROM vwJobs j LEFT JOIN Users u ON j.PostedByUserId = u.UserId 
                     WHERE j.IsActive = 1 ORDER BY j.PostedAt DESC", conn)) {
                     using (SqlDataReader reader = cmd.ExecuteReader()) {
                         rptJobs.DataSource = reader; rptJobs.DataBind();

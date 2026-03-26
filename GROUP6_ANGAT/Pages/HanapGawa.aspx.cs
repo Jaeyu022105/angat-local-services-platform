@@ -29,7 +29,7 @@ namespace GROUP6_ANGAT.Pages {
                 conn.Open();
 
                 using (SqlCommand countCmd = new SqlCommand(
-                    "SELECT COUNT(*) FROM Services WHERE IsActive = 1", conn)) {
+                    "SELECT COUNT(*) FROM vwServices WHERE IsActive = 1", conn)) {
                     lblServiceCount.Text = countCmd.ExecuteScalar().ToString();
                 }
 
@@ -38,7 +38,7 @@ namespace GROUP6_ANGAT.Pages {
                            s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags,
                            s.Status, s.PostedAt, u.FullName AS PosterName,
                            u.ProfileImagePath AS PosterImage
-                    FROM Services s
+                    FROM vwServices s
                     LEFT JOIN Users u ON s.PostedByUserId = u.UserId
                     WHERE s.IsActive = 1
                     ORDER BY s.PostedAt DESC", conn)) {

@@ -31,8 +31,14 @@ namespace GROUP6_ANGAT {
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
             using (SqlCommand cmd = new SqlCommand(@"
-                SELECT FullName, Email, Phone, AddressLine, Barangay, Role, ProfileImagePath
-                FROM Users WHERE UserId = @UserId", conn)) {
+                SELECT u.FullName, u.Email, u.Phone, u.AddressLine,
+                       b.BarangayName AS Barangay,
+                       r.RoleName AS Role,
+                       u.ProfileImagePath
+                FROM Users u
+                LEFT JOIN Barangays b ON u.BarangayId = b.BarangayId
+                LEFT JOIN Roles r ON u.RoleId = r.RoleId
+                WHERE u.UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleRow)) {
@@ -74,7 +80,7 @@ namespace GROUP6_ANGAT {
                            j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags,
                            u.FullName AS EmployerName, u.Email AS EmployerEmail, u.Phone AS EmployerPhone
                     FROM JobApplications ja
-                    LEFT JOIN Jobs j ON ja.JobId = j.JobId
+                    LEFT JOIN vwJobs j ON ja.JobId = j.JobId
                     LEFT JOIN Users u ON j.PostedByUserId = u.UserId
                     WHERE ja.UserId = @UserId AND ja.Status IN ('Pending', 'Approved', 'Rejected')
                     AND (ja.Status != 'Retracted' AND ja.Status NOT LIKE '%_Archived')
@@ -95,7 +101,7 @@ namespace GROUP6_ANGAT {
             SELECT ja.ApplicationId, ja.Status, ja.AppliedAt,
                    j.JobTitle, j.Barangay, j.PayMin, j.PayMax, j.PayRate, j.Tags
             FROM JobApplications ja
-            LEFT JOIN Jobs j ON ja.JobId = j.JobId
+            LEFT JOIN vwJobs j ON ja.JobId = j.JobId
             WHERE ja.UserId = @UserId AND (ja.Status = 'Retracted' OR ja.Status LIKE '%_Archived')
             ORDER BY ja.AppliedAt DESC", conn))
                 {
@@ -125,7 +131,7 @@ namespace GROUP6_ANGAT {
                            s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags,
                            u.FullName AS PosterName, u.Email AS PosterEmail, u.Phone AS PosterPhone
                     FROM ServiceRequests sr
-                    LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+                    LEFT JOIN vwServices s ON sr.ServiceId = s.ServiceId
                     LEFT JOIN Users u ON s.PostedByUserId = u.UserId
                     WHERE sr.UserId = @UserId AND sr.Status IN ('Pending', 'Approved', 'Rejected')
                     ORDER BY sr.RequestedAt DESC", conn))
@@ -145,7 +151,7 @@ namespace GROUP6_ANGAT {
                     SELECT sr.RequestId, sr.Status, sr.RequestedAt,
                            s.ServiceTitle, s.Barangay, s.RateMin, s.RateMax, s.RateType, s.Tags
                     FROM ServiceRequests sr
-                    LEFT JOIN Services s ON sr.ServiceId = s.ServiceId
+                    LEFT JOIN vwServices s ON sr.ServiceId = s.ServiceId
                     WHERE sr.UserId = @UserId AND (sr.Status = 'Retracted' OR sr.Status LIKE '%_Archived')
                     ORDER BY sr.RequestedAt DESC", conn))
                 {
@@ -173,7 +179,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
                    Tags, Category, Status, PostedAt, Slots, IsActive
-            FROM Jobs
+            FROM vwJobs
             WHERE PostedByUserId = @UserId AND (IsActive = 1 OR Status = 'Filled')
             ORDER BY PostedAt DESC", conn))
                 {
@@ -191,7 +197,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT JobId, JobTitle, Barangay, PayMin, PayMax, PayRate,
                    Tags, Category, Status, PostedAt, Slots, IsActive
-            FROM Jobs
+            FROM vwJobs
             WHERE PostedByUserId = @UserId AND IsActive = 0 AND Status != 'Filled'
             ORDER BY PostedAt DESC", conn))
                 {
@@ -219,7 +225,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT ServiceId, ServiceTitle, Barangay, RateMin, RateMax, RateType,
                    Tags, Category, Status, PostedAt, IsActive
-            FROM Services
+            FROM vwServices
             WHERE PostedByUserId = @UserId AND IsActive = 1
             ORDER BY PostedAt DESC", conn))
                 {
@@ -237,7 +243,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT ServiceId, ServiceTitle, Barangay, RateMin, RateMax, RateType,
                    Tags, Category, Status, PostedAt, IsActive
-            FROM Services
+            FROM vwServices
             WHERE PostedByUserId = @UserId AND IsActive = 0
             ORDER BY PostedAt DESC", conn))
                 {
@@ -265,7 +271,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT NegosyoId, BusinessName, Category, Barangay, AddressLine,
                    Tags, Status, CreatedAt, ContactNumber
-            FROM Negosyo
+            FROM vwNegosyo
             WHERE UserId = @UserId AND IsActive = 1
             ORDER BY CreatedAt DESC", conn))
                 {
@@ -283,7 +289,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
             SELECT NegosyoId, BusinessName, Category, Barangay, AddressLine,
                    Tags, Status, CreatedAt, ContactNumber
-            FROM Negosyo
+            FROM vwNegosyo
             WHERE UserId = @UserId AND IsActive = 0
             ORDER BY CreatedAt DESC", conn))
                 {
@@ -867,27 +873,30 @@ namespace GROUP6_ANGAT {
                 newImagePath = "~/Images/Profiles/" + fileName;
             }
 
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
+            using (SqlConnection conn = new SqlConnection(connString)) {
+                try {
+                    conn.Open();
+                    int barangayId = DbLookupHelper.EnsureBarangayId(conn, null, txtBarangay.Text.Trim());
+
+                    using (SqlCommand cmd = new SqlCommand(@"
                 UPDATE Users SET
                     FullName = @FullName,
                     Email    = @Email,
                     Phone    = @Phone,
                     AddressLine = @AddressLine,
-                    Barangay    = @Barangay,
+                    BarangayId  = @BarangayId,
                     ProfileImagePath = COALESCE(@ProfileImagePath, ProfileImagePath)
                 WHERE UserId = @UserId", conn)) {
-                cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
-                cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim().ToLowerInvariant());
-                cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
-                cmd.Parameters.AddWithValue("@AddressLine", txtAddress.Text.Trim());
-                cmd.Parameters.AddWithValue("@Barangay", txtBarangay.Text.Trim());
-                cmd.Parameters.AddWithValue("@ProfileImagePath", (object)newImagePath ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
+                        cmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim().ToLowerInvariant());
+                        cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
+                        cmd.Parameters.AddWithValue("@AddressLine", txtAddress.Text.Trim());
+                        cmd.Parameters.AddWithValue("@BarangayId", barangayId);
+                        cmd.Parameters.AddWithValue("@ProfileImagePath", (object)newImagePath ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
 
-                try {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
                 catch (SqlException ex) {
                     lblProfileMessage.Text = ex.Number == 2627 || ex.Number == 2601

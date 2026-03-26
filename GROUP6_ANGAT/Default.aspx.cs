@@ -44,7 +44,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
                     SELECT TOP 5 JobId, JobTitle, JobDescription, Category,
                            Barangay, PayMin, PayMax, PayRate, Tags, Status, PostedAt
-                    FROM Jobs WHERE IsActive = 1
+                    FROM vwJobs WHERE IsActive = 1
                     ORDER BY PostedAt DESC", conn)) {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -62,7 +62,7 @@ namespace GROUP6_ANGAT {
                 using (SqlCommand cmd = new SqlCommand(@"
                     SELECT TOP 5 ServiceId, ServiceTitle, Category,
                            Barangay, RateMin, RateMax, RateType, Tags, Status, PostedAt
-                    FROM Services WHERE IsActive = 1
+                    FROM vwServices WHERE IsActive = 1
                     ORDER BY PostedAt DESC", conn)) {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();

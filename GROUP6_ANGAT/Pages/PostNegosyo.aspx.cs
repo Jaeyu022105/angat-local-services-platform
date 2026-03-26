@@ -84,9 +84,10 @@ namespace GROUP6_ANGAT {
             string address = SanitizeText(txtAddressLine.Text, 255);
             string ownerName = SanitizeText(txtOwnerName.Text, 100);
             string contact = SanitizeText(txtContactNumber.Text, 20);
-            string days = BuildDaysString();
-            string time = GetSelectedTime();
-            string hours = days + " | " + time; string mapUrl = NormalizeMapUrl(txtMapEmbedUrl.Text);
+            List<int> selectedDays = GetSelectedDayIndexes();
+            TimeSpan? openTime = ParseTime(ddlOpenHour.SelectedValue);
+            TimeSpan? closeTime = ParseTime(ddlCloseHour.SelectedValue);
+            string mapUrl = NormalizeMapUrl(txtMapEmbedUrl.Text);
             string tags = SanitizeText(hfTags.Value, 300);
 
             // ── VALIDATE ──
@@ -101,7 +102,10 @@ namespace GROUP6_ANGAT {
                 if (string.IsNullOrEmpty(contact)) { ShowMessage("error", "Pakiusap ilagay ang Contact Number."); return; }
             }
             if (!Regex.IsMatch(contact, @"^(09|\+639)\d{9}$")) { ShowMessage("error", "Invalid na format ng contact number. Gamitin: 09XXXXXXXXX"); return; }
-            if (string.IsNullOrEmpty(hours)) { ShowMessage("error", "Pakiusap piliin ang oras ng operasyon. Siguraduhing hindi magkapareho ang opening at closing time."); return; }
+            if (selectedDays.Count == 0 || !openTime.HasValue || !closeTime.HasValue || openTime.Value == closeTime.Value) {
+                ShowMessage("error", "Pakiusap piliin ang oras ng operasyon. Siguraduhing hindi magkapareho ang opening at closing time.");
+                return;
+            }
             if (string.IsNullOrEmpty(tags)) { ShowMessage("error", "Pakiusap pumili ng kahit isang tag."); return; }
 
             if (string.IsNullOrEmpty(ownerName))
@@ -111,34 +115,62 @@ namespace GROUP6_ANGAT {
 
             if (!string.IsNullOrEmpty(editId))
             {
+                if (!int.TryParse(editId, out int negosyoId)) {
+                    ShowMessage("error", "Invalid na negosyo ID.");
+                    return;
+                }
+
                 // ── UPDATE ──
-                using (SqlConnection conn = new SqlConnection(connString))
-                using (SqlCommand cmd = new SqlCommand(@"
+                using (SqlConnection conn = new SqlConnection(connString)) {
+                    try {
+                        conn.Open();
+                        using (SqlTransaction tx = conn.BeginTransaction()) {
+                            int categoryId = DbLookupHelper.EnsureCategoryId(conn, tx, category, "Negosyo");
+                            int barangayId = DbLookupHelper.EnsureBarangayId(conn, tx, barangay);
+
+                            using (SqlCommand cmd = new SqlCommand(@"
             UPDATE Negosyo SET
                 BusinessName  = @BusinessName,
-                Category      = @Category,
-                Barangay      = @Barangay,
+                CategoryId    = @CategoryId,
+                BarangayId    = @BarangayId,
                 AddressLine   = @AddressLine,
                 OwnerName     = @OwnerName,
                 ContactNumber = @ContactNumber,
-                Hours         = @Hours,
-                Tags          = @Tags,
                 MapEmbedUrl   = @MapEmbedUrl
-            WHERE NegosyoId = @NegosyoId AND UserId = @UserId", conn))
-                {
-                    cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
-                    cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
-                    cmd.Parameters.Add("@Barangay", SqlDbType.NVarChar, 60).Value = barangay;
-                    cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
-                    cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
-                    cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
-                    cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
-                    cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
-                    cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
-                    cmd.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = editId;
-                    cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
+            WHERE NegosyoId = @NegosyoId AND UserId = @UserId", conn, tx)) {
+                                cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
+                                cmd.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId;
+                                cmd.Parameters.Add("@BarangayId", SqlDbType.Int).Value = barangayId;
+                                cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
+                                cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
+                                cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
+                                cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
+                                cmd.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = negosyoId;
+                                cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
 
-                    try { conn.Open(); cmd.ExecuteNonQuery(); }
+                                int rows = cmd.ExecuteNonQuery();
+                                if (rows == 0) {
+                                    tx.Rollback();
+                                    ShowMessage("error", "Hindi ma-update ang negosyo.");
+                                    return;
+                                }
+                            }
+
+                            using (SqlCommand delTags = new SqlCommand("DELETE FROM NegosyoTags WHERE NegosyoId = @NegosyoId", conn, tx)) {
+                                delTags.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = negosyoId;
+                                delTags.ExecuteNonQuery();
+                            }
+                            using (SqlCommand delHours = new SqlCommand("DELETE FROM NegosyoHours WHERE NegosyoId = @NegosyoId", conn, tx)) {
+                                delHours.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = negosyoId;
+                                delHours.ExecuteNonQuery();
+                            }
+
+                            SaveNegosyoTags(conn, tx, negosyoId, tags);
+                            SaveNegosyoHours(conn, tx, negosyoId, selectedDays, openTime.Value, closeTime.Value);
+
+                            tx.Commit();
+                        }
+                    }
                     catch (SqlException) { ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit."); return; }
                 }
                 Response.Redirect("~/Pages/Profile.aspx?tab=businesslistings");
@@ -147,27 +179,37 @@ namespace GROUP6_ANGAT {
             else
             {
                 // ── INSERT ──
-                using (SqlConnection conn = new SqlConnection(connString))
-                using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO Negosyo
-                    (BusinessName, Category, Barangay, AddressLine, OwnerName, ContactNumber,
-                     Hours, Tags, MapEmbedUrl, Status, IsActive, CreatedAt, UserId)
-                VALUES
-                    (@BusinessName, @Category, @Barangay, @AddressLine, @OwnerName, @ContactNumber,
-                     @Hours, @Tags, @MapEmbedUrl, 'Bukas Ngayon', 1, GETDATE(), @UserId)", conn))
-                {
-                    cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
-                    cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 60).Value = category;
-                    cmd.Parameters.Add("@Barangay", SqlDbType.NVarChar, 60).Value = barangay;
-                    cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
-                    cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
-                    cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
-                    cmd.Parameters.Add("@Hours", SqlDbType.NVarChar, 150).Value = hours;
-                    cmd.Parameters.Add("@Tags", SqlDbType.NVarChar, 300).Value = string.IsNullOrEmpty(tags) ? (object)DBNull.Value : tags;
-                    cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
-                    cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
+                using (SqlConnection conn = new SqlConnection(connString)) {
+                    try {
+                        conn.Open();
+                        using (SqlTransaction tx = conn.BeginTransaction()) {
+                            int categoryId = DbLookupHelper.EnsureCategoryId(conn, tx, category, "Negosyo");
+                            int barangayId = DbLookupHelper.EnsureBarangayId(conn, tx, barangay);
 
-                    try { conn.Open(); cmd.ExecuteNonQuery(); }
+                            using (SqlCommand cmd = new SqlCommand(@"
+                INSERT INTO Negosyo
+                    (BusinessName, CategoryId, BarangayId, AddressLine, OwnerName, ContactNumber,
+                     MapEmbedUrl, IsActive, CreatedAt, UserId)
+                OUTPUT INSERTED.NegosyoId
+                VALUES
+                    (@BusinessName, @CategoryId, @BarangayId, @AddressLine, @OwnerName, @ContactNumber,
+                     @MapEmbedUrl, 1, GETDATE(), @UserId)", conn, tx)) {
+                                cmd.Parameters.Add("@BusinessName", SqlDbType.NVarChar, 150).Value = name;
+                                cmd.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId;
+                                cmd.Parameters.Add("@BarangayId", SqlDbType.Int).Value = barangayId;
+                                cmd.Parameters.Add("@AddressLine", SqlDbType.NVarChar, 255).Value = address;
+                                cmd.Parameters.Add("@OwnerName", SqlDbType.NVarChar, 100).Value = string.IsNullOrEmpty(ownerName) ? (object)DBNull.Value : ownerName;
+                                cmd.Parameters.Add("@ContactNumber", SqlDbType.NVarChar, 20).Value = contact;
+                                cmd.Parameters.Add("@MapEmbedUrl", SqlDbType.NVarChar, 500).Value = string.IsNullOrEmpty(mapUrl) ? (object)DBNull.Value : mapUrl;
+                                cmd.Parameters.Add("@UserId", SqlDbType.Int).Value = Session["UserId"];
+
+                                int negosyoId = Convert.ToInt32(cmd.ExecuteScalar());
+                                SaveNegosyoTags(conn, tx, negosyoId, tags);
+                                SaveNegosyoHours(conn, tx, negosyoId, selectedDays, openTime.Value, closeTime.Value);
+                            }
+                            tx.Commit();
+                        }
+                    }
                     catch (SqlException) { ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit."); return; }
                 }
 
@@ -182,7 +224,7 @@ namespace GROUP6_ANGAT {
             using (SqlCommand cmd = new SqlCommand(@"
         SELECT BusinessName, Category, Barangay, AddressLine, OwnerName,
                ContactNumber, Hours, Tags, MapEmbedUrl
-        FROM Negosyo
+        FROM vwNegosyo
         WHERE NegosyoId = @NegosyoId AND UserId = @UserId", conn))
             {
                 cmd.Parameters.AddWithValue("@NegosyoId", NegosyoId);
@@ -247,7 +289,11 @@ namespace GROUP6_ANGAT {
             if (Session["UserId"] == null) return false;
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand("SELECT Role FROM Users WHERE UserId = @UserId", conn)) {
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT r.RoleName
+                FROM Users u
+                LEFT JOIN Roles r ON u.RoleId = r.RoleId
+                WHERE u.UserId = @UserId", conn)) {
                 cmd.Parameters.AddWithValue("@UserId", Session["UserId"]);
                 conn.Open();
                 object r = cmd.ExecuteScalar();
@@ -271,6 +317,69 @@ namespace GROUP6_ANGAT {
                 if (m.Success) return m.Groups[1].Value.Trim();
             }
             return text;
+        }
+
+        private List<int> GetSelectedDayIndexes() {
+            string[] selectedDays = Request.Form.GetValues("dayCheck");
+            List<int> selected = new List<int>();
+            if (selectedDays == null) return selected;
+            foreach (string val in selectedDays) {
+                if (int.TryParse(val, out int dayIndex))
+                    selected.Add(dayIndex);
+            }
+            selected.Sort();
+            return selected;
+        }
+
+        private TimeSpan? ParseTime(string value) {
+            if (DateTime.TryParse(value, out DateTime dt))
+                return dt.TimeOfDay;
+            return null;
+        }
+
+        private IEnumerable<string> ParseTags(string raw) {
+            return (raw ?? "")
+                .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim())
+                .Where(t => t.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+        }
+
+        private int EnsureTag(SqlConnection conn, SqlTransaction tx, string tag) {
+            using (SqlCommand cmd = new SqlCommand(@"
+                IF NOT EXISTS (SELECT 1 FROM Tags WHERE TagName = @TagName)
+                    INSERT INTO Tags (TagName) VALUES (@TagName);
+                SELECT TagId FROM Tags WHERE TagName = @TagName;", conn, tx)) {
+                cmd.Parameters.Add("@TagName", SqlDbType.NVarChar, 100).Value = tag;
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+        private void SaveNegosyoTags(SqlConnection conn, SqlTransaction tx, int negosyoId, string rawTags) {
+            foreach (string tag in ParseTags(rawTags)) {
+                int tagId = EnsureTag(conn, tx, tag);
+                using (SqlCommand linkCmd = new SqlCommand(@"
+                    IF NOT EXISTS (SELECT 1 FROM NegosyoTags WHERE NegosyoId = @NegosyoId AND TagId = @TagId)
+                        INSERT INTO NegosyoTags (NegosyoId, TagId) VALUES (@NegosyoId, @TagId);", conn, tx)) {
+                    linkCmd.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = negosyoId;
+                    linkCmd.Parameters.Add("@TagId", SqlDbType.Int).Value = tagId;
+                    linkCmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void SaveNegosyoHours(SqlConnection conn, SqlTransaction tx, int negosyoId, List<int> selectedDays, TimeSpan openTime, TimeSpan closeTime) {
+            foreach (int dayIndex in selectedDays) {
+                using (SqlCommand cmd = new SqlCommand(@"
+                    INSERT INTO NegosyoHours (NegosyoId, DayOfWeek, OpenTime, CloseTime)
+                    VALUES (@NegosyoId, @DayOfWeek, @OpenTime, @CloseTime);", conn, tx)) {
+                    cmd.Parameters.Add("@NegosyoId", SqlDbType.Int).Value = negosyoId;
+                    cmd.Parameters.Add("@DayOfWeek", SqlDbType.TinyInt).Value = dayIndex + 1;
+                    cmd.Parameters.Add("@OpenTime", SqlDbType.Time).Value = openTime;
+                    cmd.Parameters.Add("@CloseTime", SqlDbType.Time).Value = closeTime;
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         private string BuildDaysString() {

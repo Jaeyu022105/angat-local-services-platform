@@ -71,23 +71,28 @@ namespace GROUP6_ANGAT {
 
             // ── INSERT TO DATABASE (parameterized — SQL injection safe) ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO Users 
-                    (FullName, Phone, Email, Password, Barangay, AddressLine, CreatedAt, IsActive, Role, ProfileImagePath)
-                VALUES 
-                    (@FullName, @Phone, @Email, @Password, @Barangay, @AddressLine, GETDATE(), 1, 'User', '~/Images/default-icon.jpg')", conn)) {
-
-                cmd.Parameters.Add("@FullName", System.Data.SqlDbType.NVarChar, 100).Value = fullName;
-                cmd.Parameters.Add("@Phone", System.Data.SqlDbType.VarChar, 15).Value = phone;
-                cmd.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 150).Value = string.IsNullOrEmpty(email) ? (object)DBNull.Value : email;
-                cmd.Parameters.Add("@Password", System.Data.SqlDbType.NVarChar, 255).Value = password;
-                cmd.Parameters.Add("@Barangay", System.Data.SqlDbType.NVarChar, 60).Value = barangay;
-                cmd.Parameters.Add("@AddressLine", System.Data.SqlDbType.NVarChar, 255).Value = address;
-
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 try {
                     conn.Open();
-                    cmd.ExecuteNonQuery();
+                    int barangayId = DbLookupHelper.EnsureBarangayId(conn, null, barangay);
+                    int roleId = DbLookupHelper.EnsureRoleId(conn, null, "User");
+
+                    using (SqlCommand cmd = new SqlCommand(@"
+                INSERT INTO Users 
+                    (FullName, Phone, Email, Password, BarangayId, AddressLine, CreatedAt, IsActive, RoleId, ProfileImagePath)
+                VALUES 
+                    (@FullName, @Phone, @Email, @Password, @BarangayId, @AddressLine, GETDATE(), 1, @RoleId, '~/Images/default-icon.jpg')", conn)) {
+
+                        cmd.Parameters.Add("@FullName", System.Data.SqlDbType.NVarChar, 100).Value = fullName;
+                        cmd.Parameters.Add("@Phone", System.Data.SqlDbType.VarChar, 15).Value = phone;
+                        cmd.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 150).Value = string.IsNullOrEmpty(email) ? (object)DBNull.Value : email;
+                        cmd.Parameters.Add("@Password", System.Data.SqlDbType.NVarChar, 255).Value = password;
+                        cmd.Parameters.Add("@BarangayId", System.Data.SqlDbType.Int).Value = barangayId;
+                        cmd.Parameters.Add("@AddressLine", System.Data.SqlDbType.NVarChar, 255).Value = address;
+                        cmd.Parameters.Add("@RoleId", System.Data.SqlDbType.Int).Value = roleId;
+
+                        cmd.ExecuteNonQuery();
+                    }
                 }
                 catch (SqlException ex) {
                     if (ex.Number == 2627 || ex.Number == 2601) {

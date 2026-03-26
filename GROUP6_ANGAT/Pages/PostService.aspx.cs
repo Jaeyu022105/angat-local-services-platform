@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace GROUP6_ANGAT {
@@ -57,27 +60,36 @@ namespace GROUP6_ANGAT {
 
             // ── INSERT TO DATABASE (parameterized — SQL injection safe) ──
             string connString = ConfigurationManager.ConnectionStrings["AngatDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connString))
-            using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO Services
-                    (ServiceTitle, Category, Barangay, RateMin, RateMax, RateType,
-                     Tags, Status, ServiceDescription, PostedByUserId, IsActive, PostedAt)
-                VALUES
-                    (@ServiceTitle, @Category, @Barangay, @RateMin, @RateMax, @RateType,
-                     @Tags, 'Available', @ServiceDescription, @PostedByUserId, 1, GETDATE())", conn)) {
-                cmd.Parameters.Add("@ServiceTitle", System.Data.SqlDbType.NVarChar, 150).Value = title;
-                cmd.Parameters.Add("@Category", System.Data.SqlDbType.NVarChar, 60).Value = category;
-                cmd.Parameters.Add("@Barangay", System.Data.SqlDbType.NVarChar, 60).Value = barangay;
-                cmd.Parameters.Add("@RateMin", System.Data.SqlDbType.Decimal).Value = rateMin;
-                cmd.Parameters.Add("@RateMax", System.Data.SqlDbType.Decimal).Value = rateMax;
-                cmd.Parameters.Add("@RateType", System.Data.SqlDbType.NVarChar, 30).Value = rateUnit;
-                cmd.Parameters.Add("@Tags", System.Data.SqlDbType.NVarChar, 300).Value = tags;
-                cmd.Parameters.Add("@ServiceDescription", System.Data.SqlDbType.NVarChar, 500).Value = description;
-                cmd.Parameters.Add("@PostedByUserId", System.Data.SqlDbType.Int).Value = Session["UserId"];
-
+            using (SqlConnection conn = new SqlConnection(connString)) {
                 try {
                     conn.Open();
-                    cmd.ExecuteNonQuery();
+                    using (SqlTransaction tx = conn.BeginTransaction()) {
+                        int categoryId = DbLookupHelper.EnsureCategoryId(conn, tx, category, "Service");
+                        int barangayId = DbLookupHelper.EnsureBarangayId(conn, tx, barangay);
+                        int rateTypeId = DbLookupHelper.EnsureRateTypeId(conn, tx, rateUnit, "Service");
+
+                        using (SqlCommand cmd = new SqlCommand(@"
+                INSERT INTO Services
+                    (ServiceTitle, CategoryId, BarangayId, RateMin, RateMax, RateTypeId,
+                     Status, ServiceDescription, PostedByUserId, IsActive, PostedAt)
+                OUTPUT INSERTED.ServiceId
+                VALUES
+                    (@ServiceTitle, @CategoryId, @BarangayId, @RateMin, @RateMax, @RateTypeId,
+                     'Available', @ServiceDescription, @PostedByUserId, 1, GETDATE())", conn, tx)) {
+                            cmd.Parameters.Add("@ServiceTitle", SqlDbType.NVarChar, 150).Value = title;
+                            cmd.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId;
+                            cmd.Parameters.Add("@BarangayId", SqlDbType.Int).Value = barangayId;
+                            cmd.Parameters.Add("@RateMin", SqlDbType.Decimal).Value = rateMin;
+                            cmd.Parameters.Add("@RateMax", SqlDbType.Decimal).Value = rateMax;
+                            cmd.Parameters.Add("@RateTypeId", SqlDbType.Int).Value = rateTypeId;
+                            cmd.Parameters.Add("@ServiceDescription", SqlDbType.NVarChar, 500).Value = description;
+                            cmd.Parameters.Add("@PostedByUserId", SqlDbType.Int).Value = Session["UserId"];
+
+                            int serviceId = Convert.ToInt32(cmd.ExecuteScalar());
+                            SaveServiceTags(conn, tx, serviceId, tags);
+                        }
+                        tx.Commit();
+                    }
                 }
                 catch (SqlException) {
                     ShowMessage("error", "Nagkaroon ng error sa server. Subukan ulit.");
@@ -120,6 +132,37 @@ namespace GROUP6_ANGAT {
             pnlPostMessage.Visible = true;
             pnlPostMessage.CssClass = $"form-alert {type}";
             lblPostMessage.Text = message;
+        }
+
+        private IEnumerable<string> ParseTags(string raw) {
+            return (raw ?? "")
+                .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim())
+                .Where(t => t.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+        }
+
+        private int EnsureTag(SqlConnection conn, SqlTransaction tx, string tag) {
+            using (SqlCommand cmd = new SqlCommand(@"
+                IF NOT EXISTS (SELECT 1 FROM Tags WHERE TagName = @TagName)
+                    INSERT INTO Tags (TagName) VALUES (@TagName);
+                SELECT TagId FROM Tags WHERE TagName = @TagName;", conn, tx)) {
+                cmd.Parameters.Add("@TagName", SqlDbType.NVarChar, 100).Value = tag;
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+        private void SaveServiceTags(SqlConnection conn, SqlTransaction tx, int serviceId, string rawTags) {
+            foreach (string tag in ParseTags(rawTags)) {
+                int tagId = EnsureTag(conn, tx, tag);
+                using (SqlCommand linkCmd = new SqlCommand(@"
+                    IF NOT EXISTS (SELECT 1 FROM ServiceTags WHERE ServiceId = @ServiceId AND TagId = @TagId)
+                        INSERT INTO ServiceTags (ServiceId, TagId) VALUES (@ServiceId, @TagId);", conn, tx)) {
+                    linkCmd.Parameters.Add("@ServiceId", SqlDbType.Int).Value = serviceId;
+                    linkCmd.Parameters.Add("@TagId", SqlDbType.Int).Value = tagId;
+                    linkCmd.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

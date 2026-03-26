@@ -24,7 +24,7 @@ namespace GROUP6_ANGAT.Pages {
                 SELECT d.NegosyoId, d.BusinessName, d.Category, d.Barangay, d.AddressLine, 
                        d.OwnerName, d.ContactNumber, d.MapEmbedUrl, d.Hours, d.Tags, d.Status,
                        COALESCE(NULLIF(LTRIM(RTRIM(d.OwnerName)), ''), u.FullName) AS OwnerDisplay
-                FROM Negosyo d
+                FROM vwNegosyo d
                 LEFT JOIN Users u ON d.UserId = u.UserId
                 WHERE d.IsActive = 1
                 ORDER BY d.CreatedAt DESC", conn)) {
