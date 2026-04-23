@@ -6,9 +6,13 @@ Course Title: WEB SYSTEMS AND TECHNOLOGIES (LABORATORY)
 
 MEMBERS:
 Jaime de la Peña
+
 Lean Leopold Lasay
+
 Maria Charize Singcay
+
 Danielle Heart Gonzales
+
 Vince Lander Santos
 
 This project is a web-based community platform called ANGAT. The system includes pages for Home, Hanap Trabaho, Hanap Gawa, Negosyo, Puhunan, Training, user profile management, notifications, and contact support. Users can register, log in, post job, service, and negosyo listings, browse local opportunities, apply for jobs, send service requests, manage their own listings, and view training programs and funding information through a database-driven interface.
