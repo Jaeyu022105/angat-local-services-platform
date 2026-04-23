@@ -4,25 +4,24 @@ Course Code: IT114L
 
 Course Title: WEB SYSTEMS AND TECHNOLOGIES (LABORATORY)
 
+=============================
 
 MEMBERS:
-Jaime de la Peña
+- Jaime de la Peña
+- Lean Leopold Lasay
+- Maria Charize Singcay
+- Danielle Heart Gonzales
+- Vince Lander Santos
 
-Lean Leopold Lasay
-
-Maria Charize Singcay
-
-Danielle Heart Gonzales
-
-Vince Lander Santos
-
+=============================
 
 This project is a web-based community platform called ANGAT. The system includes pages for Home, Hanap Trabaho, Hanap Gawa, Negosyo, Puhunan, Training, user profile management, notifications, and contact support. Users can register, log in, post job, service, and negosyo listings, browse local opportunities, apply for jobs, send service requests, manage their own listings, and view training programs and funding information through a database-driven interface.
 
+=============================
 
 INSTRUCTIONS:
 
--RUNNING THE SYSTEM-
+---RUNNING THE SYSTEM---
 
 1 - OPEN `GROUP6_ANGAT.sln` IN VISUAL STUDIO
 
@@ -34,7 +33,7 @@ INSTRUCTIONS:
 
 5 - PRESS `F5` OR CLICK `START` TO RUN THE WEB APPLICATION
 
--MAIN FEATURES-
+---MAIN FEATURES---
 
 1 - REGISTER A NEW ACCOUNT OR LOG IN USING AN EXISTING ACCOUNT
 
@@ -50,7 +49,7 @@ INSTRUCTIONS:
 
 7 - OPEN THE PROFILE PAGE TO MANAGE APPLICATIONS, REQUESTS, AND YOUR OWN LISTINGS
 
--POSTING FEATURES-
+---POSTING FEATURES---
 
 1 - LOG IN AS A USER TO POST A JOB LISTING
 
@@ -60,7 +59,7 @@ INSTRUCTIONS:
 
 4 - ADD DETAILS SUCH AS CATEGORY, BARANGAY, DESCRIPTION, TAGS, RATES, HOURS, AND CONTACT INFORMATION DEPENDING ON THE LISTING TYPE
 
--USER ACTIONS-
+---USER ACTIONS---
 
 1 - APPLY TO JOB LISTINGS THROUGH THE `HANAP TRABAHO` PAGE
 
@@ -72,7 +71,7 @@ INSTRUCTIONS:
 
 5 - UPDATE YOUR ACCOUNT DETAILS, PROFILE IMAGE, AND PASSWORD IN THE PROFILE PAGE
 
--OTHER FEATURES-
+---OTHER FEATURES---
 
 1 - NOTIFICATION SYSTEM FOR ACCOUNT AND LISTING-RELATED UPDATES
 
@@ -84,7 +83,7 @@ INSTRUCTIONS:
 
 5 - PROFILE PAGE TABS FOR APPLICATIONS, REQUESTS, JOB LISTINGS, SERVICE LISTINGS, AND NEGOSYO LISTINGS
 
--REQUIREMENTS-
+---REQUIREMENTS---
 
 1 - WINDOWS OPERATING SYSTEM
 
